@@ -50,14 +50,20 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 {
   "games": [
     {
-      "slug": "example-game",     // 必須: games/<slug>/index.html のパス
-      "title": "Example Game",    // 必須: 表示タイトル
-      "description": "説明文",    // 任意
-      "tags": ["action", "2d"]    // 任意: タグの配列
+      "slug": "example-game",
+      "title": "Example Game",
+      "description": "説明文",
+      "tags": ["action", "2d"]
     }
   ]
 }
 ```
+
+**フィールド説明**:
+- `slug`（必須）: `games/<slug>/index.html` のパスと一致する識別子
+- `title`（必須）: ゲームの表示タイトル
+- `description`（任意）: ゲームの説明文
+- `tags`（任意）: タグの配列
 
 ---
 
@@ -169,9 +175,13 @@ element.appendChild(textNode);
 ### ゲーム表示
 - `iframe` を使用してゲームを表示（疎結合）
 - `sandbox` 属性を設定してセキュリティを向上
+- **注意**: `allow-same-origin` と `allow-scripts` の組み合わせは、同一オリジンのゲームに限定して使用すること
   ```html
-  <iframe src="games/example-game/index.html" sandbox="allow-scripts allow-same-origin"></iframe>
+  <iframe src="games/example-game/index.html" 
+          sandbox="allow-scripts allow-same-origin"
+          title="Example Game"></iframe>
   ```
+- より制限的な設定が必要な場合は `allow-scripts` のみを使用し、`allow-same-origin` を除外することを検討
 
 ---
 
