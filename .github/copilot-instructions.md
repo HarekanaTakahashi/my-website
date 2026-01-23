@@ -30,14 +30,54 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 /
 ├── index.html              # エントリーポイント
 ├── assets/
-│   ├── css/               # スタイルシート
-│   ├── js/                # JavaScriptモジュール（ES Modules）
+│   ├── css/               # 共通スタイルシート（ゲームハブアプリ用）
+│   │   └── styles.css     # ハブアプリのスタイル
+│   ├── js/                # 共通JavaScriptモジュール（ゲームハブアプリ用）
+│   │   ├── app.js         # メインアプリケーションロジック
+│   │   ├── store.js       # ゲームデータ管理
+│   │   ├── utils.js       # ユーティリティ関数
+│   │   └── views/         # ビューモジュール
+│   │       ├── home.js    # ホーム画面
+│   │       └── game.js    # ゲーム画面
 │   └── data/
 │       └── games.json     # ゲーム一覧（単一ソース）
 └── games/
     └── <slug>/
-        └── index.html     # 各ゲームの本体（単独動作可能）
+        ├── index.html     # ゲームのHTML
+        ├── <slug>.css     # ゲーム専用スタイル
+        └── <slug>.js      # ゲーム専用ロジック
 ```
+
+**ファイル分離の原則**:
+- 各ゲームは `games/<slug>/` ディレクトリに配置
+- ゲーム内では **HTML、CSS、JavaScript を必ず分離** すること
+- ゲーム固有のスタイルは `<slug>.css` に記述
+- ゲーム固有のロジックは `<slug>.js` に記述
+- 共通のスタイルやロジックは `assets/` ディレクトリに配置
+
+### ファイル構成の詳細
+
+**ゲームハブアプリ（共通）**:
+- `index.html`: エントリーポイント。App Bar、Side Bar、Main Content を含む
+- `assets/css/styles.css`: ハブアプリの共通スタイル
+- `assets/js/app.js`: ルーティング、UI制御
+- `assets/js/store.js`: ゲームデータの読み込みと管理
+- `assets/js/utils.js`: HTML エスケープなどのユーティリティ
+- `assets/js/views/home.js`: ホーム画面のレンダリング
+- `assets/js/views/game.js`: ゲーム画面のレンダリング
+- `assets/data/games.json`: ゲーム一覧のメタデータ
+
+**個別ゲーム（ゲーム固有）**:
+- `games/<slug>/index.html`: ゲームの HTML 構造のみを記述
+- `games/<slug>/<slug>.css`: ゲーム専用のスタイル定義
+- `games/<slug>/<slug>.js`: ゲームロジックとインタラクション
+
+**新しいゲームを追加する際の手順**:
+1. `games/<slug>/` ディレクトリを作成
+2. `index.html`、`<slug>.css`、`<slug>.js` ファイルを作成（HTML、CSS、JSを分離）
+3. `assets/data/games.json` に新しいゲームのエントリを追加
+4. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
+
 
 ### ルーティング
 - **hash-basedルーティング** を使用：`location.hash`
