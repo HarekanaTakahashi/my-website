@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- App Bar -->
+    <header class="app-bar">
+        <button id="menu-btn" class="icon-btn" aria-label="メニュー">
+            <span class="menu-icon"></span>
+        </button>
+        <h1 class="app-title">Game Hub</h1>
+        <button id="home-btn" class="icon-btn" aria-label="ホームに戻る">🏠</button>
+    </header>
+
+    <!-- Side Bar -->
+    <nav id="sidebar" class="sidebar" aria-hidden="true">
+        <div class="sidebar-content">
+            <h2>Menu</h2>
+            <ul id="sidebar-menu" class="sidebar-menu">
+                <li><a href="#/" data-nav="home">Home</a></li>
+                <li class="divider"></li>
+                <!-- Games will be inserted here -->
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Overlay for sidebar -->
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <div id="view-container"></div>
+    </main>
+
+    <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>
