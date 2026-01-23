@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku 4x4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            background-color: #333;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            aspect-ratio: 1;
+        }
+
+        .cell {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .cell:hover:not(.given) {
+            background-color: #f0f0f0;
+        }
+
+        .cell.selected {
+            background-color: #bbdefb;
+        }
+
+        .cell.given {
+            color: #333;
+            background-color: #e8eaf6;
+            cursor: default;
+        }
+
+        .cell.user {
+            color: #667eea;
+        }
+
+        .cell.error {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+
+        /* Block borders (2x2 blocks) */
+        .cell:nth-child(1), .cell:nth-child(2), .cell:nth-child(5), .cell:nth-child(6) {
+            border-right: 2px solid #333;
+        }
+
+        .cell:nth-child(1), .cell:nth-child(2), .cell:nth-child(3), .cell:nth-child(4),
+        .cell:nth-child(5), .cell:nth-child(6), .cell:nth-child(7), .cell:nth-child(8) {
+            border-bottom: 2px solid #333;
+        }
+
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .number-btn {
+            padding: 16px;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .number-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .number-btn:active {
+            transform: scale(0.95);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .control-btn {
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-new {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-new:hover {
+            background-color: #45a049;
+        }
+
+        .btn-clear {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background-color: #da190b;
+        }
+
+        .control-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 16px;
+            min-height: 24px;
+            font-weight: 500;
+        }
+
+        .status.error {
+            color: #c62828;
+        }
+
+        .status.success {
+            color: #2e7d32;
+        }
+
+        .status.info {
+            color: #1976d2;
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .cell {
+                font-size: 24px;
+            }
+
+            .number-btn {
+                padding: 12px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🧩 Sudoku 4x4</h1>
+        <p class="subtitle">各行・列・ブロックに1-4を1つずつ入れよう</p>
+        
+        <div id="status" class="status"></div>
+        
+        <div id="board" class="board"></div>
+        
+        <div class="number-pad">
+            <button class="number-btn" data-number="1">1</button>
+            <button class="number-btn" data-number="2">2</button>
+            <button class="number-btn" data-number="3">3</button>
+            <button class="number-btn" data-number="4">4</button>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn btn-new" id="new-game">New Game</button>
+            <button class="control-btn btn-clear" id="clear">Clear</button>
+        </div>
+    </div>
+
+    <script>
+        // Puzzle presets (0 = empty cell)
+        const puzzles = [
+            // Puzzle 1
+            [
+                [1, 0, 0, 4],
+                [0, 0, 1, 0],
+                [0, 1, 0, 0],
+                [4, 0, 0, 1]
+            ],
+            // Puzzle 2
+            [
+                [0, 3, 0, 0],
+                [0, 0, 0, 1],
+                [3, 0, 0, 0],
+                [0, 0, 1, 0]
+            ],
+            // Puzzle 3
+            [
+                [0, 0, 4, 0],
+                [4, 0, 0, 2],
+                [2, 0, 0, 4],
+                [0, 4, 0, 0]
+            ],
+            // Puzzle 4
+            [
+                [0, 2, 0, 0],
+                [0, 0, 2, 0],
+                [0, 3, 0, 0],
+                [0, 0, 3, 0]
+            ]
+        ];
+
+        // Solutions for each puzzle
+        const solutions = [
+            // Solution 1
+            [
+                [1, 2, 3, 4],
+                [3, 4, 1, 2],
+                [2, 1, 4, 3],
+                [4, 3, 2, 1]
+            ],
+            // Solution 2
+            [
+                [1, 3, 4, 2],
+                [2, 4, 3, 1],
+                [3, 1, 2, 4],
+                [4, 2, 1, 3]
+            ],
+            // Solution 3
+            [
+                [3, 1, 4, 2],
+                [4, 3, 1, 2],
+                [2, 1, 3, 4],
+                [1, 4, 2, 3]
+            ],
+            // Solution 4
+            [
+                [3, 2, 4, 1],
+                [1, 4, 2, 3],
+                [4, 3, 1, 2],
+                [2, 1, 3, 4]
+            ]
+        ];
+
+        // Game state
+        let currentPuzzle = [];
+        let currentSolution = [];
+        let board = [];
+        let selectedCell = null;
+
+        // Initialize
+        function init() {
+            newGame();
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Number pad buttons
+            document.querySelectorAll('.number-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const number = parseInt(btn.dataset.number);
+                    if (selectedCell !== null) {
+                        placeNumber(selectedCell, number);
+                    }
+                });
+            });
+
+            // Control buttons
+            document.getElementById('new-game').addEventListener('click', newGame);
+            document.getElementById('clear').addEventListener('click', clearBoard);
+
+            // Keyboard input
+            document.addEventListener('keydown', (e) => {
+                if (e.key >= '1' && e.key <= '4') {
+                    const number = parseInt(e.key);
+                    if (selectedCell !== null) {
+                        placeNumber(selectedCell, number);
+                    }
+                } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
+                    if (selectedCell !== null) {
+                        placeNumber(selectedCell, 0);
+                    }
+                }
+            });
+        }
+
+        // Start a new game
+        function newGame() {
+            const puzzleIndex = Math.floor(Math.random() * puzzles.length);
+            currentPuzzle = puzzles[puzzleIndex];
+            currentSolution = solutions[puzzleIndex];
+            
+            // Copy puzzle to board
+            board = currentPuzzle.map(row => [...row]);
+            
+            selectedCell = null;
+            renderBoard();
+            setStatus('新しいゲームを開始しました！', 'info');
+        }
+
+        // Clear user inputs
+        function clearBoard() {
+            board = currentPuzzle.map(row => [...row]);
+            selectedCell = null;
+            renderBoard();
+            setStatus('ボードをクリアしました', 'info');
+        }
+
+        // Render the board
+        function renderBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    const value = board[row][col];
+                    const isGiven = currentPuzzle[row][col] !== 0;
+                    
+                    if (value !== 0) {
+                        cell.textContent = value;
+                        if (isGiven) {
+                            cell.classList.add('given');
+                        } else {
+                            cell.classList.add('user');
+                        }
+                    }
+                    
+                    const index = row * 4 + col;
+                    if (selectedCell === index && !isGiven) {
+                        cell.classList.add('selected');
+                    }
+                    
+                    // Check for errors
+                    if (!isGiven && value !== 0 && hasError(row, col, value)) {
+                        cell.classList.add('error');
+                    }
+                    
+                    // Add click listener
+                    if (!isGiven) {
+                        cell.addEventListener('click', () => {
+                            selectedCell = index;
+                            renderBoard();
+                        });
+                    }
+                    
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        // Place a number in the selected cell
+        function placeNumber(index, number) {
+            const row = Math.floor(index / 4);
+            const col = index % 4;
+            
+            // Can't modify given cells
+            if (currentPuzzle[row][col] !== 0) {
+                return;
+            }
+            
+            board[row][col] = number;
+            renderBoard();
+            
+            // Check for completion
+            if (isBoardComplete()) {
+                if (isBoardCorrect()) {
+                    setStatus('🎉 おめでとうございます！完成です！', 'success');
+                } else {
+                    setStatus('❌ まだ間違いがあります', 'error');
+                }
+            } else if (number !== 0 && hasError(row, col, number)) {
+                setStatus('⚠️ 重複があります！', 'error');
+            } else {
+                setStatus('', '');
+            }
+        }
+
+        // Check if a placement has errors (duplicates in row, column, or block)
+        function hasError(row, col, value) {
+            if (value === 0) return false;
+            
+            // Check row
+            for (let c = 0; c < 4; c++) {
+                if (c !== col && board[row][c] === value) {
+                    return true;
+                }
+            }
+            
+            // Check column
+            for (let r = 0; r < 4; r++) {
+                if (r !== row && board[r][col] === value) {
+                    return true;
+                }
+            }
+            
+            // Check 2x2 block
+            const blockRow = Math.floor(row / 2) * 2;
+            const blockCol = Math.floor(col / 2) * 2;
+            for (let r = blockRow; r < blockRow + 2; r++) {
+                for (let c = blockCol; c < blockCol + 2; c++) {
+                    if ((r !== row || c !== col) && board[r][c] === value) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        // Check if board is complete (all cells filled)
+        function isBoardComplete() {
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
+                    if (board[row][col] === 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Check if board is correct (matches solution)
+        function isBoardCorrect() {
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
+                    if (board[row][col] !== currentSolution[row][col]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // Set status message
+        function setStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = 'status ' + type;
+        }
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
