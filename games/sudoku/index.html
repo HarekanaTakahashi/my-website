@@ -99,11 +99,12 @@
             border-right: 2px solid #333;
         }
 
-        .cell:nth-child(n+1):nth-child(-n+27) {
+        /* Add bottom border after rows 3 and 6 (cells 27 and 54) */
+        .cell:nth-child(n+19):nth-child(-n+27) {
             border-bottom: 2px solid #333;
         }
 
-        .cell:nth-child(n+28):nth-child(-n+54) {
+        .cell:nth-child(n+46):nth-child(-n+54) {
             border-bottom: 2px solid #333;
         }
 
