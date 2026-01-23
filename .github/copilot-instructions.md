@@ -94,7 +94,7 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 ```javascript
 async function loadGames() {
   try {
-    const response = await fetch('/assets/data/games.json');
+    const response = await fetch('assets/data/games.json');
     if (!response.ok) throw new Error('Failed to load games');
     const data = await response.json();
     return data.games;
@@ -170,7 +170,7 @@ element.appendChild(textNode);
 - `iframe` を使用してゲームを表示（疎結合）
 - `sandbox` 属性を設定してセキュリティを向上
   ```html
-  <iframe src="/games/example-game/index.html" sandbox="allow-scripts allow-same-origin"></iframe>
+  <iframe src="games/example-game/index.html" sandbox="allow-scripts allow-same-origin"></iframe>
   ```
 
 ---
