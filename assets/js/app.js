@@ -1,6 +1,7 @@
 import { loadGames, getGames } from './store.js';
 import { renderHome, setupHomeListeners } from './views/home.js';
 import { renderGame, setupGameListeners } from './views/game.js';
+import { escapeHtml } from './utils.js';
 
 // DOM elements
 let sidebar;
@@ -162,13 +163,6 @@ function render404() {
             <a href="#/" class="home-link">ホームに戻る</a>
         </div>
     `;
-}
-
-// Helper function to escape HTML
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 // Start the app when DOM is ready

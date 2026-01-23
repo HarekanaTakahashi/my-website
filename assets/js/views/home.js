@@ -1,4 +1,5 @@
 import { getGames } from '../store.js';
+import { escapeHtml } from '../utils.js';
 
 // Render the home view with game cards
 export function renderHome() {
@@ -49,9 +50,4 @@ export function setupHomeListeners(container) {
     });
 }
 
-// Helper function to escape HTML
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+

@@ -1,4 +1,5 @@
 import { getGame } from '../store.js';
+import { escapeHtml } from '../utils.js';
 
 // Render the game view with iframe
 export function renderGame(slug) {
@@ -49,9 +50,4 @@ function renderGameError(title, message) {
     `;
 }
 
-// Helper function to escape HTML
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+
