@@ -1,8 +1,11 @@
 'use strict';
 
+// Import game configuration
+import { GAME_CONFIG } from './config/2048-config.js';
+
 class Game2048 {
     constructor() {
-        this.size = 4;
+        this.size = GAME_CONFIG.BOARD_SIZE;
         this.board = [];
         this.score = 0;
         this.bestScore = this.loadBestScore();
@@ -95,7 +98,7 @@ class Game2048 {
             const dx = touchEndX - this.touchStartX;
             const dy = touchEndY - this.touchStartY;
             
-            const minSwipeDistance = 30;
+            const minSwipeDistance = GAME_CONFIG.TOUCH.MIN_SWIPE_DISTANCE;
             
             if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > minSwipeDistance) {
                 // Horizontal swipe
@@ -139,7 +142,7 @@ class Game2048 {
         
         if (emptyCells.length > 0) {
             const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            const value = Math.random() < 0.9 ? 2 : 4;
+            const value = Math.random() < GAME_CONFIG.TILE_SPAWN.VALUE_2_PROBABILITY ? 2 : 4;
             this.board[randomCell.row][randomCell.col] = value;
         }
     }
@@ -318,9 +321,9 @@ class Game2048 {
         if (!this.won) {
             for (let i = 0; i < this.size; i++) {
                 for (let j = 0; j < this.size; j++) {
-                    if (this.board[i][j] === 2048) {
+                    if (this.board[i][j] === GAME_CONFIG.WIN_TILE) {
                         this.won = true;
-                        this.showMessage('勝利！', '2048を達成しました！続けてプレイできます。');
+                        this.showMessage(GAME_CONFIG.MESSAGES.WIN_TITLE, GAME_CONFIG.MESSAGES.WIN_TEXT);
                         return;
                     }
                 }
@@ -330,7 +333,7 @@ class Game2048 {
         // Check for game over
         if (!this.canMove()) {
             this.gameOver = true;
-            this.showMessage('ゲームオーバー', `スコア: ${this.score}`);
+            this.showMessage(GAME_CONFIG.MESSAGES.GAME_OVER_TITLE, `${GAME_CONFIG.MESSAGES.GAME_OVER_TEXT_PREFIX}${this.score}`);
         }
     }
     
@@ -387,7 +390,7 @@ class Game2048 {
     
     saveBestScore() {
         try {
-            localStorage.setItem('2048-best-score', this.bestScore.toString());
+            localStorage.setItem(GAME_CONFIG.STORAGE_KEY, this.bestScore.toString());
         } catch (e) {
             // LocalStorage not available
         }
@@ -395,7 +398,7 @@ class Game2048 {
     
     loadBestScore() {
         try {
-            const saved = localStorage.getItem('2048-best-score');
+            const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY);
             return saved ? parseInt(saved, 10) : 0;
         } catch (e) {
             return 0;
