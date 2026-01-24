@@ -45,7 +45,11 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
     └── <slug>/
         ├── index.html     # ゲームのHTML
         ├── <slug>.css     # ゲーム専用スタイル
-        └── <slug>.js      # ゲーム専用ロジック
+        ├── <slug>.js      # ゲーム専用ロジック
+        ├── data/          # ゲーム固有のデータ（オプション）
+        │   └── *-presets.js  # プリセット/パズルデータ等
+        └── config/        # ゲーム固有の設定（オプション）
+            └── *-config.js   # 設定値/定数/UI文言等
 ```
 
 **ファイル分離の原則**:
@@ -53,6 +57,9 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - ゲーム内では **HTML、CSS、JavaScript を必ず分離** すること
 - ゲーム固有のスタイルは `<slug>.css` に記述
 - ゲーム固有のロジックは `<slug>.js` に記述
+- **定数データとロジックの分離**：presets、設定値、UI文言などは別ファイルに分離
+  - プリセットデータ（パズル、レベルデータ等）: `data/` ディレクトリ
+  - 設定値・定数・UI文言: `config/` ディレクトリ
 - 共通のスタイルやロジックは `assets/` ディレクトリに配置
 
 ### ファイル構成の詳細
@@ -71,12 +78,19 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - `games/<slug>/index.html`: ゲームの HTML 構造のみを記述
 - `games/<slug>/<slug>.css`: ゲーム専用のスタイル定義
 - `games/<slug>/<slug>.js`: ゲームロジックとインタラクション
+- `games/<slug>/data/`: ゲーム固有のデータファイル（オプション）
+  - プリセットデータ、パズル、レベルデータなど
+  - 例: `sudoku-presets.js` (Sudoku のパズルと解答)
+- `games/<slug>/config/`: ゲーム固有の設定ファイル（オプション）
+  - 設定値、定数、UI文言など
+  - 例: `2048-config.js` (2048 のボードサイズ、確率、メッセージ)
 
 **新しいゲームを追加する際の手順**:
 1. `games/<slug>/` ディレクトリを作成
 2. `index.html`、`<slug>.css`、`<slug>.js` ファイルを作成（HTML、CSS、JSを分離）
-3. `assets/data/games.json` に新しいゲームのエントリを追加
-4. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
+3. 必要に応じて `data/` や `config/` ディレクトリを作成し、定数データを分離
+4. `assets/data/games.json` に新しいゲームのエントリを追加
+5. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
 
 
 ### ルーティング
@@ -150,6 +164,52 @@ async function loadGames() {
   }
 }
 ```
+
+### データとロジックの分離
+
+**原則**:
+- **定数データとゲームロジックを分離**して保守性と再利用性を向上
+- プリセット、設定値、UI文言などはメインロジックから切り出す
+- ES Modules の `export`/`import` を使用
+
+**データ分離の指針**:
+1. **プリセットデータ** (`games/<slug>/data/` に配置)
+   - パズルのプリセット（Sudoku の問題と解答など）
+   - レベルデータ、マップデータ
+   - 静的なゲームコンテンツ
+   
+2. **設定値・定数** (`games/<slug>/config/` に配置)
+   - ゲームパラメータ（ボードサイズ、制限時間など）
+   - 確率・閾値（タイル生成確率、難易度設定など）
+   - UI文言・メッセージ（勝利/敗北メッセージなど）
+   - LocalStorage キーなどの定数
+
+**実装例**:
+```javascript
+// games/sudoku/data/sudoku-presets.js
+export const puzzles = [ /* パズルデータ */ ];
+export const solutions = [ /* 解答データ */ ];
+
+// games/sudoku/sudoku.js
+import { puzzles, solutions } from './data/sudoku-presets.js';
+```
+
+```javascript
+// games/2048/config/2048-config.js
+export const GAME_CONFIG = {
+    BOARD_SIZE: 4,
+    TILE_SPAWN: { VALUE_2_PROBABILITY: 0.9 },
+    WIN_TILE: 2048
+};
+
+// games/2048/2048.js
+import { GAME_CONFIG } from './config/2048-config.js';
+```
+
+**注意事項**:
+- データファイルを使用する場合、HTML で `<script type="module">` を指定
+- ファイル名は役割を明確に（例: `<slug>-presets.js`, `<slug>-config.js`）
+- 既存の動作を維持することを最優先
 
 ---
 
