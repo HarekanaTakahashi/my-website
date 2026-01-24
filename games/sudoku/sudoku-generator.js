@@ -81,17 +81,20 @@ function generateCompleteBoard() {
 // Remove cells to create puzzle
 function createPuzzle(board, cellsToRemove) {
     const puzzle = board.map(row => [...row]);
-    let removed = 0;
-    const attempts = cellsToRemove * 3; // Limit attempts to avoid infinite loop
     
-    for (let i = 0; i < attempts && removed < cellsToRemove; i++) {
-        const row = Math.floor(Math.random() * 9);
-        const col = Math.floor(Math.random() * 9);
-        
-        if (puzzle[row][col] !== 0) {
-            puzzle[row][col] = 0;
-            removed++;
+    // Create array of all positions and shuffle it
+    const positions = [];
+    for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+            positions.push([row, col]);
         }
+    }
+    shuffleArray(positions);
+    
+    // Remove exactly cellsToRemove cells
+    for (let i = 0; i < cellsToRemove && i < positions.length; i++) {
+        const [row, col] = positions[i];
+        puzzle[row][col] = 0;
     }
     
     return puzzle;

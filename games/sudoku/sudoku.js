@@ -271,8 +271,6 @@ function placeNumber(index, number) {
         clearRelatedMemos(row, col, number);
     }
     
-    board[row][col] = number;
-    
     // Check if the number is wrong (doesn't match solution)
     if (number !== 0 && number !== currentSolution[row][col]) {
         lives--;
@@ -284,11 +282,13 @@ function placeNumber(index, number) {
             return;
         } else {
             setStatus(`❌ 間違えました！残りライフ: ${lives}`, 'error');
+            // Don't place the wrong number on the board
             renderBoard();
             return;
         }
     }
     
+    board[row][col] = number;
     renderBoard();
     
     // Check for completion
@@ -296,12 +296,9 @@ function placeNumber(index, number) {
         if (isBoardCorrect()) {
             gameOver = true;
             setStatus('🎉 おめでとうございます！完成です！', 'success');
-        } else {
-            setStatus('❌ まだ間違いがあります', 'error');
         }
-    } else if (number !== 0 && hasError(row, col, number)) {
-        setStatus('⚠️ 重複があります！', 'error');
     } else {
+        // Clear status if no errors
         setStatus('', '');
     }
 }
