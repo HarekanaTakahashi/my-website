@@ -10,6 +10,8 @@ let board = [];
 let memos = []; // 9x9 array, each cell contains a Set of memo numbers
 let selectedCell = null;
 let inputMode = 'number'; // 'number' or 'memo'
+let lives = 3;
+let gameOver = false;
 
 // Initialize
 function init() {
@@ -95,13 +97,18 @@ function newGame() {
     
     selectedCell = null;
     inputMode = 'number';
+    lives = 3;
+    gameOver = false;
     setInputMode('number');
     renderBoard();
+    updateLivesDisplay();
     setStatus('新しいゲームを開始しました！', 'info');
 }
 
 // Clear user inputs
 function clearBoard() {
+    if (gameOver) return;
+    
     board = currentPuzzle.map(row => [...row]);
     
     // Clear memos
@@ -118,6 +125,8 @@ function clearBoard() {
 
 // Toggle memo number
 function toggleMemo(index, number) {
+    if (gameOver) return;
+    
     const row = Math.floor(index / 9);
     const col = index % 9;
     
@@ -225,6 +234,8 @@ function renderBoard() {
 
 // Place a number in the selected cell
 function placeNumber(index, number) {
+    if (gameOver) return;
+    
     const row = Math.floor(index / 9);
     const col = index % 9;
     
@@ -241,11 +252,29 @@ function placeNumber(index, number) {
     }
     
     board[row][col] = number;
+    
+    // Check if the number is wrong (doesn't match solution)
+    if (number !== 0 && number !== currentSolution[row][col]) {
+        lives--;
+        updateLivesDisplay();
+        
+        if (lives <= 0) {
+            gameOver = true;
+            setStatus('💀 ゲームオーバー！ライフが0になりました', 'error');
+            return;
+        } else {
+            setStatus(`❌ 間違えました！残りライフ: ${lives}`, 'error');
+            renderBoard();
+            return;
+        }
+    }
+    
     renderBoard();
     
     // Check for completion
     if (isBoardComplete()) {
         if (isBoardCorrect()) {
+            gameOver = true;
             setStatus('🎉 おめでとうございます！完成です！', 'success');
         } else {
             setStatus('❌ まだ間違いがあります', 'error');
@@ -318,6 +347,13 @@ function setStatus(message, type) {
     const statusElement = document.getElementById('status');
     statusElement.textContent = message;
     statusElement.className = 'status ' + type;
+}
+
+// Update lives display
+function updateLivesDisplay() {
+    const livesElement = document.getElementById('lives');
+    const hearts = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+    livesElement.textContent = hearts;
 }
 
 // Start the game

@@ -37,6 +37,22 @@ h1 {
     font-size: 14px;
 }
 
+.lives-container {
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.lives-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.lives {
+    font-size: 20px;
+    margin-left: 4px;
+}
+
 .board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
