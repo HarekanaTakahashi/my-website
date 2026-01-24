@@ -119,10 +119,13 @@ class SlidePuzzle {
                     tile.textContent = value;
                     tile.setAttribute('role', 'button');
                     tile.setAttribute('tabindex', '0');
-                    tile.setAttribute('aria-label', `タイル ${value}`);
+                    
+                    const isMoveable = this.isAdjacentToEmpty(row, col);
+                    const moveableText = isMoveable ? '（移動可能）' : '';
+                    tile.setAttribute('aria-label', `タイル ${value}${moveableText}`);
                     
                     // Check if tile is moveable
-                    if (this.isAdjacentToEmpty(row, col)) {
+                    if (isMoveable) {
                         tile.classList.add('moveable');
                     }
                     
@@ -194,9 +197,7 @@ class SlidePuzzle {
         this.updateMoveCount();
         
         // Perform random valid moves
-        const numMoves = Math.floor(
-            Math.random() * (GAME_CONFIG.MAX_SHUFFLE_MOVES - GAME_CONFIG.MIN_SHUFFLE_MOVES + 1)
-        ) + GAME_CONFIG.MIN_SHUFFLE_MOVES;
+        const numMoves = this.getRandomShuffleMoves();
         
         for (let i = 0; i < numMoves; i++) {
             const validMoves = this.getValidMoves();
@@ -210,6 +211,12 @@ class SlidePuzzle {
         }
         
         this.renderBoard();
+    }
+    
+    getRandomShuffleMoves() {
+        return Math.floor(
+            Math.random() * (GAME_CONFIG.MAX_SHUFFLE_MOVES - GAME_CONFIG.MIN_SHUFFLE_MOVES + 1)
+        ) + GAME_CONFIG.MIN_SHUFFLE_MOVES;
     }
     
     getValidMoves() {
@@ -256,9 +263,7 @@ class SlidePuzzle {
         this.updateBestScore();
         this.showMessage(
             GAME_CONFIG.MESSAGES.WIN_TITLE,
-            GAME_CONFIG.MESSAGES.WIN_TEXT_PREFIX + 
-            this.moves + 
-            GAME_CONFIG.MESSAGES.WIN_TEXT_SUFFIX
+            `${GAME_CONFIG.MESSAGES.WIN_TEXT_PREFIX}${this.moves}${GAME_CONFIG.MESSAGES.WIN_TEXT_SUFFIX}`
         );
     }
     
