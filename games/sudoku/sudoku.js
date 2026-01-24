@@ -2,6 +2,8 @@
 
 // Import puzzle presets and solutions
 import { puzzles, solutions } from './data/sudoku-presets.js';
+// Import puzzle generator
+import { generateSudoku } from './sudoku-generator.js';
 
 // Game state
 let currentPuzzle = [];
@@ -12,6 +14,7 @@ let selectedCell = null;
 let inputMode = 'number'; // 'number' or 'memo'
 let lives = 3;
 let gameOver = false;
+let useGenerator = false; // Toggle between preset and generated puzzles
 
 // Initialize
 function init() {
@@ -47,6 +50,12 @@ function setupEventListeners() {
     // Control buttons
     document.getElementById('new-game').addEventListener('click', newGame);
     document.getElementById('clear').addEventListener('click', clearBoard);
+    
+    // Generator toggle
+    document.getElementById('use-generator').addEventListener('change', (e) => {
+        useGenerator = e.target.checked;
+        newGame(); // Start new game with new puzzle type
+    });
 
     // Keyboard input
     document.addEventListener('keydown', (e) => {
@@ -79,9 +88,19 @@ function setInputMode(mode) {
 
 // Start a new game
 function newGame() {
-    const puzzleIndex = Math.floor(Math.random() * puzzles.length);
-    currentPuzzle = puzzles[puzzleIndex];
-    currentSolution = solutions[puzzleIndex];
+    if (useGenerator) {
+        // Generate a new random puzzle
+        const difficulties = ['easy', 'medium', 'hard'];
+        const difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+        const generated = generateSudoku(difficulty);
+        currentPuzzle = generated.puzzle;
+        currentSolution = generated.solution;
+    } else {
+        // Use preset puzzles
+        const puzzleIndex = Math.floor(Math.random() * puzzles.length);
+        currentPuzzle = puzzles[puzzleIndex];
+        currentSolution = solutions[puzzleIndex];
+    }
     
     // Copy puzzle to board
     board = currentPuzzle.map(row => [...row]);
@@ -102,7 +121,8 @@ function newGame() {
     setInputMode('number');
     renderBoard();
     updateLivesDisplay();
-    setStatus('新しいゲームを開始しました！', 'info');
+    const puzzleType = useGenerator ? 'ランダム生成' : 'プリセット';
+    setStatus(`新しいゲームを開始しました！（${puzzleType}）`, 'info');
 }
 
 // Clear user inputs
