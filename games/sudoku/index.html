@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku 9x9</title>
     <link rel="stylesheet" href="sudoku.css">
 </head>
@@ -10,6 +9,32 @@
     <div class="game-container">
         <h1>🧩 Sudoku 9x9</h1>
         <p class="subtitle">各行・列・3x3ブロックに1-9を1つずつ入れよう</p>
+        
+        <div class="game-info">
+            <div class="lives-container">
+                <span class="lives-label">ライフ: </span>
+                <span id="lives" class="lives">❤️❤️❤️</span>
+            </div>
+            <div class="timer-container">
+                <span class="timer-label">⏱️ </span>
+                <span id="timer" class="timer">00:00</span>
+            </div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <label>難易度: </label>
+            <select id="difficulty">
+                <option value="easy">イージー</option>
+                <option value="medium" selected>ミディアム</option>
+                <option value="hard">ハード</option>
+            </select>
+        </div>
+        
+        <div id="best-times" class="best-times">
+            <div class="best-time">イージー: <span id="best-easy">--:--</span></div>
+            <div class="best-time">ミディアム: <span id="best-medium">--:--</span></div>
+            <div class="best-time">ハード: <span id="best-hard">--:--</span></div>
+        </div>
         
         <div id="status" class="status"></div>
         

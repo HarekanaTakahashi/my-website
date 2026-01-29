@@ -37,6 +37,90 @@ h1 {
     font-size: 14px;
 }
 
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.lives-container {
+    font-size: 16px;
+}
+
+.lives-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.lives {
+    font-size: 20px;
+    margin-left: 4px;
+}
+
+.timer-container {
+    font-size: 16px;
+}
+
+.timer-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.timer {
+    font-size: 20px;
+    font-weight: bold;
+    color: #667eea;
+    margin-left: 4px;
+}
+
+.difficulty-selector {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.difficulty-selector label {
+    font-weight: 600;
+    color: #333;
+    margin-right: 8px;
+}
+
+.difficulty-selector select {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    background: white;
+    color: #667eea;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.difficulty-selector select:focus {
+    outline: none;
+    border-color: #5568d3;
+}
+
+.best-times {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 12px;
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.best-time {
+    font-weight: 500;
+    color: #666;
+}
+
+.best-time span {
+    color: #667eea;
+    font-weight: bold;
+}
+
 .board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -233,28 +317,4 @@ h1 {
 
 .status.info {
     color: #1976d2;
-}
-
-@media (max-width: 600px) {
-    .game-container {
-        padding: 16px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-
-    .cell {
-        font-size: 16px;
-        min-height: 35px;
-    }
-
-    .number-btn {
-        padding: 10px 6px;
-        font-size: 16px;
-    }
-
-    .memo-num {
-        font-size: 6px;
-    }
 }

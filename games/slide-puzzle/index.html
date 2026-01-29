@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>スライドパズル</title>
+    <link rel="stylesheet" href="slide-puzzle.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title-container">
+                <h1>スライドパズル</h1>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">移動</div>
+                    <div class="stat-value" id="move-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">ベスト</div>
+                    <div class="stat-value" id="best-moves">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info" id="game-info">
+            空白マスに隣接するタイルをクリックするか、矢印キーで移動してください。
+        </div>
+        
+        <div class="controls">
+            <div class="size-selector">
+                <label for="size-select">サイズ:</label>
+                <select id="size-select" aria-label="ボードサイズを選択">
+                    <option value="3">3x3 (簡単)</option>
+                    <option value="4">4x4 (普通)</option>
+                    <option value="5">5x5 (難しい)</option>
+                </select>
+            </div>
+            <button class="shuffle-btn" id="shuffle-btn" aria-label="シャッフル">シャッフル</button>
+        </div>
+        
+        <div class="board-container">
+            <div class="board" id="board" role="grid" aria-label="スライドパズルボード">
+                <!-- Tiles will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title"></h2>
+            <p id="message-text"></p>
+            <button id="new-game-btn">新しいゲーム</button>
+        </div>
+    </div>
+
+    <script type="module" src="slide-puzzle.js"></script>
+</body>
+</html>
