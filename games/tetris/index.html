@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Tetris</title>
+    <link rel="stylesheet" href="tetris.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title-container">
+                <h1>Tetris</h1>
+            </div>
+            <div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">スコア</div>
+                    <div class="score-value" id="current-score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ライン</div>
+                    <div class="score-value" id="lines">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ベスト</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            矢印キーで移動・回転、スペースでハードドロップ、Cでホールド
+        </div>
+        
+        <div class="controls">
+            <button class="btn" id="start-btn" aria-label="スタート">スタート</button>
+            <button class="btn" id="pause-btn" aria-label="一時停止" disabled>一時停止</button>
+            <button class="btn" id="restart-btn" aria-label="リスタート">リスタート</button>
+        </div>
+        
+        <div class="game-layout">
+            <div class="side-panel hold-panel">
+                <h3>ホールド</h3>
+                <canvas id="hold-canvas" width="120" height="120"></canvas>
+            </div>
+            
+            <div class="main-board">
+                <canvas id="game-canvas" width="300" height="600"></canvas>
+                <div class="game-overlay" id="game-overlay">
+                    <div class="overlay-content">
+                        <h2 id="overlay-title">Tetris</h2>
+                        <p id="overlay-message">スペースキーで開始</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-panel next-panel">
+                <h3>ネクスト</h3>
+                <canvas id="next-canvas" width="120" height="360"></canvas>
+            </div>
+        </div>
+        
+        <div class="game-stats">
+            <div class="stat-item">
+                <span class="stat-label">レベル:</span>
+                <span class="stat-value" id="level">1</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">最終アクション:</span>
+                <span class="stat-value" id="last-action">-</span>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>操作方法</h3>
+            <ul>
+                <li><strong>←→</strong> または <strong>A/D</strong>: 左右移動</li>
+                <li><strong>↓</strong> または <strong>S</strong>: ソフトドロップ</li>
+                <li><strong>スペース</strong> または <strong>↑/W</strong>: ハードドロップ</li>
+                <li><strong>Z</strong> または <strong>Ctrl</strong>: 左回転</li>
+                <li><strong>X</strong> または <strong>↑/W</strong>: 右回転</li>
+                <li><strong>C</strong> または <strong>Shift</strong>: ホールド</li>
+                <li><strong>P</strong> または <strong>Esc</strong>: 一時停止</li>
+                <li><strong>R</strong>: リスタート</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module" src="tetris.js"></script>
+</body>
+</html>
