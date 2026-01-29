@@ -13,7 +13,8 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - 上部の **App Bar** を常時表示
 - 左側の **Side Bar**（App Barから開閉可能）
 - Home（Dashboard）と各ゲームをSide Barから起動
-- **ゲームの追加が容易**：`assets/data/games.json` に追加 + ゲームフォルダ配置のみ
+- **ゲームの追加が容易**：`assets/data/games/<slug>.json` に追加 + `assets/data/games/index.json` に登録 + ゲームフォルダ配置
+- **マージコンフリクトを回避**：各ゲームの情報は個別のJSONファイルで管理
 - **動作環境**：PCのみを対象。キーボードとマウスでの操作を前提とする
 
 ### 技術スタック
@@ -41,7 +42,10 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 │   │       ├── home.js    # ホーム画面
 │   │       └── game.js    # ゲーム画面
 │   └── data/
-│       └── games.json     # ゲーム一覧（単一ソース）
+│       └── games/         # ゲーム一覧（個別ファイル）
+│           ├── index.json        # ゲームファイルリスト
+│           ├── <slug>.json       # 各ゲームのメタデータ
+│           └── ...
 └── games/
     └── <slug>/
         ├── index.html     # ゲームのHTML
@@ -73,7 +77,8 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - `assets/js/utils.js`: HTML エスケープなどのユーティリティ
 - `assets/js/views/home.js`: ホーム画面のレンダリング
 - `assets/js/views/game.js`: ゲーム画面のレンダリング
-- `assets/data/games.json`: ゲーム一覧のメタデータ
+- `assets/data/games/index.json`: ゲームファイルのリスト
+- `assets/data/games/<slug>.json`: 各ゲームのメタデータ（個別ファイル）
 
 **個別ゲーム（ゲーム固有）**:
 - `games/<slug>/index.html`: ゲームの HTML 構造のみを記述
@@ -90,8 +95,21 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 1. `games/<slug>/` ディレクトリを作成
 2. `index.html`、`<slug>.css`、`<slug>.js` ファイルを作成（HTML、CSS、JSを分離）
 3. 必要に応じて `data/` や `config/` ディレクトリを作成し、定数データを分離
-4. `assets/data/games.json` に新しいゲームのエントリを追加
-5. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
+4. `assets/data/games/<slug>.json` にゲームのメタデータファイルを作成
+5. `assets/data/games/index.json` のリストに `<slug>.json` を追加
+6. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
+
+**ゲームメタデータファイルの作成例** (`assets/data/games/example-game.json`):
+```json
+{
+  "slug": "example-game",
+  "title": "Example Game",
+  "description": "説明文",
+  "tags": ["action", "2d"]
+}
+```
+
+**注意**: 複数のブランチで同時にゲームを追加する場合でも、各ゲームは独立したファイルなのでマージコンフリクトは発生しません。`index.json` のみ注意が必要ですが、単純なリスト追加なので競合は最小限です。
 
 
 ### ルーティング
@@ -100,18 +118,26 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - ゲームパス：`#/game/<slug>`
 - ページリロードなしでの画面遷移
 
-### データモデル（`games.json` 形式）
+### データモデル（個別ゲームJSONファイル形式）
+
+各ゲームのメタデータは `assets/data/games/<slug>.json` に個別ファイルとして保存されます。
+
+**個別ゲームファイルの形式** (`assets/data/games/example-game.json`):
 ```json
 {
-  "games": [
-    {
-      "slug": "example-game",
-      "title": "Example Game",
-      "description": "説明文",
-      "tags": ["action", "2d"]
-    }
-  ]
+  "slug": "example-game",
+  "title": "Example Game",
+  "description": "説明文",
+  "tags": ["action", "2d"]
 }
+```
+
+**インデックスファイルの形式** (`assets/data/games/index.json`):
+```json
+[
+  "example-game.json",
+  "another-game.json"
+]
 ```
 
 **フィールド説明**:
@@ -119,6 +145,10 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - `title`（必須）: ゲームの表示タイトル
 - `description`（任意）: ゲームの説明文
 - `tags`（任意）: タグの配列
+
+**マージコンフリクトの回避**:
+- 各ゲームは独立したJSONファイルで管理されるため、複数のブランチで同時にゲームを追加してもコンフリクトは発生しません
+- `index.json` は単純なリスト構造のため、競合が発生しても解決が容易です
 
 ---
 
@@ -154,10 +184,20 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 ```javascript
 async function loadGames() {
   try {
-    const response = await fetch('assets/data/games.json');
-    if (!response.ok) throw new Error('Failed to load games');
-    const data = await response.json();
-    return data.games;
+    // インデックスファイルからゲームリストを取得
+    const indexResponse = await fetch('assets/data/games/index.json');
+    if (!indexResponse.ok) throw new Error('Failed to load game index');
+    const gameFiles = await indexResponse.json();
+    
+    // 各ゲームファイルを並行読み込み
+    const games = await Promise.all(
+      gameFiles.map(async (filename) => {
+        const response = await fetch(`assets/data/games/${filename}`);
+        return response.ok ? await response.json() : null;
+      })
+    );
+    
+    return games.filter(game => game !== null);
   } catch (error) {
     console.error('Error loading games:', error);
     return []; // 空配列を返してアプリを継続
@@ -291,19 +331,19 @@ element.appendChild(textNode);
 - [ ] `index.html` を開くと `#/` が表示される
 - [ ] App Bar が常時表示される
 - [ ] Side Bar が開閉できる（メニューボタン + `Escape` キー）
-- [ ] `assets/data/games.json` に1件追加すると、Home と Side Bar に反映される
+- [ ] `assets/data/games/<slug>.json` に1件追加し、`assets/data/games/index.json` に登録すると、Home と Side Bar に反映される
 - [ ] `#/game/<slug>` でゲームが `iframe` 起動される
 - [ ] ゲームが見つからない/読み込み失敗時、エラー表示してアプリは継続動作
 - [ ] キーボードで主要機能を操作可能
 
 ### エラーハンドリング
 - **空状態の対応**：ゲームが0件の場合、適切なメッセージを表示
-- **読み込み失敗の対応**：`games.json` が取得できない場合の Fallback
+- **読み込み失敗の対応**：`index.json` や個別ゲームファイルが取得できない場合の Fallback
 - **404相当の対応**：存在しない `<slug>` にアクセスした場合のエラー画面
 
 ### パフォーマンス
 - 初期ロード時間を最小化（画像最適化、遅延読み込み等）
-- `games.json` のキャッシュを検討
+- 個別ゲームファイルの並行読み込みで高速化
 - 不要な再レンダリングを避ける
 
 ---
