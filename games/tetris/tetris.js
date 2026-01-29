@@ -335,6 +335,7 @@ class Tetris {
             case 1: return [[x + 2, y], [x + 2, y + 2]];
             case 2: return [[x + 2, y + 2], [x, y + 2]];
             case 3: return [[x, y + 2], [x, y]];
+            default: return [[x, y], [x + 2, y]]; // Fallback to rotation 0
         }
     }
     
@@ -348,9 +349,9 @@ class Tetris {
         }
         
         if (linesToClear.length > 0) {
-            // Remove cleared lines
-            for (const row of linesToClear) {
-                this.board.splice(row, 1);
+            // Remove cleared lines in reverse order to avoid index shifting issues
+            for (let i = linesToClear.length - 1; i >= 0; i--) {
+                this.board.splice(linesToClear[i], 1);
                 this.board.unshift(Array(GAME_CONFIG.BOARD_WIDTH).fill(0));
             }
             

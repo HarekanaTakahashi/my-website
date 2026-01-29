@@ -161,7 +161,7 @@ export const KEY_BINDINGS = {
     MOVE_LEFT: ['ArrowLeft', 'a', 'A'],
     MOVE_RIGHT: ['ArrowRight', 'd', 'D'],
     SOFT_DROP: ['ArrowDown', 's', 'S'],
-    HARD_DROP: [' ', 'ArrowUp', 'w', 'W'],
+    HARD_DROP: [' '],
     ROTATE_CW: ['x', 'X', 'ArrowUp', 'w', 'W'],
     ROTATE_CCW: ['z', 'Z', 'Control'],
     HOLD: ['c', 'C', 'Shift'],
