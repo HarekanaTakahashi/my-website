@@ -11,9 +11,30 @@
         <h1>🧩 Sudoku 9x9</h1>
         <p class="subtitle">各行・列・3x3ブロックに1-9を1つずつ入れよう</p>
         
-        <div class="lives-container">
-            <span class="lives-label">ライフ: </span>
-            <span id="lives" class="lives">❤️❤️❤️</span>
+        <div class="game-info">
+            <div class="lives-container">
+                <span class="lives-label">ライフ: </span>
+                <span id="lives" class="lives">❤️❤️❤️</span>
+            </div>
+            <div class="timer-container">
+                <span class="timer-label">⏱️ </span>
+                <span id="timer" class="timer">00:00</span>
+            </div>
+        </div>
+        
+        <div class="difficulty-selector">
+            <label>難易度: </label>
+            <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+        
+        <div id="best-times" class="best-times">
+            <div class="best-time">Easy: <span id="best-easy">--:--</span></div>
+            <div class="best-time">Medium: <span id="best-medium">--:--</span></div>
+            <div class="best-time">Hard: <span id="best-hard">--:--</span></div>
         </div>
         
         <div id="status" class="status"></div>
@@ -40,13 +61,6 @@
         <div class="controls">
             <button class="control-btn btn-new" id="new-game">New Game</button>
             <button class="control-btn btn-clear" id="clear">Clear</button>
-        </div>
-        
-        <div class="generator-toggle">
-            <label>
-                <input type="checkbox" id="use-generator">
-                <span>ランダム生成パズルを使用</span>
-            </label>
         </div>
     </div>
 

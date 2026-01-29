@@ -1,7 +1,5 @@
 'use strict';
 
-// Import puzzle presets and solutions
-import { puzzles, solutions } from './data/sudoku-presets.js';
 // Import puzzle generator
 import { generateSudoku } from './sudoku-generator.js';
 
@@ -14,10 +12,17 @@ let selectedCell = null;
 let inputMode = 'number'; // 'number' or 'memo'
 let lives = 3;
 let gameOver = false;
-let useGenerator = false; // Toggle between preset and generated puzzles
+let currentDifficulty = 'medium';
+let startTime = null;
+let timerInterval = null;
+let elapsedTime = 0;
+
+// LocalStorage keys
+const BEST_TIMES_KEY = 'sudoku-best-times';
 
 // Initialize
 function init() {
+    loadBestTimes();
     newGame();
     setupEventListeners();
 }
@@ -51,10 +56,10 @@ function setupEventListeners() {
     document.getElementById('new-game').addEventListener('click', newGame);
     document.getElementById('clear').addEventListener('click', clearBoard);
     
-    // Generator toggle
-    document.getElementById('use-generator').addEventListener('change', (e) => {
-        useGenerator = e.target.checked;
-        newGame(); // Start new game with new puzzle type
+    // Difficulty selector
+    document.getElementById('difficulty').addEventListener('change', (e) => {
+        currentDifficulty = e.target.value;
+        newGame();
     });
 
     // Keyboard input
@@ -88,19 +93,13 @@ function setInputMode(mode) {
 
 // Start a new game
 function newGame() {
-    if (useGenerator) {
-        // Generate a new random puzzle
-        const difficulties = ['easy', 'medium', 'hard'];
-        const difficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
-        const generated = generateSudoku(difficulty);
-        currentPuzzle = generated.puzzle;
-        currentSolution = generated.solution;
-    } else {
-        // Use preset puzzles
-        const puzzleIndex = Math.floor(Math.random() * puzzles.length);
-        currentPuzzle = puzzles[puzzleIndex];
-        currentSolution = solutions[puzzleIndex];
-    }
+    // Stop existing timer
+    stopTimer();
+    
+    // Generate a new random puzzle
+    const generated = generateSudoku(currentDifficulty);
+    currentPuzzle = generated.puzzle;
+    currentSolution = generated.solution;
     
     // Copy puzzle to board
     board = currentPuzzle.map(row => [...row]);
@@ -118,11 +117,13 @@ function newGame() {
     inputMode = 'number';
     lives = 3;
     gameOver = false;
+    elapsedTime = 0;
     setInputMode('number');
     renderBoard();
     updateLivesDisplay();
-    const puzzleType = useGenerator ? 'ランダム生成' : 'プリセット';
-    setStatus(`新しいゲームを開始しました！（${puzzleType}）`, 'info');
+    updateTimer();
+    startTimer();
+    setStatus('新しいゲームを開始しました！', 'info');
 }
 
 // Clear user inputs
@@ -278,6 +279,7 @@ function placeNumber(index, number) {
         
         if (lives <= 0) {
             gameOver = true;
+            stopTimer();
             setStatus('💀 ゲームオーバー！ライフが0になりました', 'error');
             return;
         } else {
@@ -295,7 +297,10 @@ function placeNumber(index, number) {
     if (isBoardComplete()) {
         if (isBoardCorrect()) {
             gameOver = true;
-            setStatus('🎉 おめでとうございます！完成です！', 'success');
+            stopTimer();
+            const timeStr = formatTime(elapsedTime);
+            checkAndUpdateBestTime(currentDifficulty, elapsedTime);
+            setStatus(`🎉 おめでとうございます！完成です！タイム: ${timeStr}`, 'success');
         }
     } else {
         // Clear status if no errors
@@ -371,6 +376,60 @@ function updateLivesDisplay() {
     const livesElement = document.getElementById('lives');
     const hearts = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
     livesElement.textContent = hearts;
+}
+
+// Timer functions
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        updateTimer();
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateTimer() {
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = formatTime(elapsedTime);
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+// Best times functions
+function loadBestTimes() {
+    const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+    updateBestTimesDisplay(bestTimes);
+}
+
+function updateBestTimesDisplay(bestTimes) {
+    document.getElementById('best-easy').textContent = 
+        bestTimes.easy ? formatTime(bestTimes.easy) : '--:--';
+    document.getElementById('best-medium').textContent = 
+        bestTimes.medium ? formatTime(bestTimes.medium) : '--:--';
+    document.getElementById('best-hard').textContent = 
+        bestTimes.hard ? formatTime(bestTimes.hard) : '--:--';
+}
+
+function checkAndUpdateBestTime(difficulty, time) {
+    const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+    
+    if (!bestTimes[difficulty] || time < bestTimes[difficulty]) {
+        bestTimes[difficulty] = time;
+        localStorage.setItem(BEST_TIMES_KEY, JSON.stringify(bestTimes));
+        updateBestTimesDisplay(bestTimes);
+        return true; // New best time
+    }
+    return false;
 }
 
 // Start the game
