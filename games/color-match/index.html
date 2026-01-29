@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>カラーマッチパズル</title>
+    <link rel="stylesheet" href="color-match.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title-container">
+                <h1>カラーマッチパズル</h1>
+            </div>
+            <div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">スコア</div>
+                    <div class="score-value" id="current-score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ベスト</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info" id="game-info">
+            矢印キー: 移動 | ↑: 回転 | スペース: 即時落下 | ↓: 加速落下
+        </div>
+        
+        <div class="chain-display" id="chain-display"></div>
+        
+        <div class="game-area">
+            <div class="next-piece-container">
+                <div class="next-label">次</div>
+                <div class="next-piece" id="next-piece"></div>
+            </div>
+            
+            <div class="board-container">
+                <canvas id="game-canvas" width="360" height="720"></canvas>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title"></h2>
+            <p id="message-text"></p>
+            <button id="try-again-btn">もう一度</button>
+        </div>
+    </div>
+
+    <script type="module" src="color-match.js"></script>
+</body>
+</html>
