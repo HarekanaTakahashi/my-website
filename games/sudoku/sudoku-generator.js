@@ -83,13 +83,13 @@ function createPuzzle(board, cellsToRemove) {
     const puzzle = board.map(row => [...row]);
     
     // Create array of all positions and shuffle it
-    const positions = [];
+    let positions = [];
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
             positions.push([row, col]);
         }
     }
-    shuffleArray(positions);
+    positions = shuffleArray(positions);
     
     // Remove exactly cellsToRemove cells
     for (let i = 0; i < cellsToRemove && i < positions.length; i++) {
