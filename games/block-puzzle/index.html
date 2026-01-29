@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ブロックパズル</title>
+    <link rel="stylesheet" href="block-puzzle.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title-container">
+                <h1>ブロックパズル</h1>
+            </div>
+            <div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">スコア</div>
+                    <div class="score-value" id="current-score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ベスト</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            ブロックをボードに配置して、縦横の列を完成させましょう！
+        </div>
+        
+        <div class="controls">
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
+        </div>
+        
+        <div class="board" id="board"></div>
+        
+        <div class="pieces-container">
+            <div class="pieces-title">次のブロック</div>
+            <div class="pieces" id="pieces"></div>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title"></h2>
+            <p id="message-text"></p>
+            <button id="try-again-btn">もう一度</button>
+        </div>
+    </div>
+
+    <script type="module" src="block-puzzle.js"></script>
+</body>
+</html>
