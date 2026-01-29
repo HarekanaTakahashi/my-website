@@ -318,27 +318,3 @@ h1 {
 .status.info {
     color: #1976d2;
 }
-
-@media (max-width: 600px) {
-    .game-container {
-        padding: 16px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-
-    .cell {
-        font-size: 16px;
-        min-height: 35px;
-    }
-
-    .number-btn {
-        padding: 10px 6px;
-        font-size: 16px;
-    }
-
-    .memo-num {
-        font-size: 6px;
-    }
-}
