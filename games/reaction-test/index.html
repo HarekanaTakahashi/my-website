@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>反射神経テスト</title>
+    <link rel="stylesheet" href="reaction-test.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="title-container">
+                <h1>反射神経テスト</h1>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">ベスト</div>
+                    <div class="stat-value" id="best-time">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info" id="game-info">
+            緑色が表示されたら、できるだけ速くクリックしてください。
+        </div>
+        
+        <div class="test-area" id="test-area">
+            <div class="status-message" id="status-message">
+                クリックしてスタート
+            </div>
+        </div>
+        
+        <div class="results" id="results" style="display: none;">
+            <h2>結果</h2>
+            <div class="result-list" id="result-list"></div>
+            <div class="average-time">
+                <span class="label">平均反応時間:</span>
+                <span class="value" id="average-time">-</span>
+            </div>
+            <button class="retry-btn" id="retry-btn" aria-label="もう一度">もう一度</button>
+        </div>
+    </div>
+
+    <script type="module" src="reaction-test.js"></script>
+</body>
+</html>
