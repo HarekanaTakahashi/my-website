@@ -1,7 +1,7 @@
 'use strict';
 
-// Import puzzle presets and solutions
-import { puzzles, solutions } from './data/sudoku-presets.js';
+// Import puzzle generator
+import { generateSudoku } from './sudoku-generator.js';
 
 // Game state
 let currentPuzzle = [];
@@ -10,9 +10,19 @@ let board = [];
 let memos = []; // 9x9 array, each cell contains a Set of memo numbers
 let selectedCell = null;
 let inputMode = 'number'; // 'number' or 'memo'
+let lives = 3;
+let gameOver = false;
+let currentDifficulty = 'medium';
+let startTime = null; // Game start timestamp
+let timerInterval = null; // Timer interval ID
+let elapsedTime = 0; // Elapsed time in seconds
+
+// LocalStorage keys
+const BEST_TIMES_KEY = 'sudoku-best-times';
 
 // Initialize
 function init() {
+    loadBestTimes();
     newGame();
     setupEventListeners();
 }
@@ -45,6 +55,12 @@ function setupEventListeners() {
     // Control buttons
     document.getElementById('new-game').addEventListener('click', newGame);
     document.getElementById('clear').addEventListener('click', clearBoard);
+    
+    // Difficulty selector
+    document.getElementById('difficulty').addEventListener('change', (e) => {
+        currentDifficulty = e.target.value;
+        newGame();
+    });
 
     // Keyboard input
     document.addEventListener('keydown', (e) => {
@@ -77,9 +93,13 @@ function setInputMode(mode) {
 
 // Start a new game
 function newGame() {
-    const puzzleIndex = Math.floor(Math.random() * puzzles.length);
-    currentPuzzle = puzzles[puzzleIndex];
-    currentSolution = solutions[puzzleIndex];
+    // Stop existing timer
+    stopTimer();
+    
+    // Generate a new random puzzle
+    const generated = generateSudoku(currentDifficulty);
+    currentPuzzle = generated.puzzle;
+    currentSolution = generated.solution;
     
     // Copy puzzle to board
     board = currentPuzzle.map(row => [...row]);
@@ -95,13 +115,21 @@ function newGame() {
     
     selectedCell = null;
     inputMode = 'number';
+    lives = 3;
+    gameOver = false;
+    elapsedTime = 0;
     setInputMode('number');
     renderBoard();
+    updateLivesDisplay();
+    updateTimer();
+    startTimer();
     setStatus('新しいゲームを開始しました！', 'info');
 }
 
 // Clear user inputs
 function clearBoard() {
+    if (gameOver) return;
+    
     board = currentPuzzle.map(row => [...row]);
     
     // Clear memos
@@ -118,6 +146,8 @@ function clearBoard() {
 
 // Toggle memo number
 function toggleMemo(index, number) {
+    if (gameOver) return;
+    
     const row = Math.floor(index / 9);
     const col = index % 9;
     
@@ -225,6 +255,8 @@ function renderBoard() {
 
 // Place a number in the selected cell
 function placeNumber(index, number) {
+    if (gameOver) return;
+    
     const row = Math.floor(index / 9);
     const col = index % 9;
     
@@ -240,19 +272,46 @@ function placeNumber(index, number) {
         clearRelatedMemos(row, col, number);
     }
     
+    // Check if the number is wrong (doesn't match solution)
+    if (number !== 0 && number !== currentSolution[row][col]) {
+        lives--;
+        updateLivesDisplay();
+        
+        if (lives <= 0) {
+            gameOver = true;
+            stopTimer();
+            // Calculate final elapsed time for accuracy
+            if (startTime) {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            }
+            setStatus('💀 ゲームオーバー！ライフが0になりました', 'error');
+            return;
+        } else {
+            setStatus(`❌ 間違えました！残りライフ: ${lives}`, 'error');
+            // Don't place the wrong number on the board
+            renderBoard();
+            return;
+        }
+    }
+    
     board[row][col] = number;
     renderBoard();
     
     // Check for completion
     if (isBoardComplete()) {
         if (isBoardCorrect()) {
-            setStatus('🎉 おめでとうございます！完成です！', 'success');
-        } else {
-            setStatus('❌ まだ間違いがあります', 'error');
+            gameOver = true;
+            stopTimer();
+            // Calculate final elapsed time for accuracy
+            if (startTime) {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            }
+            const timeStr = formatTime(elapsedTime);
+            checkAndUpdateBestTime(currentDifficulty, elapsedTime);
+            setStatus(`🎉 おめでとうございます！完成です！タイム: ${timeStr}`, 'success');
         }
-    } else if (number !== 0 && hasError(row, col, number)) {
-        setStatus('⚠️ 重複があります！', 'error');
     } else {
+        // Clear status if no errors
         setStatus('', '');
     }
 }
@@ -318,6 +377,77 @@ function setStatus(message, type) {
     const statusElement = document.getElementById('status');
     statusElement.textContent = message;
     statusElement.className = 'status ' + type;
+}
+
+// Update lives display
+function updateLivesDisplay() {
+    const livesElement = document.getElementById('lives');
+    const hearts = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+    livesElement.textContent = hearts;
+}
+
+// Timer functions
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        updateTimer();
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateTimer() {
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = formatTime(elapsedTime);
+}
+
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+// Best times functions
+function loadBestTimes() {
+    try {
+        const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+        updateBestTimesDisplay(bestTimes);
+    } catch (error) {
+        console.error('Failed to load best times:', error);
+        updateBestTimesDisplay({});
+    }
+}
+
+function updateBestTimesDisplay(bestTimes) {
+    document.getElementById('best-easy').textContent = 
+        bestTimes.easy ? formatTime(bestTimes.easy) : '--:--';
+    document.getElementById('best-medium').textContent = 
+        bestTimes.medium ? formatTime(bestTimes.medium) : '--:--';
+    document.getElementById('best-hard').textContent = 
+        bestTimes.hard ? formatTime(bestTimes.hard) : '--:--';
+}
+
+function checkAndUpdateBestTime(difficulty, time) {
+    try {
+        const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+        
+        if (!bestTimes[difficulty] || time < bestTimes[difficulty]) {
+            bestTimes[difficulty] = time;
+            localStorage.setItem(BEST_TIMES_KEY, JSON.stringify(bestTimes));
+            updateBestTimesDisplay(bestTimes);
+            return true; // New best time
+        }
+        return false;
+    } catch (error) {
+        console.error('Failed to save best time:', error);
+        return false;
+    }
 }
 
 // Start the game
