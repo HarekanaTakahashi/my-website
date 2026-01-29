@@ -60,9 +60,13 @@ export class Board {
         }
         
         if (linesToClear.length > 0) {
-            // Remove cleared lines in reverse order to avoid index shifting issues
+            // Remove all cleared lines in reverse order
             for (let i = linesToClear.length - 1; i >= 0; i--) {
                 this.grid.splice(linesToClear[i], 1);
+            }
+            
+            // Add new empty lines at the top all at once
+            for (let i = 0; i < linesToClear.length; i++) {
                 this.grid.unshift(Array(GAME_CONFIG.BOARD_WIDTH).fill(0));
             }
         }
