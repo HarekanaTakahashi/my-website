@@ -27,20 +27,28 @@ export async function loadGames() {
         }
         
         const gameFiles = await indexResponse.json();
+        
+        // Validate that index.json contains an array
+        if (!Array.isArray(gameFiles)) {
+            throw new Error('Invalid game index format: expected an array');
+        }
+        
         const gamesDir = 'assets/data/games/';
         
         // Load all individual game files
         const loadPromises = gameFiles.map(async (filename) => {
             try {
-                const response = await fetch(gamesDir + filename);
+                const response = await fetch(`${gamesDir}${filename}`);
                 if (response.ok) {
                     const game = await response.json();
                     return game;
                 }
+                // Return null if response is not ok (404, 500, etc.)
+                return null;
             } catch (err) {
                 console.warn(`Failed to load game file ${filename}:`, err);
+                return null;
             }
-            return null;
         });
         
         const results = await Promise.all(loadPromises);

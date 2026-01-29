@@ -10,7 +10,7 @@
 ## 新しいゲームを追加する方法
 
 1. `games/<slug>/` ディレクトリにゲームファイルを作成
-2. このディレクトリに `<slug>.json` ファイルを作成：
+2. `assets/data/games/<slug>.json` ファイルを作成：
 
 ```json
 {
@@ -21,7 +21,7 @@
 }
 ```
 
-3. `index.json` にファイル名を追加：
+3. `assets/data/games/index.json` にファイル名を追加：
 
 ```json
 [
