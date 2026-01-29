@@ -13,9 +13,9 @@ let inputMode = 'number'; // 'number' or 'memo'
 let lives = 3;
 let gameOver = false;
 let currentDifficulty = 'medium';
-let startTime = null;
-let timerInterval = null;
-let elapsedTime = 0;
+let startTime = null; // Game start timestamp
+let timerInterval = null; // Timer interval ID
+let elapsedTime = 0; // Elapsed time in seconds
 
 // LocalStorage keys
 const BEST_TIMES_KEY = 'sudoku-best-times';
@@ -280,6 +280,10 @@ function placeNumber(index, number) {
         if (lives <= 0) {
             gameOver = true;
             stopTimer();
+            // Calculate final elapsed time for accuracy
+            if (startTime) {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            }
             setStatus('💀 ゲームオーバー！ライフが0になりました', 'error');
             return;
         } else {
@@ -298,6 +302,10 @@ function placeNumber(index, number) {
         if (isBoardCorrect()) {
             gameOver = true;
             stopTimer();
+            // Calculate final elapsed time for accuracy
+            if (startTime) {
+                elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            }
             const timeStr = formatTime(elapsedTime);
             checkAndUpdateBestTime(currentDifficulty, elapsedTime);
             setStatus(`🎉 おめでとうございます！完成です！タイム: ${timeStr}`, 'success');
@@ -407,8 +415,13 @@ function formatTime(seconds) {
 
 // Best times functions
 function loadBestTimes() {
-    const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
-    updateBestTimesDisplay(bestTimes);
+    try {
+        const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+        updateBestTimesDisplay(bestTimes);
+    } catch (error) {
+        console.error('Failed to load best times:', error);
+        updateBestTimesDisplay({});
+    }
 }
 
 function updateBestTimesDisplay(bestTimes) {
@@ -421,15 +434,20 @@ function updateBestTimesDisplay(bestTimes) {
 }
 
 function checkAndUpdateBestTime(difficulty, time) {
-    const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
-    
-    if (!bestTimes[difficulty] || time < bestTimes[difficulty]) {
-        bestTimes[difficulty] = time;
-        localStorage.setItem(BEST_TIMES_KEY, JSON.stringify(bestTimes));
-        updateBestTimesDisplay(bestTimes);
-        return true; // New best time
+    try {
+        const bestTimes = JSON.parse(localStorage.getItem(BEST_TIMES_KEY) || '{}');
+        
+        if (!bestTimes[difficulty] || time < bestTimes[difficulty]) {
+            bestTimes[difficulty] = time;
+            localStorage.setItem(BEST_TIMES_KEY, JSON.stringify(bestTimes));
+            updateBestTimesDisplay(bestTimes);
+            return true; // New best time
+        }
+        return false;
+    } catch (error) {
+        console.error('Failed to save best time:', error);
+        return false;
     }
-    return false;
 }
 
 // Start the game
