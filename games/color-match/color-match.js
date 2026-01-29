@@ -33,6 +33,7 @@ class ColorMatchGame {
         this.score = 0;
         this.bestScore = this.loadBestScore();
         this.gameOver = false;
+        this.gameStarted = false;
         this.isPaused = false;
         this.chainCount = 0;
         
@@ -50,7 +51,25 @@ class ColorMatchGame {
         this.setupUIEventListeners();
         this.updateDisplay();
         this.renderer.renderNextPiece(this.nextPieceElement, this.nextPiece);
+        this.showStartMessage();
         this.startGameLoop();
+    }
+    
+    startGame() {
+        this.gameStarted = true;
+        this.hideStartMessage();
+    }
+    
+    showStartMessage() {
+        this.chainDisplayElement.textContent = GAME_CONFIG.MESSAGES.START_GAME;
+        this.chainDisplayElement.style.color = '#667eea';
+        this.chainDisplayElement.style.fontSize = '20px';
+    }
+    
+    hideStartMessage() {
+        this.chainDisplayElement.textContent = '';
+        this.chainDisplayElement.style.color = '#ff6b6b';
+        this.chainDisplayElement.style.fontSize = '24px';
     }
     
     setupUIEventListeners() {
@@ -66,7 +85,7 @@ class ColorMatchGame {
     
     startGameLoop() {
         this.fallTimer = setInterval(() => {
-            if (!this.gameOver && !this.isPaused) {
+            if (!this.gameOver && !this.isPaused && this.gameStarted) {
                 this.updateGame();
             }
         }, GAME_CONFIG.FALL_INTERVAL);
@@ -150,7 +169,7 @@ class ColorMatchGame {
         this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
     }
     
-    lockPiece() {
+    async lockPiece() {
         if (!this.currentPiece) return;
         
         if (this.groundTimer) {
@@ -162,7 +181,38 @@ class ColorMatchGame {
         this.currentPiece = null;
         this.groundDelayCount = 0;
         
+        // Apply gravity to make balls fall if there's empty space below
+        this.isPaused = true;
+        await this.applyGravityAnimation();
+        this.isPaused = false;
+        
         this.processMatches();
+    }
+    
+    async applyGravityAnimation() {
+        let ballsFell = true;
+        
+        while (ballsFell) {
+            ballsFell = false;
+            
+            // Check each column from bottom to top
+            for (let col = 0; col < GAME_CONFIG.COLS; col++) {
+                for (let row = GAME_CONFIG.ROWS - 2; row >= 0; row--) {
+                    if (this.boardManager.getBoard()[row][col] !== GAME_CONFIG.EMPTY &&
+                        this.boardManager.getBoard()[row + 1][col] === GAME_CONFIG.EMPTY) {
+                        // Ball should fall
+                        this.boardManager.getBoard()[row + 1][col] = this.boardManager.getBoard()[row][col];
+                        this.boardManager.getBoard()[row][col] = GAME_CONFIG.EMPTY;
+                        ballsFell = true;
+                    }
+                }
+            }
+            
+            if (ballsFell) {
+                this.renderer.render(this.boardManager.getBoard(), null);
+                await this.sleep(GAME_CONFIG.GRAVITY_FALL_SPEED);
+            }
+        }
     }
     
     async processMatches() {
@@ -246,6 +296,7 @@ class ColorMatchGame {
         
         this.score = 0;
         this.gameOver = false;
+        this.gameStarted = false;
         this.isPaused = false;
         this.chainCount = 0;
         this.groundDelayCount = 0;
@@ -260,6 +311,7 @@ class ColorMatchGame {
         this.updateDisplay();
         this.renderer.renderNextPiece(this.nextPieceElement, this.nextPiece);
         this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
+        this.showStartMessage();
         this.startGameLoop();
     }
     

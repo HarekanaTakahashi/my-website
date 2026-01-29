@@ -21,7 +21,16 @@ export class InputHandler {
     }
     
     handleKeyDown(e) {
-        if (this.game.gameOver || this.game.isPaused) return;
+        // W key can start the game if not started
+        if (e.key === 'w' || e.key === 'W') {
+            e.preventDefault();
+            if (!this.game.gameStarted && !this.game.gameOver) {
+                this.game.startGame();
+                return;
+            }
+        }
+        
+        if (this.game.gameOver || this.game.isPaused || !this.game.gameStarted) return;
         
         this.keys[e.key] = true;
         const now = Date.now();

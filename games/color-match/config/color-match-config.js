@@ -41,7 +41,11 @@ export const GAME_CONFIG = {
         GAME_OVER_TITLE: 'ゲームオーバー',
         GAME_OVER_TEXT: 'もう一度挑戦しますか？',
         CONTROLS_INFO: 'AD: 移動 | ←→: 回転 | W: ハードドロップ | S: 早く落とす',
+        START_GAME: 'Wキーを押してスタート',
         CHAIN_PREFIX: '連鎖: ',
         COMBO: 'れんさ'
-    }
+    },
+    
+    // Gravity
+    GRAVITY_FALL_SPEED: 100 // Speed of ball falling (ms per row)
 };
