@@ -158,13 +158,13 @@ export const MESSAGES = {
 
 // Key bindings
 export const KEY_BINDINGS = {
-    MOVE_LEFT: ['ArrowLeft', 'a', 'A'],
-    MOVE_RIGHT: ['ArrowRight', 'd', 'D'],
-    SOFT_DROP: ['ArrowDown', 's', 'S'],
-    HARD_DROP: [' '],
-    ROTATE_CW: ['x', 'X', 'ArrowUp', 'w', 'W'],
-    ROTATE_CCW: ['z', 'Z', 'Control'],
-    HOLD: ['c', 'C', 'Shift'],
+    MOVE_LEFT: ['a', 'A'],
+    MOVE_RIGHT: ['d', 'D'],
+    SOFT_DROP: ['s', 'S'],
+    HARD_DROP: ['w', 'W'],
+    ROTATE_CW: ['ArrowRight'],
+    ROTATE_CCW: ['ArrowLeft'],
+    HOLD: [' '],
     PAUSE: ['Escape', 'p', 'P'],
     RESTART: ['r', 'R']
 };
