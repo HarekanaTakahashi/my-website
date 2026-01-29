@@ -318,14 +318,3 @@ body {
     padding: 40px;
     color: #666;
 }
-
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 240px;
-    }
-    
-    .game-grid {
-        grid-template-columns: 1fr;
-    }
-}

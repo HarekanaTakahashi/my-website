@@ -14,6 +14,7 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - 左側の **Side Bar**（App Barから開閉可能）
 - Home（Dashboard）と各ゲームをSide Barから起動
 - **ゲームの追加が容易**：`assets/data/games.json` に追加 + ゲームフォルダ配置のみ
+- **動作環境**：PCのみを対象。キーボードとマウスでの操作を前提とする
 
 ### 技術スタック
 - **HTML5** + **CSS3** + **Vanilla JavaScript**（ES Modules）
@@ -130,7 +131,6 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 
 ### CSS
 - BEM記法またはユーティリティクラス方式を検討
-- レスポンシブデザイン（モバイルファーストを推奨）
 - CSS変数を使用してテーマカラーを管理
 - 例：
   ```css
@@ -329,8 +329,8 @@ element.appendChild(textNode);
 
 ### 手動テスト項目
 - [ ] すべてのブラウザ（Chrome, Firefox, Safari, Edge）で動作確認
-- [ ] モバイル（iOS/Android）での動作確認
 - [ ] キーボードのみでの操作確認
+- [ ] マウスでの操作確認
 - [ ] スクリーンリーダー（NVDA, JAWS, VoiceOver）での確認
 
 ### 自動テスト（将来的）
