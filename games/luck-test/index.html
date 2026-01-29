@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運試しゲーム</title>
+    <link rel="stylesheet" href="luck-test.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1 id="game-title">運試しゲーム</h1>
+            <div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">連続正解</div>
+                    <div class="score-value" id="current-score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ベスト</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-info" id="game-info">
+            どちらかを選んでください
+        </div>
+        
+        <div class="game-area" id="game-area">
+            <div class="choices-container" id="choices-container">
+                <button class="choice-btn" id="left-btn" aria-label="左を選ぶ">
+                    <span class="choice-text">左</span>
+                </button>
+                <button class="choice-btn" id="right-btn" aria-label="右を選ぶ">
+                    <span class="choice-text">右</span>
+                </button>
+            </div>
+            
+            <div class="result-container" id="result-container">
+                <div class="result-message" id="result-message"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">
+                新しいゲーム
+            </button>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title">ゲームオーバー</h2>
+            <p id="message-text"></p>
+            <button id="try-again-btn">もう一度</button>
+        </div>
+    </div>
+
+    <script type="module" src="luck-test.js"></script>
+</body>
+</html>
