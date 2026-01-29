@@ -17,6 +17,7 @@ class ReactionTest {
         this.reactionTimes = [];
         this.startTime = 0;
         this.timeoutId = null;
+        this.tooEarlyTimeoutId = null;
 
         this.initElements();
         this.initEventListeners();
@@ -36,6 +37,12 @@ class ReactionTest {
 
     initEventListeners() {
         this.testArea.addEventListener('click', () => this.handleClick());
+        this.testArea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.handleClick();
+            }
+        });
         this.retryBtn.addEventListener('click', () => this.reset());
     }
 
@@ -48,7 +55,7 @@ class ReactionTest {
 
     saveBestTime(time) {
         const currentBest = localStorage.getItem('reaction-test-best');
-        if (!currentBest || time < parseInt(currentBest)) {
+        if (!currentBest || time < parseInt(currentBest, 10)) {
             localStorage.setItem('reaction-test-best', time.toString());
             this.bestTimeElement.textContent = `${time}ms`;
         }
@@ -110,7 +117,7 @@ class ReactionTest {
         this.gameInfo.textContent = '緑色になってからクリックしてください。';
 
         // 1.5秒後に現在のラウンドをリセット
-        setTimeout(() => {
+        this.tooEarlyTimeoutId = setTimeout(() => {
             this.currentRound--;
             this.reset();
         }, 1500);
@@ -126,7 +133,7 @@ class ReactionTest {
         if (this.currentRound < this.totalRounds) {
             // 次のラウンドへ
             this.testArea.className = 'test-area';
-            this.statusMessage.textContent = `${reactionTime}ms\nクリックして次へ`;
+            this.statusMessage.textContent = `${reactionTime}ms - クリックして次へ`;
             this.gameInfo.textContent = `良い反応です！ 次のテストに進んでください。`;
             this.state = GameState.IDLE;
         } else {
@@ -147,8 +154,8 @@ class ReactionTest {
         this.saveBestTime(average);
 
         // 結果を表示
-        this.testArea.style.display = 'none';
-        this.results.style.display = 'block';
+        this.testArea.classList.add('hidden');
+        this.results.classList.remove('hidden');
 
         // 各ラウンドの結果を表示
         this.resultList.innerHTML = this.reactionTimes
@@ -186,11 +193,16 @@ class ReactionTest {
             clearTimeout(this.timeoutId);
             this.timeoutId = null;
         }
+        
+        if (this.tooEarlyTimeoutId) {
+            clearTimeout(this.tooEarlyTimeoutId);
+            this.tooEarlyTimeoutId = null;
+        }
 
-        this.testArea.style.display = 'flex';
+        this.testArea.classList.remove('hidden');
         this.testArea.className = 'test-area';
         this.statusMessage.textContent = 'クリックしてスタート';
-        this.results.style.display = 'none';
+        this.results.classList.add('hidden');
         this.gameInfo.textContent = '緑色が表示されたら、できるだけ速くクリックしてください。';
     }
 }

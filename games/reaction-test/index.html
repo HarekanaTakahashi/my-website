@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>反射神経テスト</title>
     <link rel="stylesheet" href="reaction-test.css">
 </head>
@@ -23,13 +24,13 @@
             緑色が表示されたら、できるだけ速くクリックしてください。
         </div>
         
-        <div class="test-area" id="test-area">
-            <div class="status-message" id="status-message">
+        <div class="test-area" id="test-area" role="button" tabindex="0" aria-label="反射神経テストエリア">
+            <div class="status-message" id="status-message" aria-live="polite">
                 クリックしてスタート
             </div>
         </div>
         
-        <div class="results" id="results" style="display: none;">
+        <div class="results hidden" id="results">
             <h2>結果</h2>
             <div class="result-list" id="result-list"></div>
             <div class="average-time">

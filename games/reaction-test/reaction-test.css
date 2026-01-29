@@ -198,3 +198,7 @@ body {
     outline: 2px solid #8f7a66;
     outline-offset: 2px;
 }
+
+.hidden {
+    display: none !important;
+}
