@@ -129,7 +129,7 @@ class LuckTestGame {
     }
     
     showResult(isCorrect) {
-        this.resultContainer.classList.remove('fade-out');
+        this.resultContainer.classList.remove('fade-out', 'fade-in');
         this.resultContainer.classList.add('show', 'fade-in');
         this.resultMessage.textContent = isCorrect ? 
             GAME_CONFIG.MESSAGES.CORRECT : 
@@ -140,12 +140,21 @@ class LuckTestGame {
     showGameOver() {
         this.messageTitleElement.textContent = GAME_CONFIG.MESSAGES.GAME_OVER;
         
-        let message = `連続正解数: ${this.score}回`;
+        // Clear previous content
+        this.messageTextElement.innerHTML = '';
+        
+        // Create message text
+        const scoreText = document.createTextNode(`連続正解数: ${this.score}回`);
+        this.messageTextElement.appendChild(scoreText);
+        
+        // Add new record message if applicable
         if (this.score === this.bestScore && this.score > 0) {
-            message += '\n🎉 新記録達成！';
+            const br = document.createElement('br');
+            const recordText = document.createTextNode('🎉 新記録達成！');
+            this.messageTextElement.appendChild(br);
+            this.messageTextElement.appendChild(recordText);
         }
         
-        this.messageTextElement.textContent = message;
         this.gameMessageElement.classList.add('show');
     }
     
