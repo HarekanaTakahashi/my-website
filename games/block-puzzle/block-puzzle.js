@@ -3,6 +3,7 @@
 // Game constants
 const BOARD_SIZE = 10;
 const STORAGE_KEY = 'blockPuzzleBestScore';
+const LINE_CLEAR_MULTIPLIER = 2; // Points per cell when clearing lines
 
 // Block shapes (no rotation, just different shapes)
 const BLOCK_SHAPES = [
@@ -41,6 +42,16 @@ const BLOCK_SHAPES = [
     [[1, 0, 1], [1, 1, 1], [1, 0, 1]],
 ];
 
+/**
+ * BlockPuzzle game class
+ * Manages a 10x10 block puzzle game where players place various shaped blocks
+ * to complete and clear rows and columns. Features include:
+ * - 18+ different block shapes (no rotation)
+ * - Visual placement feedback
+ * - Line clearing for complete rows/columns
+ * - Score tracking with localStorage persistence
+ * - Game over detection
+ */
 class BlockPuzzle {
     constructor() {
         this.board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(0));
@@ -75,6 +86,16 @@ class BlockPuzzle {
         this.boardElement.addEventListener('mousemove', (e) => this.handleBoardHover(e));
         this.boardElement.addEventListener('mouseleave', () => this.clearHighlight());
         this.boardElement.addEventListener('click', (e) => this.handleBoardClick(e));
+        
+        // Pieces container - use event delegation to avoid duplicate listeners
+        this.piecesElement.addEventListener('click', (e) => {
+            const pieceElement = e.target.closest('.piece');
+            if (pieceElement && !pieceElement.classList.contains('used')) {
+                const index = parseInt(pieceElement.dataset.index);
+                this.selectedPiece = index;
+                this.renderPieces();
+            }
+        });
         
         // Keyboard support
         document.addEventListener('keydown', (e) => {
@@ -122,9 +143,15 @@ class BlockPuzzle {
             const pieceElement = document.createElement('div');
             pieceElement.className = 'piece';
             pieceElement.dataset.index = index;
+            pieceElement.setAttribute('tabindex', '0');
+            pieceElement.setAttribute('role', 'button');
+            pieceElement.setAttribute('aria-label', `ブロック ${index + 1} を選択`);
             
             if (this.selectedPiece === index) {
                 pieceElement.classList.add('selected');
+                pieceElement.setAttribute('aria-pressed', 'true');
+            } else {
+                pieceElement.setAttribute('aria-pressed', 'false');
             }
             
             const shape = piece.shape;
@@ -142,9 +169,13 @@ class BlockPuzzle {
                 }
             }
             
-            pieceElement.addEventListener('click', () => {
-                this.selectedPiece = index;
-                this.renderPieces();
+            // Keyboard support for piece selection
+            pieceElement.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.selectedPiece = index;
+                    this.renderPieces();
+                }
             });
             
             this.piecesElement.appendChild(pieceElement);
@@ -303,7 +334,7 @@ class BlockPuzzle {
         
         const linesCleared = rowsToClear.length + colsToClear.length;
         if (linesCleared > 0) {
-            this.addScore(linesCleared * BOARD_SIZE * 2);
+            this.addScore(linesCleared * BOARD_SIZE * LINE_CLEAR_MULTIPLIER);
         }
     }
     
@@ -355,6 +386,11 @@ class BlockPuzzle {
 }
 
 // Initialize game when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new BlockPuzzle();
+    });
+} else {
+    // DOM is already loaded
     new BlockPuzzle();
-});
+}

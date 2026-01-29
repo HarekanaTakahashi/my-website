@@ -183,6 +183,11 @@ h1 {
     pointer-events: none;
 }
 
+.piece:focus {
+    outline: 2px solid #8e44ad;
+    outline-offset: 2px;
+}
+
 .piece-cell {
     width: 25px;
     height: 25px;
