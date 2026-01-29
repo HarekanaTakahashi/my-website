@@ -40,7 +40,7 @@ export const GAME_CONFIG = {
     MESSAGES: {
         GAME_OVER_TITLE: 'ゲームオーバー',
         GAME_OVER_TEXT: 'もう一度挑戦しますか？',
-        CONTROLS_INFO: '矢印キー: 移動 | ↑: 回転 | スペース: 即時落下 | ↓: 加速落下',
+        CONTROLS_INFO: 'AD: 移動 | ←→: 回転 | W: ハードドロップ | S: 早く落とす',
         CHAIN_PREFIX: '連鎖: ',
         COMBO: 'れんさ'
     }
