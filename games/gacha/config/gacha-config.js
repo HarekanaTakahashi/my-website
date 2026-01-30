@@ -6,34 +6,44 @@
 
 // デフォルトのガチャアイテム（★1～★5）
 export const DEFAULT_ITEMS = [
-    // ★5 (SSR) - 超レア (3.0%)
-    { name: '伝説の剣', rarity: 5, probability: 1.0 },
-    { name: '神獣の翼', rarity: 5, probability: 1.0 },
-    { name: '聖なる盾', rarity: 5, probability: 1.0 },
+    // ★5 (SSR) - 超レア
+    { name: '伝説の剣', rarity: 5 },
+    { name: '神獣の翼', rarity: 5 },
+    { name: '聖なる盾', rarity: 5 },
     
-    // ★4 (SR) - レア (12.0%)
-    { name: '魔法の杖', rarity: 4, probability: 3.0 },
-    { name: '竜の鱗', rarity: 4, probability: 3.0 },
-    { name: '騎士の鎧', rarity: 4, probability: 3.0 },
-    { name: '精霊の指輪', rarity: 4, probability: 3.0 },
+    // ★4 (SR) - レア
+    { name: '魔法の杖', rarity: 4 },
+    { name: '竜の鱗', rarity: 4 },
+    { name: '騎士の鎧', rarity: 4 },
+    { name: '精霊の指輪', rarity: 4 },
     
-    // ★3 (R) - アンコモン (25.0%)
-    { name: '鋼の剣', rarity: 3, probability: 8.5 },
-    { name: '弓矢セット', rarity: 3, probability: 8.0 },
-    { name: '魔導書', rarity: 3, probability: 8.5 },
+    // ★3 (R) - アンコモン
+    { name: '鋼の剣', rarity: 3 },
+    { name: '弓矢セット', rarity: 3 },
+    { name: '魔導書', rarity: 3 },
     
-    // ★2 (UC) - コモン (30.0%)
-    { name: '木の盾', rarity: 2, probability: 15.0 },
-    { name: '皮の鎧', rarity: 2, probability: 15.0 },
+    // ★2 (UC) - コモン
+    { name: '木の盾', rarity: 2 },
+    { name: '皮の鎧', rarity: 2 },
     
-    // ★1 (C) - 最もコモン (30.0%)
-    { name: '普通の剣', rarity: 1, probability: 15.0 },
-    { name: '普通の盾', rarity: 1, probability: 15.0 }
+    // ★1 (C) - 最もコモン
+    { name: '普通の剣', rarity: 1 },
+    { name: '普通の盾', rarity: 1 }
 ];
+
+// デフォルトのレアリティごとの確率設定
+export const DEFAULT_RARITY_PROBABILITIES = {
+    5: 3.0,   // ★5 超レア: 3%
+    4: 12.0,  // ★4 スーパーレア: 12%
+    3: 25.0,  // ★3 レア: 25%
+    2: 30.0,  // ★2 アンコモン: 30%
+    1: 30.0   // ★1 コモン: 30%
+};
 
 export const GAME_CONFIG = {
     // LocalStorage キー
     STORAGE_KEY_ITEMS: 'gachaSimulatorItems',
+    STORAGE_KEY_RARITY_PROBS: 'gachaSimulatorRarityProbs',
     STORAGE_KEY_SETTINGS: 'gachaSimulatorSettings',
     STORAGE_KEY_HISTORY: 'gachaSimulatorHistory',
     

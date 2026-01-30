@@ -1,12 +1,13 @@
 'use strict';
 
-import { DEFAULT_ITEMS, GAME_CONFIG } from './config/gacha-config.js';
+import { DEFAULT_ITEMS, DEFAULT_RARITY_PROBABILITIES, GAME_CONFIG } from './config/gacha-config.js';
 
 class GachaSimulator {
     constructor() {
         this.currency = GAME_CONFIG.GACHA.INITIAL_CURRENCY;
         this.totalCount = 0;
         this.items = this.loadItems();
+        this.rarityProbabilities = this.loadRarityProbabilities();
         this.settings = this.loadSettings();
         this.history = this.loadHistory();
         
@@ -30,6 +31,7 @@ class GachaSimulator {
         this.closeSettingsBtn = document.getElementById('close-settings-btn');
         this.animationToggle = document.getElementById('animation-toggle');
         this.probabilityToggle = document.getElementById('probability-toggle');
+        this.rarityProbsEditor = document.getElementById('rarity-probs-editor');
         this.itemsEditor = document.getElementById('items-editor');
         this.addItemBtn = document.getElementById('add-item-btn');
         this.saveSettingsBtn = document.getElementById('save-settings-btn');
@@ -93,6 +95,15 @@ class GachaSimulator {
         localStorage.setItem(GAME_CONFIG.STORAGE_KEY_ITEMS, JSON.stringify(this.items));
     }
     
+    loadRarityProbabilities() {
+        const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY_RARITY_PROBS);
+        return saved ? JSON.parse(saved) : { ...DEFAULT_RARITY_PROBABILITIES };
+    }
+    
+    saveRarityProbabilities() {
+        localStorage.setItem(GAME_CONFIG.STORAGE_KEY_RARITY_PROBS, JSON.stringify(this.rarityProbabilities));
+    }
+    
     loadSettings() {
         const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY_SETTINGS);
         return saved ? JSON.parse(saved) : { ...GAME_CONFIG.DEFAULT_SETTINGS };
@@ -134,22 +145,39 @@ class GachaSimulator {
     }
     
     drawItem() {
-        // Calculate total probability
-        const totalProb = this.items.reduce((sum, item) => sum + item.probability, 0);
+        // Group items by rarity
+        const itemsByRarity = {};
+        this.items.forEach(item => {
+            if (!itemsByRarity[item.rarity]) {
+                itemsByRarity[item.rarity] = [];
+            }
+            itemsByRarity[item.rarity].push(item);
+        });
         
-        // Generate random number
+        // Calculate total probability from rarity groups
+        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
+        
+        // Generate random number to select rarity
         let random = Math.random() * totalProb;
+        let selectedRarity = null;
         
-        // Select item based on probability
-        for (const item of this.items) {
-            random -= item.probability;
+        for (const [rarity, prob] of Object.entries(this.rarityProbabilities)) {
+            random -= prob;
             if (random <= 0) {
-                return { ...item };
+                selectedRarity = parseInt(rarity);
+                break;
             }
         }
         
-        // Fallback to first item
-        return { ...this.items[0] };
+        // If no rarity selected (shouldn't happen), default to first available
+        if (!selectedRarity || !itemsByRarity[selectedRarity] || itemsByRarity[selectedRarity].length === 0) {
+            selectedRarity = parseInt(Object.keys(itemsByRarity)[0]);
+        }
+        
+        // Randomly select an item from the selected rarity group (equal probability)
+        const itemsInRarity = itemsByRarity[selectedRarity];
+        const randomIndex = Math.floor(Math.random() * itemsInRarity.length);
+        return { ...itemsInRarity[randomIndex] };
     }
     
     displayResults(results) {
@@ -219,19 +247,25 @@ class GachaSimulator {
             return;
         }
         
-        // Group items by rarity
-        const rarityGroups = {};
-        this.items.forEach(item => {
-            if (!rarityGroups[item.rarity]) {
-                rarityGroups[item.rarity] = 0;
-            }
-            rarityGroups[item.rarity] += item.probability;
-        });
-        
-        // Display grouped probabilities
+        // Display rarity group probabilities
         this.probabilityTable.innerHTML = '';
+        
+        // Calculate total probability
+        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
+        
+        // Add total probability display
+        const totalDiv = document.createElement('div');
+        totalDiv.style.padding = '10px';
+        totalDiv.style.borderBottom = '2px solid #667eea';
+        totalDiv.style.marginBottom = '10px';
+        totalDiv.style.fontWeight = 'bold';
+        totalDiv.style.textAlign = 'center';
+        totalDiv.style.color = totalProb === 100 ? '#4caf50' : '#ff9800';
+        totalDiv.textContent = `合計: ${totalProb.toFixed(1)}%`;
+        this.probabilityTable.appendChild(totalDiv);
+        
         [5, 4, 3, 2, 1].forEach(rarity => {
-            if (rarityGroups[rarity]) {
+            if (this.rarityProbabilities[rarity] !== undefined) {
                 const probItem = document.createElement('div');
                 probItem.className = 'prob-item';
                 
@@ -251,7 +285,7 @@ class GachaSimulator {
                 
                 const percentage = document.createElement('div');
                 percentage.className = 'prob-percentage';
-                percentage.textContent = `${rarityGroups[rarity].toFixed(1)}%`;
+                percentage.textContent = `${this.rarityProbabilities[rarity].toFixed(1)}%`;
                 
                 probItem.appendChild(rarityDiv);
                 probItem.appendChild(percentage);
@@ -275,11 +309,108 @@ class GachaSimulator {
         this.settingsModal.classList.add('show');
         this.animationToggle.checked = this.settings.animationEnabled;
         this.probabilityToggle.checked = this.settings.showProbability;
+        this.renderRarityProbsEditor();
         this.renderItemsEditor();
     }
     
     closeSettingsModal() {
         this.settingsModal.classList.remove('show');
+    }
+    
+    renderRarityProbsEditor() {
+        this.rarityProbsEditor.innerHTML = '';
+        
+        // Calculate and display total
+        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
+        const totalDiv = document.createElement('div');
+        totalDiv.style.padding = '10px';
+        totalDiv.style.marginBottom = '10px';
+        totalDiv.style.background = '#f5f7fa';
+        totalDiv.style.borderRadius = '6px';
+        totalDiv.style.fontWeight = 'bold';
+        totalDiv.style.textAlign = 'center';
+        totalDiv.style.color = totalProb === 100 ? '#4caf50' : '#ff9800';
+        totalDiv.id = 'total-prob-display';
+        totalDiv.textContent = `確率合計: ${totalProb.toFixed(1)}%`;
+        this.rarityProbsEditor.appendChild(totalDiv);
+        
+        // Render rarity probability inputs
+        [5, 4, 3, 2, 1].forEach(rarity => {
+            const row = document.createElement('div');
+            row.className = 'rarity-prob-row';
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.gap = '10px';
+            row.style.padding = '10px';
+            row.style.background = 'white';
+            row.style.borderRadius = '6px';
+            row.style.marginBottom = '8px';
+            
+            const label = document.createElement('label');
+            label.style.flex = '1';
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
+            label.style.gap = '8px';
+            label.style.fontWeight = 'bold';
+            
+            const stars = document.createElement('span');
+            stars.textContent = GAME_CONFIG.RARITY[rarity].stars;
+            stars.style.color = GAME_CONFIG.RARITY[rarity].color;
+            
+            const rarityName = document.createElement('span');
+            rarityName.textContent = GAME_CONFIG.RARITY[rarity].name;
+            
+            // Count items in this rarity
+            const itemCount = this.items.filter(item => item.rarity === rarity).length;
+            const countSpan = document.createElement('span');
+            countSpan.style.fontSize = '0.85rem';
+            countSpan.style.color = '#666';
+            countSpan.textContent = `(${itemCount}個)`;
+            
+            label.appendChild(stars);
+            label.appendChild(rarityName);
+            label.appendChild(countSpan);
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = this.rarityProbabilities[rarity] || 0;
+            input.step = '0.1';
+            input.min = '0';
+            input.max = '100';
+            input.style.width = '100px';
+            input.style.padding = '8px';
+            input.style.border = '1px solid #ddd';
+            input.style.borderRadius = '4px';
+            input.dataset.rarity = rarity;
+            
+            // Add event listener to update total in real-time
+            input.addEventListener('input', () => this.updateTotalProbDisplay());
+            
+            const unit = document.createElement('span');
+            unit.textContent = '%';
+            unit.style.fontWeight = 'bold';
+            
+            row.appendChild(label);
+            row.appendChild(input);
+            row.appendChild(unit);
+            
+            this.rarityProbsEditor.appendChild(row);
+        });
+    }
+    
+    updateTotalProbDisplay() {
+        const inputs = this.rarityProbsEditor.querySelectorAll('input[data-rarity]');
+        let total = 0;
+        inputs.forEach(input => {
+            const value = parseFloat(input.value) || 0;
+            total += value;
+        });
+        
+        const totalDiv = document.getElementById('total-prob-display');
+        if (totalDiv) {
+            totalDiv.textContent = `確率合計: ${total.toFixed(1)}%`;
+            totalDiv.style.color = total === 100 ? '#4caf50' : '#ff9800';
+        }
     }
     
     renderItemsEditor() {
@@ -307,15 +438,6 @@ class GachaSimulator {
                 raritySelect.appendChild(option);
             }
             
-            const probInput = document.createElement('input');
-            probInput.type = 'number';
-            probInput.value = item.probability;
-            probInput.placeholder = '確率(%)';
-            probInput.step = '0.1';
-            probInput.min = '0';
-            probInput.dataset.index = index;
-            probInput.dataset.field = 'probability';
-            
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-item-btn';
             deleteBtn.textContent = '削除';
@@ -324,7 +446,6 @@ class GachaSimulator {
             
             row.appendChild(nameInput);
             row.appendChild(raritySelect);
-            row.appendChild(probInput);
             row.appendChild(deleteBtn);
             
             this.itemsEditor.appendChild(row);
@@ -334,8 +455,7 @@ class GachaSimulator {
     addItemRow() {
         this.items.push({
             name: '新しいアイテム',
-            rarity: 3,
-            probability: 5.0
+            rarity: 3
         });
         this.renderItemsEditor();
     }
@@ -354,6 +474,18 @@ class GachaSimulator {
         this.settings.animationEnabled = this.animationToggle.checked;
         this.settings.showProbability = this.probabilityToggle.checked;
         
+        // Update rarity probabilities
+        const rarityInputs = this.rarityProbsEditor.querySelectorAll('input[data-rarity]');
+        rarityInputs.forEach(input => {
+            const rarity = parseInt(input.dataset.rarity);
+            const value = parseFloat(input.value);
+            if (isNaN(value) || value < 0) {
+                alert('確率は0以上の数値を入力してください');
+                throw new Error('Invalid probability value');
+            }
+            this.rarityProbabilities[rarity] = value;
+        });
+        
         // Update items from editor
         const inputs = this.itemsEditor.querySelectorAll('input, select');
         inputs.forEach(input => {
@@ -369,25 +501,11 @@ class GachaSimulator {
                 this.items[index].name = value;
             } else if (field === 'rarity') {
                 this.items[index].rarity = parseInt(input.value);
-            } else if (field === 'probability') {
-                const value = parseFloat(input.value);
-                if (isNaN(value) || value < 0) {
-                    alert('確率は0以上の数値を入力してください');
-                    throw new Error('Invalid probability value');
-                }
-                this.items[index].probability = value;
             }
         });
         
-        // Validate total probability
-        const totalProb = this.items.reduce((sum, item) => sum + item.probability, 0);
-        if (Math.abs(totalProb - 100) > GAME_CONFIG.VALIDATION.PROBABILITY_TOLERANCE) {
-            if (!confirm(`確率の合計が${totalProb.toFixed(1)}%です。このまま保存しますか？`)) {
-                return;
-            }
-        }
-        
         this.saveItems();
+        this.saveRarityProbabilities();
         this.saveSettingsToStorage();
         this.updateDisplay();
         this.closeSettingsModal();
@@ -400,9 +518,12 @@ class GachaSimulator {
         }
         
         this.items = [...DEFAULT_ITEMS];
+        this.rarityProbabilities = { ...DEFAULT_RARITY_PROBABILITIES };
         this.settings = { ...GAME_CONFIG.DEFAULT_SETTINGS };
         this.saveItems();
+        this.saveRarityProbabilities();
         this.saveSettingsToStorage();
+        this.renderRarityProbsEditor();
         this.renderItemsEditor();
         this.animationToggle.checked = this.settings.animationEnabled;
         this.probabilityToggle.checked = this.settings.showProbability;
