@@ -51,26 +51,26 @@ export class InputHandler {
                 this.lastMoveTime = now;
             }
         }
-        // Left arrow - Rotate counter-clockwise
+        // Left arrow - Rotate clockwise (reversed)
         else if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            if (now - this.lastRotateTime > GAME_CONFIG.ROTATE_DELAY) {
-                this.game.rotatePiece(false); // Counter-clockwise
-                this.lastRotateTime = now;
-            }
-        }
-        // Right arrow - Rotate clockwise
-        else if (e.key === 'ArrowRight') {
             e.preventDefault();
             if (now - this.lastRotateTime > GAME_CONFIG.ROTATE_DELAY) {
                 this.game.rotatePiece(true); // Clockwise
                 this.lastRotateTime = now;
             }
         }
-        // W key - Hard drop (instant drop)
+        // Right arrow - Rotate counter-clockwise (reversed)
+        else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (now - this.lastRotateTime > GAME_CONFIG.ROTATE_DELAY) {
+                this.game.rotatePiece(false); // Counter-clockwise
+                this.lastRotateTime = now;
+            }
+        }
+        // W key - Hard drop (animated drop at gravity speed)
         else if (e.key === 'w' || e.key === 'W') {
             e.preventDefault();
-            this.game.instantDrop();
+            this.game.hardDrop();
         }
     }
     

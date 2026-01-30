@@ -47,5 +47,5 @@ export const GAME_CONFIG = {
     },
     
     // Gravity
-    GRAVITY_FALL_SPEED: 100 // Speed of ball falling (ms per row)
+    GRAVITY_FALL_SPEED: 150 // Speed of ball falling (ms per row)
 };

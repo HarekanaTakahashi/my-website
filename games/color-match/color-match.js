@@ -158,15 +158,20 @@ class ColorMatchGame {
         this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
     }
     
-    instantDrop() {
+    async hardDrop() {
         if (!this.currentPiece || !this.currentPiece.isFalling) return;
+        
+        // Drop piece with animation at gravity speed
+        this.isPaused = true;
         
         while (this.pieceManager.canMovePiece(this.boardManager.getBoard(), this.currentPiece, 0, 1)) {
             this.currentPiece.row++;
+            this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
+            await this.sleep(GAME_CONFIG.GRAVITY_FALL_SPEED);
         }
         
+        this.isPaused = false;
         this.lockPiece();
-        this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
     }
     
     async lockPiece() {
