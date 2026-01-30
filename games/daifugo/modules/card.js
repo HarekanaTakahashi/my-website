@@ -42,10 +42,13 @@ export class Card {
     
     /**
      * Check if this card is a forbidden finish card
+     * Forbidden cards: Joker, 8 (8-giri), and the strongest regular card
+     * (2 in normal mode, 3 in revolution mode when ranks are reversed)
      */
     isForbiddenFinish(isRevolution) {
         if (this.isJoker) return true;
         if (this.rank === GAME_CONFIG.EIGHT_CUT_RANK) return true;
+        // In revolution, 3 becomes the strongest regular card (like 2 normally)
         if (isRevolution) {
             return this.rank === '3';
         }

@@ -343,6 +343,7 @@ export class GameController {
     
     /**
      * Check for miyako-ochi (都落ち)
+     * Previous Daifugo must finish first or becomes Daihinmin
      */
     checkMiyakoOchi() {
         // If someone finished before the previous daifugo
@@ -355,8 +356,10 @@ export class GameController {
                 // Miyako-ochi! Previous daifugo becomes daihinmin
                 this.message = `${previousDaifugo.name}: ${GAME_CONFIG.MESSAGES.MIYAKO_OCHI}`;
                 previousDaifugo.isOut = true;
-                previousDaifugo.finishOrder = GAME_CONFIG.PLAYER_COUNT - 1;
+                // Use high value to ensure penalty players are ranked last
+                previousDaifugo.finishOrder = 100;
                 previousDaifugo.hand = [];
+                this.finishCount++;
                 this.onUpdate();
                 return true;
             }
@@ -365,21 +368,25 @@ export class GameController {
     }
     
     /**
-     * Handle forbidden finish
+     * Handle forbidden finish (反則上がり)
+     * Finishing with 2/8/Joker (or 3 in revolution) is a foul
      */
     handleForbiddenFinish(player) {
         this.message = `${player.name}: ${GAME_CONFIG.MESSAGES.FORBIDDEN_FINISH}`;
         player.isOut = true;
-        player.finishOrder = GAME_CONFIG.PLAYER_COUNT - 1;
+        // Use high value to ensure penalty players are ranked last
+        player.finishOrder = 101;
         player.hand = [];
         this.selectedCards = [];
         this.fieldCards = [];
         this.passCount = 0;
+        this.finishCount++;
         
         this.onUpdate();
         
-        // Check if game should end
-        if (this.finishCount + 1 >= GAME_CONFIG.PLAYER_COUNT - 1) {
+        // Check if game should end (only 1 player left)
+        const activePlayers = this.players.filter(p => !p.isOut).length;
+        if (activePlayers <= 1) {
             setTimeout(() => this.endRound(), GAME_CONFIG.DELAYS.ROUND_END);
             return;
         }

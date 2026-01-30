@@ -23,29 +23,29 @@
         <div class="game-container">
             <!-- Opponent areas (CPU) -->
             <div class="opponents-area">
-                <div class="opponent" id="opponent-1">
+                <div class="opponent" id="opponent-1" aria-label="CPU 1のエリア">
                     <div class="opponent-name">CPU 1</div>
-                    <div class="opponent-cards" id="opponent-1-cards"></div>
-                    <div class="opponent-status" id="opponent-1-status"></div>
+                    <div class="opponent-cards" id="opponent-1-cards" aria-label="CPU 1の手札"></div>
+                    <div class="opponent-status" id="opponent-1-status" role="status" aria-live="polite"></div>
                 </div>
-                <div class="opponent" id="opponent-2">
+                <div class="opponent" id="opponent-2" aria-label="CPU 2のエリア">
                     <div class="opponent-name">CPU 2</div>
-                    <div class="opponent-cards" id="opponent-2-cards"></div>
-                    <div class="opponent-status" id="opponent-2-status"></div>
+                    <div class="opponent-cards" id="opponent-2-cards" aria-label="CPU 2の手札"></div>
+                    <div class="opponent-status" id="opponent-2-status" role="status" aria-live="polite"></div>
                 </div>
-                <div class="opponent" id="opponent-3">
+                <div class="opponent" id="opponent-3" aria-label="CPU 3のエリア">
                     <div class="opponent-name">CPU 3</div>
-                    <div class="opponent-cards" id="opponent-3-cards"></div>
-                    <div class="opponent-status" id="opponent-3-status"></div>
+                    <div class="opponent-cards" id="opponent-3-cards" aria-label="CPU 3の手札"></div>
+                    <div class="opponent-status" id="opponent-3-status" role="status" aria-live="polite"></div>
                 </div>
             </div>
             
             <!-- Field (center) -->
             <div class="field-area">
-                <div class="field" id="field">
+                <div class="field" id="field" aria-label="カード場" role="region">
                     <div class="field-placeholder">場にカードがありません</div>
                 </div>
-                <div class="message-area" id="message-area"></div>
+                <div class="message-area" id="message-area" role="status" aria-live="polite"></div>
             </div>
             
             <!-- Player hand (bottom) -->
@@ -91,7 +91,7 @@
         </div>
     </div>
 
-    <div class="game-message" id="game-message">
+    <div class="game-message" id="game-message" role="dialog" aria-modal="true" aria-labelledby="message-title">
         <div class="message-content">
             <h2 id="message-title"></h2>
             <p id="message-text"></p>

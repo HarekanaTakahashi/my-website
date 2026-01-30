@@ -135,10 +135,10 @@ class DaifugoUI {
             const opponent = this.elements.opponents[i];
             
             // Update cards (show card backs)
+            // Display all cards - no artificial limit
             opponent.cards.innerHTML = '';
             if (!player.isOut) {
-                const cardCount = Math.min(player.hand.length, 13);
-                for (let j = 0; j < cardCount; j++) {
+                for (let j = 0; j < player.hand.length; j++) {
                     const cardBack = document.createElement('div');
                     cardBack.className = 'card-back';
                     opponent.cards.appendChild(cardBack);
