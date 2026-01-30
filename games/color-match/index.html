@@ -2,13 +2,13 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ブロックパズル</title>
-    <link rel="stylesheet" href="block-puzzle.css">
+    <title>カラーマッチパズル</title>
+    <link rel="stylesheet" href="color-match.css">
 </head>
 <body>
     <div class="game-wrapper">
         <div class="side-panel left-panel">
-            <h1>ブロック<br>パズル</h1>
+            <h1>カラー<br>マッチ</h1>
             <div class="scores-container">
                 <div class="score-box">
                     <div class="score-label">スコア</div>
@@ -20,16 +20,24 @@
                 </div>
             </div>
             <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
+            <div class="chain-display" id="chain-display"></div>
         </div>
         
         <div class="game-container">
-            <div class="board" id="board"></div>
+            <canvas id="game-canvas" width="300" height="600"></canvas>
         </div>
         
         <div class="side-panel right-panel">
-            <h3>次のブロック</h3>
-            <div class="pieces" id="pieces"></div>
-            <p class="game-tip">ブロックをボードに配置して、縦横の列を完成させよう！</p>
+            <h3>次のピース</h3>
+            <div class="next-piece" id="next-piece"></div>
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="key-item"><span class="key">A/D</span> 左右移動</div>
+                <div class="key-item"><span class="key">←→</span> 回転</div>
+                <div class="key-item"><span class="key">W</span> ハードドロップ</div>
+                <div class="key-item"><span class="key">S</span> 早く落とす</div>
+            </div>
+            <p class="game-tip">同じ色を4つ以上繋げて消そう！</p>
         </div>
     </div>
 
@@ -37,10 +45,10 @@
         <div class="message-content">
             <h2 id="message-title"></h2>
             <p id="message-text"></p>
-            <button id="try-again-btn" aria-label="もう一度プレイする">もう一度</button>
+            <button id="try-again-btn">もう一度</button>
         </div>
     </div>
 
-    <script type="module" src="block-puzzle.js"></script>
+    <script type="module" src="color-match.js"></script>
 </body>
 </html>

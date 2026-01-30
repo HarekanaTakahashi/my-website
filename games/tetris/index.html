@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Tetris</title>
+    <link rel="stylesheet" href="tetris.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>Tetris</h1>
+            <div class="scores-container">
+                <div class="score-box">
+                    <div class="score-label">スコア</div>
+                    <div class="score-value" id="current-score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ライン</div>
+                    <div class="score-value" id="lines">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">ベスト</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn" id="start-btn" aria-label="スタート">スタート</button>
+                <button class="btn" id="pause-btn" aria-label="一時停止" disabled>一時停止</button>
+                <button class="btn" id="restart-btn" aria-label="リスタート">リスタート</button>
+            </div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Lv:</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+            </div>
+            <h3>ホールド</h3>
+            <canvas id="hold-canvas" width="100" height="100"></canvas>
+        </div>
+        
+        <div class="game-container">
+            <div class="main-board">
+                <canvas id="game-canvas" width="250" height="500"></canvas>
+                <div class="game-overlay" id="game-overlay">
+                    <div class="overlay-content">
+                        <h2 id="overlay-title">Tetris</h2>
+                        <p id="overlay-message">Wキーで開始</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>ネクスト</h3>
+            <canvas id="next-canvas" width="100" height="300"></canvas>
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="key-item"><span class="key">A/D</span> 左右移動</div>
+                <div class="key-item"><span class="key">S</span> 落下</div>
+                <div class="key-item"><span class="key">W</span> ハードドロップ</div>
+                <div class="key-item"><span class="key">←→</span> 回転</div>
+                <div class="key-item"><span class="key">Space</span> ホールド</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="tetris.js"></script>
+</body>
+</html>

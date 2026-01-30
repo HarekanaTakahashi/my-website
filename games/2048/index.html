@@ -6,11 +6,9 @@
     <link rel="stylesheet" href="2048.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="title-container">
-                <h1>2048</h1>
-            </div>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>2048</h1>
             <div class="scores-container">
                 <div class="score-box">
                     <div class="score-label">スコア</div>
@@ -21,34 +19,39 @@
                     <div class="score-value" id="best-score">0</div>
                 </div>
             </div>
-        </div>
-        
-        <div class="game-info">
-            矢印キー、WASD、またはスワイプでタイルを動かしましょう！
-        </div>
-        
-        <div class="controls">
             <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
         </div>
         
-        <div class="board" id="board">
-            <!-- Grid cells -->
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
+        <div class="game-container">
+            <div class="board" id="board">
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+            </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="instruction-item"><span class="key">↑</span><span class="key">W</span> 上に移動</div>
+                <div class="instruction-item"><span class="key">↓</span><span class="key">S</span> 下に移動</div>
+                <div class="instruction-item"><span class="key">←</span><span class="key">A</span> 左に移動</div>
+                <div class="instruction-item"><span class="key">→</span><span class="key">D</span> 右に移動</div>
+            </div>
+            <p class="game-tip">同じ数字のタイルを合わせて2048を目指そう！</p>
         </div>
     </div>
 
