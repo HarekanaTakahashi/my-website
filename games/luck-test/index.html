@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="luck-test.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <h1 id="game-title">運試しゲーム</h1>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>運試し<br>ゲーム</h1>
             <div class="scores-container">
                 <div class="score-box">
                     <div class="score-label">連続正解</div>
@@ -20,31 +20,29 @@
                     <div class="score-value" id="best-score">0</div>
                 </div>
             </div>
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
         </div>
         
-        <div class="game-info" id="game-info">
-            どちらかを選んでください
-        </div>
-        
-        <div class="game-area" id="game-area">
-            <div class="choices-container" id="choices-container">
-                <button class="choice-btn" id="left-btn" aria-label="左を選ぶ">
-                    <span class="choice-text">左</span>
-                </button>
-                <button class="choice-btn" id="right-btn" aria-label="右を選ぶ">
-                    <span class="choice-text">右</span>
-                </button>
+        <div class="game-container">
+            <div class="game-info" id="game-info">どちらかを選んでください</div>
+            <div class="game-area" id="game-area">
+                <div class="choices-container" id="choices-container">
+                    <button class="choice-btn" id="left-btn" aria-label="左を選ぶ">
+                        <span class="choice-text">左</span>
+                    </button>
+                    <button class="choice-btn" id="right-btn" aria-label="右を選ぶ">
+                        <span class="choice-text">右</span>
+                    </button>
+                </div>
+                <div class="result-container" id="result-container">
+                    <div class="result-message" id="result-message"></div>
+                </div>
             </div>
-            
-            <div class="result-container" id="result-container">
-                <div class="result-message" id="result-message"></div>
-            </div>
         </div>
         
-        <div class="controls">
-            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">
-                新しいゲーム
-            </button>
+        <div class="side-panel right-panel">
+            <h3>ルール</h3>
+            <p class="game-tip">左か右を選んで正解を当てよう！連続正解を目指せ！</p>
         </div>
     </div>
 

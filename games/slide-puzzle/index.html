@@ -6,11 +6,9 @@
     <link rel="stylesheet" href="slide-puzzle.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="title-container">
-                <h1>スライドパズル</h1>
-            </div>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>スライド<br>パズル</h1>
             <div class="stats-container">
                 <div class="stat-box">
                     <div class="stat-label">移動</div>
@@ -21,28 +19,29 @@
                     <div class="stat-value" id="best-moves">-</div>
                 </div>
             </div>
-        </div>
-        
-        <div class="game-info" id="game-info">
-            空白マスに隣接するタイルをクリックするか、矢印キーで移動してください。
-        </div>
-        
-        <div class="controls">
             <div class="size-selector">
-                <label for="size-select">サイズ:</label>
+                <label for="size-select">サイズ</label>
                 <select id="size-select" aria-label="ボードサイズを選択">
-                    <option value="3">3x3 (簡単)</option>
-                    <option value="4">4x4 (普通)</option>
-                    <option value="5">5x5 (難しい)</option>
+                    <option value="3">3x3</option>
+                    <option value="4">4x4</option>
+                    <option value="5">5x5</option>
                 </select>
             </div>
             <button class="shuffle-btn" id="shuffle-btn" aria-label="シャッフル">シャッフル</button>
         </div>
         
-        <div class="board-container">
+        <div class="game-container">
             <div class="board" id="board" role="grid" aria-label="スライドパズルボード">
-                <!-- Tiles will be inserted here -->
             </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="key-item"><span class="key">クリック</span> タイル移動</div>
+                <div class="key-item"><span class="key">↑↓←→</span> 移動</div>
+            </div>
+            <p class="game-tip">空白マスに隣接するタイルを動かして、数字を順番に並べよう！</p>
         </div>
     </div>
 

@@ -14,32 +14,42 @@ body {
     padding: 20px;
 }
 
-.game-container {
-    background: #fff;
+.game-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    max-height: calc(100vh - 40px);
+}
+
+.side-panel {
+    background: white;
     border-radius: 12px;
     padding: 20px;
-    max-width: 600px;
-    width: 100%;
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-
-.header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
     align-items: center;
-    margin-bottom: 20px;
+    min-width: 140px;
 }
 
-.title-container h1 {
+.side-panel h3 {
     color: #667eea;
-    font-size: 2rem;
+    font-size: 0.9rem;
+}
+
+h1 {
+    color: #667eea;
+    font-size: 1.5rem;
     font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .stats-container {
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
@@ -48,61 +58,49 @@ body {
     border-radius: 8px;
     padding: 8px 15px;
     text-align: center;
-    min-width: 80px;
+    min-width: 100px;
 }
 
 .stat-label {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: bold;
-    text-transform: uppercase;
 }
 
 .stat-value {
     color: white;
     font-size: 1.25rem;
     font-weight: bold;
-    margin-top: 3px;
 }
 
-.game-info {
-    background: #f8f9fa;
-    color: #555;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 0.9rem;
+.game-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    min-width: 350px;
 }
 
 .test-area {
     background: #cdc1b4;
     border-radius: 10px;
-    min-height: 300px;
+    width: min(350px, calc(100vh - 150px));
+    height: min(350px, calc(100vh - 150px));
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     transition: background-color 0.2s;
     user-select: none;
-    margin-bottom: 15px;
 }
 
-.test-area.waiting {
-    background: #dc143c;
-}
-
-.test-area.ready {
-    background: #28a745;
-}
-
-.test-area.too-early {
-    background: #ff6347;
-}
+.test-area.waiting { background: #dc143c; }
+.test-area.ready { background: #28a745; }
+.test-area.too-early { background: #ff6347; }
 
 .status-message {
     color: #776e65;
-    font-size: 24px;
+    font-size: 1.25rem;
     font-weight: bold;
     text-align: center;
     padding: 20px;
@@ -116,63 +114,54 @@ body {
 
 .results {
     text-align: center;
+    margin-top: 15px;
 }
 
 .results h2 {
-    color: #776e65;
-    font-size: 32px;
-    margin-bottom: 20px;
+    color: #667eea;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
 }
 
 .result-list {
-    background: #eee4da;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
 }
 
 .result-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    font-size: 18px;
-    color: #776e65;
-    border-bottom: 1px solid #d8cfc0;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: #555;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.result-item:last-child {
-    border-bottom: none;
-}
-
-.result-item .label {
-    font-weight: bold;
-}
-
-.result-item .value {
-    font-weight: bold;
-    color: #8f7a66;
-}
+.result-item:last-child { border-bottom: none; }
+.result-item .label { font-weight: bold; }
+.result-item .value { font-weight: bold; color: #667eea; }
 
 .average-time {
-    background: #bbada0;
-    border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .average-time .label {
-    color: #eee4da;
-    font-size: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
     font-weight: bold;
 }
 
 .average-time .value {
     color: white;
-    font-size: 32px;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
@@ -181,25 +170,23 @@ body {
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 12px 35px;
+    padding: 12px 30px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
 }
 
 .retry-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
-.retry-btn:active {
-    transform: translateY(0);
-}
-
-.retry-btn:focus {
-    outline: 2px solid #8f7a66;
-    outline-offset: 2px;
+.game-tip {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.4;
+    max-width: 140px;
 }
 
 .hidden {
