@@ -6,29 +6,29 @@
 
 // デフォルトのガチャアイテム（★1～★5）
 export const DEFAULT_ITEMS = [
-    // ★5 (SSR) - 超レア
+    // ★5 (SSR) - 超レア (3.0%)
     { name: '伝説の剣', rarity: 5, probability: 1.0 },
     { name: '神獣の翼', rarity: 5, probability: 1.0 },
     { name: '聖なる盾', rarity: 5, probability: 1.0 },
     
-    // ★4 (SR) - レア
-    { name: '魔法の杖', rarity: 4, probability: 5.0 },
-    { name: '竜の鱗', rarity: 4, probability: 5.0 },
-    { name: '騎士の鎧', rarity: 4, probability: 5.0 },
-    { name: '精霊の指輪', rarity: 4, probability: 5.0 },
+    // ★4 (SR) - レア (12.0%)
+    { name: '魔法の杖', rarity: 4, probability: 3.0 },
+    { name: '竜の鱗', rarity: 4, probability: 3.0 },
+    { name: '騎士の鎧', rarity: 4, probability: 3.0 },
+    { name: '精霊の指輪', rarity: 4, probability: 3.0 },
     
-    // ★3 (R) - アンコモン
-    { name: '鋼の剣', rarity: 3, probability: 15.0 },
-    { name: '弓矢セット', rarity: 3, probability: 15.0 },
-    { name: '魔導書', rarity: 3, probability: 15.0 },
+    // ★3 (R) - アンコモン (25.0%)
+    { name: '鋼の剣', rarity: 3, probability: 8.5 },
+    { name: '弓矢セット', rarity: 3, probability: 8.0 },
+    { name: '魔導書', rarity: 3, probability: 8.5 },
     
-    // ★2 (UC) - コモン
-    { name: '木の盾', rarity: 2, probability: 25.0 },
-    { name: '皮の鎧', rarity: 2, probability: 25.0 },
+    // ★2 (UC) - コモン (30.0%)
+    { name: '木の盾', rarity: 2, probability: 15.0 },
+    { name: '皮の鎧', rarity: 2, probability: 15.0 },
     
-    // ★1 (C) - 最もコモン
-    { name: '普通の剣', rarity: 1, probability: 33.0 },
-    { name: '普通の盾', rarity: 1, probability: 33.0 }
+    // ★1 (C) - 最もコモン (30.0%)
+    { name: '普通の剣', rarity: 1, probability: 15.0 },
+    { name: '普通の盾', rarity: 1, probability: 15.0 }
 ];
 
 export const GAME_CONFIG = {
@@ -39,9 +39,21 @@ export const GAME_CONFIG = {
     
     // ガチャ設定
     GACHA: {
-        SINGLE_COST: 150,     // 単発ガチャのコスト
-        MULTI_COST: 1500,     // 10連ガチャのコスト
-        MULTI_COUNT: 10       // 10連ガチャの回数
+        INITIAL_CURRENCY: 10000,  // 初期所持石
+        SINGLE_COST: 150,         // 単発ガチャのコスト
+        MULTI_COST: 1500,         // 10連ガチャのコスト
+        MULTI_COUNT: 10           // 10連ガチャの回数
+    },
+    
+    // 履歴設定
+    HISTORY: {
+        MAX_SIZE: 100,        // 保存する最大履歴数
+        DISPLAY_COUNT: 20     // 履歴画面に表示する件数
+    },
+    
+    // 検証設定
+    VALIDATION: {
+        PROBABILITY_TOLERANCE: 0.1  // 確率合計の許容誤差
     },
     
     // アニメーション設定

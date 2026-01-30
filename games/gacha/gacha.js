@@ -4,7 +4,7 @@ import { DEFAULT_ITEMS, GAME_CONFIG } from './config/gacha-config.js';
 
 class GachaSimulator {
     constructor() {
-        this.currency = 10000;
+        this.currency = GAME_CONFIG.GACHA.INITIAL_CURRENCY;
         this.totalCount = 0;
         this.items = this.loadItems();
         this.settings = this.loadSettings();
@@ -198,9 +198,9 @@ class GachaSimulator {
             timestamp: Date.now()
         });
         
-        // Keep only last 100 items
-        if (this.history.length > 100) {
-            this.history = this.history.slice(0, 100);
+        // Keep only last MAX_SIZE items
+        if (this.history.length > GAME_CONFIG.HISTORY.MAX_SIZE) {
+            this.history = this.history.slice(0, GAME_CONFIG.HISTORY.MAX_SIZE);
         }
         
         this.saveHistory();
@@ -266,7 +266,7 @@ class GachaSimulator {
     }
     
     resetCurrency() {
-        this.currency = 10000;
+        this.currency = GAME_CONFIG.GACHA.INITIAL_CURRENCY;
         this.updateDisplay();
     }
     
@@ -361,17 +361,27 @@ class GachaSimulator {
             const field = input.dataset.field;
             
             if (field === 'name') {
-                this.items[index].name = input.value;
+                const value = input.value.trim();
+                if (!value) {
+                    alert('アイテム名を入力してください');
+                    throw new Error('Item name is required');
+                }
+                this.items[index].name = value;
             } else if (field === 'rarity') {
                 this.items[index].rarity = parseInt(input.value);
             } else if (field === 'probability') {
-                this.items[index].probability = parseFloat(input.value);
+                const value = parseFloat(input.value);
+                if (isNaN(value) || value < 0) {
+                    alert('確率は0以上の数値を入力してください');
+                    throw new Error('Invalid probability value');
+                }
+                this.items[index].probability = value;
             }
         });
         
         // Validate total probability
         const totalProb = this.items.reduce((sum, item) => sum + item.probability, 0);
-        if (Math.abs(totalProb - 100) > 0.1) {
+        if (Math.abs(totalProb - 100) > GAME_CONFIG.VALIDATION.PROBABILITY_TOLERANCE) {
             if (!confirm(`確率の合計が${totalProb.toFixed(1)}%です。このまま保存しますか？`)) {
                 return;
             }
@@ -445,7 +455,7 @@ class GachaSimulator {
             return;
         }
         
-        this.history.slice(0, 20).forEach(entry => {
+        this.history.slice(0, GAME_CONFIG.HISTORY.DISPLAY_COUNT).forEach(entry => {
             const item = document.createElement('div');
             item.className = 'history-item';
             
