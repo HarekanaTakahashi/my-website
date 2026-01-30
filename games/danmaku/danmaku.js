@@ -282,52 +282,42 @@ class DanmakuGame {
         // グリッド（オプション）
         this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
         this.ctx.lineWidth = 1;
+        this.ctx.beginPath();
         for (let i = 0; i < CANVAS_WIDTH; i += 50) {
-            this.ctx.beginPath();
             this.ctx.moveTo(i, 0);
             this.ctx.lineTo(i, CANVAS_HEIGHT);
-            this.ctx.stroke();
         }
         for (let i = 0; i < CANVAS_HEIGHT; i += 50) {
-            this.ctx.beginPath();
             this.ctx.moveTo(0, i);
             this.ctx.lineTo(CANVAS_WIDTH, i);
-            this.ctx.stroke();
         }
+        this.ctx.stroke();
 
         // 弾幕描画
         this.bullets.forEach(bullet => {
             this.ctx.fillStyle = bullet.color;
-            this.ctx.beginPath();
-            this.ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
-            this.ctx.fill();
-            
-            // グロー効果
             this.ctx.shadowBlur = 10;
             this.ctx.shadowColor = bullet.color;
+            this.ctx.beginPath();
+            this.ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.shadowBlur = 0;
         });
 
         // プレイヤー描画
+        this.ctx.shadowBlur = 15;
+        this.ctx.shadowColor = '#00ff00';
         this.ctx.fillStyle = '#00ff00';
         this.ctx.beginPath();
         this.ctx.arc(this.player.x, this.player.y, this.player.radius, 0, Math.PI * 2);
         this.ctx.fill();
+        this.ctx.shadowBlur = 0;
         
         // プレイヤーの当たり判定を視覚化（小さい中心点）
         this.ctx.fillStyle = '#ffffff';
         this.ctx.beginPath();
         this.ctx.arc(this.player.x, this.player.y, 2, 0, Math.PI * 2);
         this.ctx.fill();
-
-        // グロー効果
-        this.ctx.shadowBlur = 15;
-        this.ctx.shadowColor = '#00ff00';
-        this.ctx.beginPath();
-        this.ctx.arc(this.player.x, this.player.y, this.player.radius, 0, Math.PI * 2);
-        this.ctx.fill();
-        this.ctx.shadowBlur = 0;
     }
 
     gameOver() {
