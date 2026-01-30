@@ -5,10 +5,13 @@ const CANVAS_WIDTH = 500;
 const CANVAS_HEIGHT = 500;
 const PLAYER_RADIUS = 8;
 const PLAYER_SPEED = 4;
+const PLAYER_SLOW_SPEED = 1.5; // Shiftキーでの低速移動
 const BULLET_RADIUS = 4;
 const BULLET_SPEED = 2;
 const INITIAL_SPAWN_INTERVAL = 1000;
 const MIN_SPAWN_INTERVAL = 200;
+const ENEMY_RADIUS = 10;
+const ENEMY_APPEAR_TIME = 500; // 敵が表示されてから弾を発射するまでの時間（ms）
 
 // ゲーム状態
 const GameState = {
@@ -31,6 +34,7 @@ class DanmakuGame {
         this.state = GameState.READY;
         this.player = null;
         this.bullets = [];
+        this.enemies = []; // 敵（弾を発射する場所）
         this.keys = {};
         this.startTime = 0;
         this.currentTime = 0;
@@ -46,7 +50,7 @@ class DanmakuGame {
     initEventListeners() {
         // キーボード操作
         document.addEventListener('keydown', (e) => {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift'].includes(e.key)) {
                 e.preventDefault();
                 this.keys[e.key] = true;
             }
@@ -92,6 +96,7 @@ class DanmakuGame {
             radius: PLAYER_RADIUS
         };
         this.bullets = [];
+        this.enemies = [];
         this.startTime = performance.now();
         this.currentTime = 0;
         this.spawnInterval = INITIAL_SPAWN_INTERVAL;
@@ -113,6 +118,7 @@ class DanmakuGame {
         
         this.ctx.font = '16px Arial';
         this.ctx.fillText('矢印キーで移動', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 40);
+        this.ctx.fillText('Shiftで低速移動', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 65);
     }
 
     gameLoop() {
@@ -135,23 +141,42 @@ class DanmakuGame {
             INITIAL_SPAWN_INTERVAL - (this.currentTime * 20)
         );
 
-        // プレイヤー移動
+        // プレイヤー移動（Shiftキーで低速移動）
+        const moveSpeed = this.keys['Shift'] ? PLAYER_SLOW_SPEED : PLAYER_SPEED;
+        
         if (this.keys['ArrowLeft'] && this.player.x > this.player.radius) {
-            this.player.x -= PLAYER_SPEED;
+            this.player.x -= moveSpeed;
         }
         if (this.keys['ArrowRight'] && this.player.x < CANVAS_WIDTH - this.player.radius) {
-            this.player.x += PLAYER_SPEED;
+            this.player.x += moveSpeed;
         }
         if (this.keys['ArrowUp'] && this.player.y > this.player.radius) {
-            this.player.y -= PLAYER_SPEED;
+            this.player.y -= moveSpeed;
         }
         if (this.keys['ArrowDown'] && this.player.y < CANVAS_HEIGHT - this.player.radius) {
-            this.player.y += PLAYER_SPEED;
+            this.player.y += moveSpeed;
         }
 
-        // 弾幕生成
+        // 敵の更新
+        for (let i = this.enemies.length - 1; i >= 0; i--) {
+            const enemy = this.enemies[i];
+            const elapsed = this.currentTime * 1000 - enemy.spawnTime;
+            
+            // 敵が表示されてから一定時間後に弾を発射
+            if (!enemy.hasFired && elapsed >= ENEMY_APPEAR_TIME) {
+                enemy.hasFired = true;
+                enemy.patternFunc(enemy.x, enemy.y);
+            }
+            
+            // 弾を発射してから1秒後に敵を削除
+            if (enemy.hasFired && elapsed >= ENEMY_APPEAR_TIME + 1000) {
+                this.enemies.splice(i, 1);
+            }
+        }
+
+        // 弾幕生成（敵を生成）
         if (this.currentTime * 1000 - this.lastSpawnTime > this.spawnInterval) {
-            this.spawnBulletPattern();
+            this.spawnEnemy();
             this.lastSpawnTime = this.currentTime * 1000;
         }
 
@@ -176,22 +201,53 @@ class DanmakuGame {
         }
     }
 
-    spawnBulletPattern() {
+    spawnEnemy() {
         const patterns = [
-            this.spawnCirclePattern.bind(this),
-            this.spawnSpiralPattern.bind(this),
-            this.spawnTargetedPattern.bind(this),
-            this.spawnRandomPattern.bind(this)
+            { func: this.spawnCirclePattern.bind(this), name: 'circle' },
+            { func: this.spawnSpiralPattern.bind(this), name: 'spiral' },
+            { func: this.spawnTargetedPattern.bind(this), name: 'targeted' },
+            { func: this.spawnRandomPattern.bind(this), name: 'random' }
         ];
 
         // ランダムなパターンを選択
         const pattern = patterns[Math.floor(Math.random() * patterns.length)];
-        pattern();
+        
+        // 敵の出現位置を決定（上部30%の範囲、プレイヤーから一定距離離れた場所）
+        let enemyX, enemyY;
+        let attempts = 0;
+        const minDistanceFromPlayer = 100; // プレイヤーから最低100px離す
+        
+        do {
+            enemyX = 50 + Math.random() * (CANVAS_WIDTH - 100);
+            enemyY = 30 + Math.random() * (CANVAS_HEIGHT * 0.3 - 30);
+            const dx = enemyX - this.player.x;
+            const dy = enemyY - this.player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance >= minDistanceFromPlayer) {
+                break;
+            }
+            attempts++;
+        } while (attempts < 10);
+        
+        // 敵を配列に追加
+        this.enemies.push({
+            x: enemyX,
+            y: enemyY,
+            radius: ENEMY_RADIUS,
+            spawnTime: this.currentTime * 1000,
+            hasFired: false,
+            patternFunc: pattern.func,
+            patternName: pattern.name
+        });
     }
 
-    spawnCirclePattern() {
-        const centerX = Math.random() * CANVAS_WIDTH;
-        const centerY = Math.random() * CANVAS_HEIGHT * 0.3; // 上部から
+    spawnBulletPattern() {
+        // この関数は互換性のために残すが、実際には使用しない
+        this.spawnEnemy();
+    }
+
+    spawnCirclePattern(centerX, centerY) {
         const bulletCount = 12 + Math.floor(this.currentTime / 5);
 
         for (let i = 0; i < bulletCount; i++) {
@@ -207,9 +263,7 @@ class DanmakuGame {
         }
     }
 
-    spawnSpiralPattern() {
-        const centerX = Math.random() * CANVAS_WIDTH;
-        const centerY = Math.random() * CANVAS_HEIGHT * 0.3;
+    spawnSpiralPattern(centerX, centerY) {
         const bulletCount = 8;
         const rotation = (this.currentTime * 2) % (Math.PI * 2);
 
@@ -226,9 +280,7 @@ class DanmakuGame {
         }
     }
 
-    spawnTargetedPattern() {
-        const startX = Math.random() * CANVAS_WIDTH;
-        const startY = 0;
+    spawnTargetedPattern(startX, startY) {
         const bulletCount = 5;
 
         for (let i = 0; i < bulletCount; i++) {
@@ -248,12 +300,10 @@ class DanmakuGame {
         }
     }
 
-    spawnRandomPattern() {
+    spawnRandomPattern(startX, startY) {
         const bulletCount = 3 + Math.floor(this.currentTime / 10);
         
         for (let i = 0; i < bulletCount; i++) {
-            const startX = Math.random() * CANVAS_WIDTH;
-            const startY = 0;
             const angle = Math.PI / 2 + (Math.random() - 0.5) * Math.PI / 3;
 
             this.bullets.push({
@@ -293,6 +343,28 @@ class DanmakuGame {
         }
         this.ctx.stroke();
 
+        // 敵描画（弾を発射する場所を事前に表示）
+        this.enemies.forEach(enemy => {
+            const elapsed = this.currentTime * 1000 - enemy.spawnTime;
+            const opacity = Math.min(1, elapsed / ENEMY_APPEAR_TIME);
+            
+            // 敵の本体
+            this.ctx.fillStyle = `rgba(255, 100, 100, ${opacity * 0.6})`;
+            this.ctx.beginPath();
+            this.ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // 警告エフェクト（点滅）
+            if (!enemy.hasFired) {
+                const pulse = Math.sin((elapsed / 100) * Math.PI) * 0.5 + 0.5;
+                this.ctx.strokeStyle = `rgba(255, 200, 0, ${pulse * opacity})`;
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.arc(enemy.x, enemy.y, enemy.radius + 5, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+        });
+
         // 弾幕描画
         this.bullets.forEach(bullet => {
             this.ctx.fillStyle = bullet.color;
@@ -318,6 +390,15 @@ class DanmakuGame {
         this.ctx.beginPath();
         this.ctx.arc(this.player.x, this.player.y, 2, 0, Math.PI * 2);
         this.ctx.fill();
+        
+        // Shift低速移動中の表示
+        if (this.keys['Shift']) {
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.arc(this.player.x, this.player.y, this.player.radius + 5, 0, Math.PI * 2);
+            this.ctx.stroke();
+        }
     }
 
     gameOver() {
