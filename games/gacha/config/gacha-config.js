@@ -4,46 +4,108 @@
  * ガチャシミュレーターの設定ファイル
  */
 
-// デフォルトのガチャアイテム（★1～★5）
-export const DEFAULT_ITEMS = [
-    // ★5 (SSR) - 超レア
-    { name: '伝説の剣', rarity: 5 },
-    { name: '神獣の翼', rarity: 5 },
-    { name: '聖なる盾', rarity: 5 },
-    
-    // ★4 (SR) - レア
-    { name: '魔法の杖', rarity: 4 },
-    { name: '竜の鱗', rarity: 4 },
-    { name: '騎士の鎧', rarity: 4 },
-    { name: '精霊の指輪', rarity: 4 },
-    
-    // ★3 (R) - アンコモン
-    { name: '鋼の剣', rarity: 3 },
-    { name: '弓矢セット', rarity: 3 },
-    { name: '魔導書', rarity: 3 },
-    
-    // ★2 (UC) - コモン
-    { name: '木の盾', rarity: 2 },
-    { name: '皮の鎧', rarity: 2 },
-    
-    // ★1 (C) - 最もコモン
-    { name: '普通の剣', rarity: 1 },
-    { name: '普通の盾', rarity: 1 }
+// デフォルトのグループ構造（階層型確率システム）
+export const DEFAULT_GROUPS = [
+    {
+        id: 'rarity5',
+        name: '★★★★★ 超レア',
+        color: '#ff9800',
+        probability: 3.0,  // グループ全体の確率
+        subgroups: [
+            {
+                id: 'rarity5-normal',
+                name: '通常',
+                probability: 100,  // このグループ内での割合(%)
+                items: [
+                    { name: '伝説の剣' },
+                    { name: '神獣の翼' },
+                    { name: '聖なる盾' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'rarity4',
+        name: '★★★★ スーパーレア',
+        color: '#9c27b0',
+        probability: 12.0,
+        subgroups: [
+            {
+                id: 'rarity4-normal',
+                name: '通常',
+                probability: 100,
+                items: [
+                    { name: '魔法の杖' },
+                    { name: '竜の鱗' },
+                    { name: '騎士の鎧' },
+                    { name: '精霊の指輪' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'rarity3',
+        name: '★★★ レア',
+        color: '#2196f3',
+        probability: 25.0,
+        subgroups: [
+            {
+                id: 'rarity3-normal',
+                name: '通常',
+                probability: 100,
+                items: [
+                    { name: '鋼の剣' },
+                    { name: '弓矢セット' },
+                    { name: '魔導書' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'rarity2',
+        name: '★★ アンコモン',
+        color: '#4caf50',
+        probability: 30.0,
+        subgroups: [
+            {
+                id: 'rarity2-normal',
+                name: '通常',
+                probability: 100,
+                items: [
+                    { name: '木の盾' },
+                    { name: '皮の鎧' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'rarity1',
+        name: '★ コモン',
+        color: '#9e9e9e',
+        probability: 30.0,
+        subgroups: [
+            {
+                id: 'rarity1-normal',
+                name: '通常',
+                probability: 100,
+                items: [
+                    { name: '普通の剣' },
+                    { name: '普通の盾' }
+                ]
+            }
+        ]
+    }
 ];
 
-// デフォルトのレアリティごとの確率設定
-export const DEFAULT_RARITY_PROBABILITIES = {
-    5: 3.0,   // ★5 超レア: 3%
-    4: 12.0,  // ★4 スーパーレア: 12%
-    3: 25.0,  // ★3 レア: 25%
-    2: 30.0,  // ★2 アンコモン: 30%
-    1: 30.0   // ★1 コモン: 30%
-};
+// 後方互換性のために保持（削除予定）
+export const DEFAULT_ITEMS = [];
+export const DEFAULT_RARITY_PROBABILITIES = {};
 
 export const GAME_CONFIG = {
     // LocalStorage キー
-    STORAGE_KEY_ITEMS: 'gachaSimulatorItems',
-    STORAGE_KEY_RARITY_PROBS: 'gachaSimulatorRarityProbs',
+    STORAGE_KEY_GROUPS: 'gachaSimulatorGroups',
+    STORAGE_KEY_ITEMS: 'gachaSimulatorItems',  // 後方互換性のために保持
+    STORAGE_KEY_RARITY_PROBS: 'gachaSimulatorRarityProbs',  // 後方互換性のために保持
     STORAGE_KEY_SETTINGS: 'gachaSimulatorSettings',
     STORAGE_KEY_HISTORY: 'gachaSimulatorHistory',
     
@@ -74,7 +136,7 @@ export const GAME_CONFIG = {
         RARITY_EFFECT_DURATION: 1000 // レアリティエフェクトの時間（ミリ秒）
     },
     
-    // レアリティ設定
+    // レアリティ設定（削除予定 - グループから動的に生成）
     RARITY: {
         1: { name: 'コモン', color: '#9e9e9e', stars: '★' },
         2: { name: 'アンコモン', color: '#4caf50', stars: '★★' },

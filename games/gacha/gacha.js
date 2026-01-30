@@ -1,13 +1,12 @@
 'use strict';
 
-import { DEFAULT_ITEMS, DEFAULT_RARITY_PROBABILITIES, GAME_CONFIG } from './config/gacha-config.js';
+import { DEFAULT_GROUPS, GAME_CONFIG } from './config/gacha-config.js';
 
 class GachaSimulator {
     constructor() {
         this.currency = GAME_CONFIG.GACHA.INITIAL_CURRENCY;
         this.totalCount = 0;
-        this.items = this.loadItems();
-        this.rarityProbabilities = this.loadRarityProbabilities();
+        this.groups = this.loadGroups();
         this.settings = this.loadSettings();
         this.history = this.loadHistory();
         
@@ -31,9 +30,7 @@ class GachaSimulator {
         this.closeSettingsBtn = document.getElementById('close-settings-btn');
         this.animationToggle = document.getElementById('animation-toggle');
         this.probabilityToggle = document.getElementById('probability-toggle');
-        this.rarityProbsEditor = document.getElementById('rarity-probs-editor');
-        this.itemsEditor = document.getElementById('items-editor');
-        this.addItemBtn = document.getElementById('add-item-btn');
+        this.groupsEditor = document.getElementById('groups-editor');
         this.saveSettingsBtn = document.getElementById('save-settings-btn');
         this.resetSettingsBtn = document.getElementById('reset-settings-btn');
         
@@ -86,22 +83,17 @@ class GachaSimulator {
         });
     }
     
-    loadItems() {
-        const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY_ITEMS);
-        return saved ? JSON.parse(saved) : [...DEFAULT_ITEMS];
+    loadGroups() {
+        const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY_GROUPS);
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        // Deep copy to avoid reference issues
+        return JSON.parse(JSON.stringify(DEFAULT_GROUPS));
     }
     
-    saveItems() {
-        localStorage.setItem(GAME_CONFIG.STORAGE_KEY_ITEMS, JSON.stringify(this.items));
-    }
-    
-    loadRarityProbabilities() {
-        const saved = localStorage.getItem(GAME_CONFIG.STORAGE_KEY_RARITY_PROBS);
-        return saved ? JSON.parse(saved) : { ...DEFAULT_RARITY_PROBABILITIES };
-    }
-    
-    saveRarityProbabilities() {
-        localStorage.setItem(GAME_CONFIG.STORAGE_KEY_RARITY_PROBS, JSON.stringify(this.rarityProbabilities));
+    saveGroups() {
+        localStorage.setItem(GAME_CONFIG.STORAGE_KEY_GROUPS, JSON.stringify(this.groups));
     }
     
     loadSettings() {
@@ -145,39 +137,59 @@ class GachaSimulator {
     }
     
     drawItem() {
-        // Group items by rarity
-        const itemsByRarity = {};
-        this.items.forEach(item => {
-            if (!itemsByRarity[item.rarity]) {
-                itemsByRarity[item.rarity] = [];
-            }
-            itemsByRarity[item.rarity].push(item);
-        });
+        // Calculate total probability from all groups
+        const totalProb = this.groups.reduce((sum, group) => sum + group.probability, 0);
         
-        // Calculate total probability from rarity groups
-        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
-        
-        // Generate random number to select rarity
+        // Select a group based on probability
         let random = Math.random() * totalProb;
-        let selectedRarity = null;
+        let selectedGroup = null;
         
-        for (const [rarity, prob] of Object.entries(this.rarityProbabilities)) {
-            random -= prob;
+        for (const group of this.groups) {
+            random -= group.probability;
             if (random <= 0) {
-                selectedRarity = parseInt(rarity);
+                selectedGroup = group;
                 break;
             }
         }
         
-        // If no rarity selected (shouldn't happen), default to first available
-        if (!selectedRarity || !itemsByRarity[selectedRarity] || itemsByRarity[selectedRarity].length === 0) {
-            selectedRarity = parseInt(Object.keys(itemsByRarity)[0]);
+        // Fallback to first group if none selected
+        if (!selectedGroup || !selectedGroup.subgroups || selectedGroup.subgroups.length === 0) {
+            selectedGroup = this.groups[0];
         }
         
-        // Randomly select an item from the selected rarity group (equal probability)
-        const itemsInRarity = itemsByRarity[selectedRarity];
-        const randomIndex = Math.floor(Math.random() * itemsInRarity.length);
-        return { ...itemsInRarity[randomIndex] };
+        // Calculate total probability from subgroups
+        const subgroupTotal = selectedGroup.subgroups.reduce((sum, sub) => sum + sub.probability, 0);
+        
+        // Select a subgroup based on probability
+        random = Math.random() * subgroupTotal;
+        let selectedSubgroup = null;
+        
+        for (const subgroup of selectedGroup.subgroups) {
+            random -= subgroup.probability;
+            if (random <= 0) {
+                selectedSubgroup = subgroup;
+                break;
+            }
+        }
+        
+        // Fallback to first subgroup
+        if (!selectedSubgroup || !selectedSubgroup.items || selectedSubgroup.items.length === 0) {
+            selectedSubgroup = selectedGroup.subgroups[0];
+        }
+        
+        // Randomly select an item from the subgroup (equal probability)
+        const items = selectedSubgroup.items;
+        const randomIndex = Math.floor(Math.random() * items.length);
+        const selectedItem = items[randomIndex];
+        
+        // Return item with group/subgroup info for display
+        return {
+            name: selectedItem.name,
+            groupId: selectedGroup.id,
+            groupName: selectedGroup.name,
+            groupColor: selectedGroup.color,
+            subgroupName: selectedSubgroup.name
+        };
     }
     
     displayResults(results) {
@@ -199,23 +211,25 @@ class GachaSimulator {
     
     createResultCard(item) {
         const card = document.createElement('div');
-        card.className = `result-card rarity-${item.rarity}`;
+        card.className = `result-card`;
+        card.style.setProperty('--group-color', item.groupColor);
         
-        const stars = document.createElement('div');
-        stars.className = 'card-stars';
-        stars.textContent = GAME_CONFIG.RARITY[item.rarity].stars;
+        const groupNameDiv = document.createElement('div');
+        groupNameDiv.className = 'card-group';
+        groupNameDiv.textContent = item.groupName;
+        groupNameDiv.style.color = item.groupColor;
         
         const name = document.createElement('div');
         name.className = 'card-name';
         name.textContent = item.name;
         
-        const rarity = document.createElement('div');
-        rarity.className = 'card-rarity';
-        rarity.textContent = GAME_CONFIG.RARITY[item.rarity].name;
+        const subgroupDiv = document.createElement('div');
+        subgroupDiv.className = 'card-subgroup';
+        subgroupDiv.textContent = item.subgroupName;
         
-        card.appendChild(stars);
+        card.appendChild(groupNameDiv);
         card.appendChild(name);
-        card.appendChild(rarity);
+        card.appendChild(subgroupDiv);
         
         return card;
     }
@@ -247,11 +261,10 @@ class GachaSimulator {
             return;
         }
         
-        // Display rarity group probabilities
         this.probabilityTable.innerHTML = '';
         
         // Calculate total probability
-        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
+        const totalProb = this.groups.reduce((sum, group) => sum + group.probability, 0);
         
         // Add total probability display
         const totalDiv = document.createElement('div');
@@ -264,33 +277,26 @@ class GachaSimulator {
         totalDiv.textContent = `合計: ${totalProb.toFixed(1)}%`;
         this.probabilityTable.appendChild(totalDiv);
         
-        [5, 4, 3, 2, 1].forEach(rarity => {
-            if (this.rarityProbabilities[rarity] !== undefined) {
-                const probItem = document.createElement('div');
-                probItem.className = 'prob-item';
-                
-                const rarityDiv = document.createElement('div');
-                rarityDiv.className = 'prob-rarity';
-                
-                const stars = document.createElement('span');
-                stars.className = 'prob-stars';
-                stars.textContent = GAME_CONFIG.RARITY[rarity].stars;
-                stars.style.color = GAME_CONFIG.RARITY[rarity].color;
-                
-                const name = document.createElement('span');
-                name.textContent = GAME_CONFIG.RARITY[rarity].name;
-                
-                rarityDiv.appendChild(stars);
-                rarityDiv.appendChild(name);
-                
-                const percentage = document.createElement('div');
-                percentage.className = 'prob-percentage';
-                percentage.textContent = `${this.rarityProbabilities[rarity].toFixed(1)}%`;
-                
-                probItem.appendChild(rarityDiv);
-                probItem.appendChild(percentage);
-                this.probabilityTable.appendChild(probItem);
-            }
+        // Display each group
+        this.groups.forEach(group => {
+            const probItem = document.createElement('div');
+            probItem.className = 'prob-item';
+            probItem.style.borderLeft = `4px solid ${group.color}`;
+            probItem.style.paddingLeft = '8px';
+            
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'prob-rarity';
+            groupDiv.style.color = group.color;
+            groupDiv.style.fontWeight = 'bold';
+            groupDiv.textContent = group.name;
+            
+            const percentage = document.createElement('div');
+            percentage.className = 'prob-percentage';
+            percentage.textContent = `${group.probability.toFixed(1)}%`;
+            
+            probItem.appendChild(groupDiv);
+            probItem.appendChild(percentage);
+            this.probabilityTable.appendChild(probItem);
         });
     }
     
