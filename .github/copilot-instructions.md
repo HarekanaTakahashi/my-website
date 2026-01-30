@@ -325,13 +325,71 @@ element.appendChild(textNode);
 
 ### ゲーム画面サイズ
 - **ウィンドウに収まる設計**: ゲームはウィンドウをはみ出さないようにする
-  - `.game-container` に `max-height: calc(100vh - 40px)` と `overflow-y: auto` を設定
-  - 必要に応じて `aspect-ratio` を使用してボードサイズを制御
+  - **横並び3パネルレイアウト**を使用：
+    - `.game-wrapper`: flexコンテナ（`display: flex; gap: 20px; align-items: center;`）
+    - 左パネル（`.side-panel.left-panel`）: タイトル、スコア、操作ボタン
+    - 中央（`.game-container`）: ゲームボード
+    - 右パネル（`.side-panel.right-panel`）: 操作方法、ゲームヒント
+  - `max-height: calc(100vh - 40px)` でビューポート内に収める
+  - ボードサイズは `min()` 関数で制御（例: `width: min(400px, calc(100vh - 100px))`）
 - **デザインの統一**:
   - 背景: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
   - フォント: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
-  - 操作説明: `.game-info` クラスでヘッダー下に配置
+  - サイドパネル: 白背景、角丸12px、影付き
+  - 操作方法: `.key` クラスでキー表示（紫グラデーション背景）
   - ボタン: 紫グラデーションのスタイルを統一
+
+**レイアウト例（HTML）**:
+```html
+<div class="game-wrapper">
+    <div class="side-panel left-panel">
+        <h1>ゲーム名</h1>
+        <div class="score-box">...</div>
+        <button class="new-game-btn">新しいゲーム</button>
+    </div>
+    <div class="game-container">
+        <!-- ゲームボード -->
+    </div>
+    <div class="side-panel right-panel">
+        <h3>操作方法</h3>
+        <div class="instructions">
+            <div class="key-item"><span class="key">↑</span> 上に移動</div>
+        </div>
+    </div>
+</div>
+```
+
+**レイアウト例（CSS）**:
+```css
+.game-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    max-height: calc(100vh - 40px);
+}
+
+.side-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    min-width: 140px;
+}
+
+.key {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+```
 
 ### 行数の制限
 - 各ファイルは **300行以下** を目標にする
