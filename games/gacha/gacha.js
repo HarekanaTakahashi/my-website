@@ -315,164 +315,274 @@ class GachaSimulator {
         this.settingsModal.classList.add('show');
         this.animationToggle.checked = this.settings.animationEnabled;
         this.probabilityToggle.checked = this.settings.showProbability;
-        this.renderRarityProbsEditor();
-        this.renderItemsEditor();
+        this.renderGroupsEditor();
     }
     
     closeSettingsModal() {
         this.settingsModal.classList.remove('show');
     }
     
-    renderRarityProbsEditor() {
-        this.rarityProbsEditor.innerHTML = '';
+    renderGroupsEditor() {
+        this.groupsEditor.innerHTML = '';
         
-        // Calculate and display total
-        const totalProb = Object.values(this.rarityProbabilities).reduce((sum, prob) => sum + prob, 0);
+        // Calculate and display total probability
+        const totalProb = this.groups.reduce((sum, group) => sum + group.probability, 0);
         const totalDiv = document.createElement('div');
-        totalDiv.style.padding = '10px';
-        totalDiv.style.marginBottom = '10px';
+        totalDiv.id = 'total-prob-display';
+        totalDiv.style.padding = '15px';
+        totalDiv.style.marginBottom = '15px';
         totalDiv.style.background = '#f5f7fa';
-        totalDiv.style.borderRadius = '6px';
+        totalDiv.style.borderRadius = '8px';
         totalDiv.style.fontWeight = 'bold';
         totalDiv.style.textAlign = 'center';
+        totalDiv.style.fontSize = '1.1rem';
         totalDiv.style.color = totalProb === 100 ? '#4caf50' : '#ff9800';
-        totalDiv.id = 'total-prob-display';
         totalDiv.textContent = `確率合計: ${totalProb.toFixed(1)}%`;
-        this.rarityProbsEditor.appendChild(totalDiv);
+        this.groupsEditor.appendChild(totalDiv);
         
-        // Render rarity probability inputs
-        [5, 4, 3, 2, 1].forEach(rarity => {
-            const row = document.createElement('div');
-            row.className = 'rarity-prob-row';
-            row.style.display = 'flex';
-            row.style.alignItems = 'center';
-            row.style.gap = '10px';
-            row.style.padding = '10px';
-            row.style.background = 'white';
-            row.style.borderRadius = '6px';
-            row.style.marginBottom = '8px';
-            
-            const label = document.createElement('label');
-            label.style.flex = '1';
-            label.style.display = 'flex';
-            label.style.alignItems = 'center';
-            label.style.gap = '8px';
-            label.style.fontWeight = 'bold';
-            
-            const stars = document.createElement('span');
-            stars.textContent = GAME_CONFIG.RARITY[rarity].stars;
-            stars.style.color = GAME_CONFIG.RARITY[rarity].color;
-            
-            const rarityName = document.createElement('span');
-            rarityName.textContent = GAME_CONFIG.RARITY[rarity].name;
-            
-            // Count items in this rarity
-            const itemCount = this.items.filter(item => item.rarity === rarity).length;
-            const countSpan = document.createElement('span');
-            countSpan.style.fontSize = '0.85rem';
-            countSpan.style.color = '#666';
-            countSpan.textContent = `(${itemCount}個)`;
-            
-            label.appendChild(stars);
-            label.appendChild(rarityName);
-            label.appendChild(countSpan);
-            
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.value = this.rarityProbabilities[rarity] || 0;
-            input.step = '0.1';
-            input.min = '0';
-            input.max = '100';
-            input.style.width = '100px';
-            input.style.padding = '8px';
-            input.style.border = '1px solid #ddd';
-            input.style.borderRadius = '4px';
-            input.dataset.rarity = rarity;
-            
-            // Add event listener to update total in real-time
-            input.addEventListener('input', () => this.updateTotalProbDisplay());
-            
-            const unit = document.createElement('span');
-            unit.textContent = '%';
-            unit.style.fontWeight = 'bold';
-            
-            row.appendChild(label);
-            row.appendChild(input);
-            row.appendChild(unit);
-            
-            this.rarityProbsEditor.appendChild(row);
+        // Render each group
+        this.groups.forEach((group, groupIndex) => {
+            this.renderGroupSection(group, groupIndex);
         });
+        
+        // Add group button
+        const addGroupBtn = document.createElement('button');
+        addGroupBtn.className = 'add-group-btn';
+        addGroupBtn.style.cssText = 'width: 100%; padding: 12px; margin-top: 15px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;';
+        addGroupBtn.textContent = '+ グループ追加';
+        addGroupBtn.addEventListener('click', () => this.addGroup());
+        this.groupsEditor.appendChild(addGroupBtn);
+    }
+    
+    renderGroupSection(group, groupIndex) {
+        const groupSection = document.createElement('div');
+        groupSection.className = 'group-section';
+        groupSection.style.cssText = 'margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid ' + group.color;
+        
+        // Group header with name, color, probability
+        const groupHeader = document.createElement('div');
+        groupHeader.style.cssText = 'display: flex; gap: 10px; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #eee;';
+        
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.value = group.name;
+        nameInput.placeholder = 'グループ名';
+        nameInput.style.cssText = 'flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;';
+        nameInput.dataset.groupIndex = groupIndex;
+        nameInput.dataset.field = 'name';
+        
+        const colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.value = group.color;
+        colorInput.style.cssText = 'width: 50px; height: 38px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;';
+        colorInput.dataset.groupIndex = groupIndex;
+        colorInput.dataset.field = 'color';
+        colorInput.addEventListener('change', () => this.updateTotalProbDisplay());
+        
+        const probInput = document.createElement('input');
+        probInput.type = 'number';
+        probInput.value = group.probability;
+        probInput.step = '0.1';
+        probInput.min = '0';
+        probInput.style.cssText = 'width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;';
+        probInput.dataset.groupIndex = groupIndex;
+        probInput.dataset.field = 'probability';
+        probInput.addEventListener('input', () => this.updateTotalProbDisplay());
+        
+        const percentSpan = document.createElement('span');
+        percentSpan.textContent = '%';
+        percentSpan.style.fontWeight = 'bold';
+        
+        const deleteGroupBtn = document.createElement('button');
+        deleteGroupBtn.textContent = '削除';
+        deleteGroupBtn.style.cssText = 'padding: 8px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;';
+        deleteGroupBtn.addEventListener('click', () => this.deleteGroup(groupIndex));
+        
+        groupHeader.appendChild(nameInput);
+        groupHeader.appendChild(colorInput);
+        groupHeader.appendChild(probInput);
+        groupHeader.appendChild(percentSpan);
+        groupHeader.appendChild(deleteGroupBtn);
+        groupSection.appendChild(groupHeader);
+        
+        // Subgroups section
+        const subgroupsLabel = document.createElement('h4');
+        subgroupsLabel.textContent = 'サブグループ';
+        subgroupsLabel.style.cssText = 'margin: 10px 0; font-size: 0.9rem; color: #666;';
+        groupSection.appendChild(subgroupsLabel);
+        
+        group.subgroups.forEach((subgroup, subgroupIndex) => {
+            this.renderSubgroupSection(subgroup, groupIndex, subgroupIndex, groupSection);
+        });
+        
+        // Add subgroup button
+        const addSubgroupBtn = document.createElement('button');
+        addSubgroupBtn.textContent = '+ サブグループ追加';
+        addSubgroupBtn.style.cssText = 'width: 100%; padding: 8px; margin-top: 10px; background: #9c27b0; color: white; border: none; border-radius: 4px; cursor: pointer;';
+        addSubgroupBtn.addEventListener('click', () => this.addSubgroup(groupIndex));
+        groupSection.appendChild(addSubgroupBtn);
+        
+        this.groupsEditor.appendChild(groupSection);
+    }
+    
+    renderSubgroupSection(subgroup, groupIndex, subgroupIndex, parentElement) {
+        const subgroupDiv = document.createElement('div');
+        subgroupDiv.style.cssText = 'margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 6px;';
+        
+        // Subgroup header
+        const subgroupHeader = document.createElement('div');
+        subgroupHeader.style.cssText = 'display: flex; gap: 10px; align-items: center; margin-bottom: 10px;';
+        
+        const subNameInput = document.createElement('input');
+        subNameInput.type = 'text';
+        subNameInput.value = subgroup.name;
+        subNameInput.placeholder = 'サブグループ名';
+        subNameInput.style.cssText = 'flex: 1; padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+        subNameInput.dataset.groupIndex = groupIndex;
+        subNameInput.dataset.subgroupIndex = subgroupIndex;
+        subNameInput.dataset.field = 'name';
+        
+        const subProbInput = document.createElement('input');
+        subProbInput.type = 'number';
+        subProbInput.value = subgroup.probability;
+        subProbInput.step = '0.1';
+        subProbInput.min = '0';
+        subProbInput.style.cssText = 'width: 70px; padding: 6px; border: 1px solid #ddd; border-radius: 4px;';
+        subProbInput.dataset.groupIndex = groupIndex;
+        subProbInput.dataset.subgroupIndex = subgroupIndex;
+        subProbInput.dataset.field = 'probability';
+        
+        const subPercentSpan = document.createElement('span');
+        subPercentSpan.textContent = '%';
+        subPercentSpan.style.fontSize = '0.9rem';
+        
+        const deleteSubgroupBtn = document.createElement('button');
+        deleteSubgroupBtn.textContent = '削除';
+        deleteSubgroupBtn.style.cssText = 'padding: 6px 10px; background: #ff5722; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;';
+        deleteSubgroupBtn.addEventListener('click', () => this.deleteSubgroup(groupIndex, subgroupIndex));
+        
+        subgroupHeader.appendChild(subNameInput);
+        subgroupHeader.appendChild(subProbInput);
+        subgroupHeader.appendChild(subPercentSpan);
+        subgroupHeader.appendChild(deleteSubgroupBtn);
+        subgroupDiv.appendChild(subgroupHeader);
+        
+        // Items in subgroup
+        const itemsLabel = document.createElement('div');
+        itemsLabel.textContent = 'アイテム:';
+        itemsLabel.style.cssText = 'font-size: 0.85rem; color: #666; margin-bottom: 5px;';
+        subgroupDiv.appendChild(itemsLabel);
+        
+        subgroup.items.forEach((item, itemIndex) => {
+            this.renderItemRow(item, groupIndex, subgroupIndex, itemIndex, subgroupDiv);
+        });
+        
+        // Add item button
+        const addItemBtn = document.createElement('button');
+        addItemBtn.textContent = '+ アイテム追加';
+        addItemBtn.style.cssText = 'width: 100%; padding: 6px; margin-top: 5px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;';
+        addItemBtn.addEventListener('click', () => this.addItem(groupIndex, subgroupIndex));
+        subgroupDiv.appendChild(addItemBtn);
+        
+        parentElement.appendChild(subgroupDiv);
+    }
+    
+    renderItemRow(item, groupIndex, subgroupIndex, itemIndex, parentElement) {
+        const itemRow = document.createElement('div');
+        itemRow.style.cssText = 'display: flex; gap: 5px; align-items: center; margin: 5px 0;';
+        
+        const itemNameInput = document.createElement('input');
+        itemNameInput.type = 'text';
+        itemNameInput.value = item.name;
+        itemNameInput.placeholder = 'アイテム名';
+        itemNameInput.style.cssText = 'flex: 1; padding: 5px; border: 1px solid #ddd; border-radius: 3px; font-size: 0.9rem;';
+        itemNameInput.dataset.groupIndex = groupIndex;
+        itemNameInput.dataset.subgroupIndex = subgroupIndex;
+        itemNameInput.dataset.itemIndex = itemIndex;
+        
+        const deleteItemBtn = document.createElement('button');
+        deleteItemBtn.textContent = '×';
+        deleteItemBtn.style.cssText = 'padding: 5px 10px; background: #e91e63; color: white; border: none; border-radius: 3px; cursor: pointer; font-weight: bold;';
+        deleteItemBtn.addEventListener('click', () => this.deleteItem(groupIndex, subgroupIndex, itemIndex));
+        
+        itemRow.appendChild(itemNameInput);
+        itemRow.appendChild(deleteItemBtn);
+        parentElement.appendChild(itemRow);
     }
     
     updateTotalProbDisplay() {
-        const inputs = this.rarityProbsEditor.querySelectorAll('input[data-rarity]');
-        let total = 0;
-        inputs.forEach(input => {
-            const value = parseFloat(input.value) || 0;
-            total += value;
-        });
-        
+        const totalProb = this.groups.reduce((sum, group) => sum + group.probability, 0);
         const totalDiv = document.getElementById('total-prob-display');
         if (totalDiv) {
-            totalDiv.textContent = `確率合計: ${total.toFixed(1)}%`;
-            totalDiv.style.color = total === 100 ? '#4caf50' : '#ff9800';
+            totalDiv.textContent = `確率合計: ${totalProb.toFixed(1)}%`;
+            totalDiv.style.color = totalProb === 100 ? '#4caf50' : '#ff9800';
         }
     }
     
-    renderItemsEditor() {
-        this.itemsEditor.innerHTML = '';
-        
-        this.items.forEach((item, index) => {
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            
-            const nameInput = document.createElement('input');
-            nameInput.type = 'text';
-            nameInput.value = item.name;
-            nameInput.placeholder = 'アイテム名';
-            nameInput.dataset.index = index;
-            nameInput.dataset.field = 'name';
-            
-            const raritySelect = document.createElement('select');
-            raritySelect.dataset.index = index;
-            raritySelect.dataset.field = 'rarity';
-            for (let i = 1; i <= 5; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `★${i}`;
-                if (i === item.rarity) option.selected = true;
-                raritySelect.appendChild(option);
-            }
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'delete-item-btn';
-            deleteBtn.textContent = '削除';
-            deleteBtn.dataset.index = index;
-            deleteBtn.addEventListener('click', () => this.deleteItem(index));
-            
-            row.appendChild(nameInput);
-            row.appendChild(raritySelect);
-            row.appendChild(deleteBtn);
-            
-            this.itemsEditor.appendChild(row);
-        });
+    addGroup() {
+        const newGroup = {
+            id: 'group-' + Date.now(),
+            name: '新しいグループ',
+            color: '#' + Math.floor(Math.random()*16777215).toString(16),
+            probability: 10.0,
+            subgroups: [
+                {
+                    id: 'subgroup-' + Date.now(),
+                    name: '通常',
+                    probability: 100,
+                    items: [{ name: '新しいアイテム' }]
+                }
+            ]
+        };
+        this.groups.push(newGroup);
+        this.renderGroupsEditor();
     }
     
-    addItemRow() {
-        this.items.push({
-            name: '新しいアイテム',
-            rarity: 3
-        });
-        this.renderItemsEditor();
+    deleteGroup(groupIndex) {
+        if (this.groups.length <= 1) {
+            alert('最低1つのグループが必要です');
+            return;
+        }
+        if (confirm('このグループを削除しますか？')) {
+            this.groups.splice(groupIndex, 1);
+            this.renderGroupsEditor();
+        }
     }
     
-    deleteItem(index) {
-        if (this.items.length <= 1) {
+    addSubgroup(groupIndex) {
+        const newSubgroup = {
+            id: 'subgroup-' + Date.now(),
+            name: '新しいサブグループ',
+            probability: 50,
+            items: [{ name: '新しいアイテム' }]
+        };
+        this.groups[groupIndex].subgroups.push(newSubgroup);
+        this.renderGroupsEditor();
+    }
+    
+    deleteSubgroup(groupIndex, subgroupIndex) {
+        if (this.groups[groupIndex].subgroups.length <= 1) {
+            alert('最低1つのサブグループが必要です');
+            return;
+        }
+        if (confirm('このサブグループを削除しますか？')) {
+            this.groups[groupIndex].subgroups.splice(subgroupIndex, 1);
+            this.renderGroupsEditor();
+        }
+    }
+    
+    addItem(groupIndex, subgroupIndex) {
+        this.groups[groupIndex].subgroups[subgroupIndex].items.push({ name: '新しいアイテム' });
+        this.renderGroupsEditor();
+    }
+    
+    deleteItem(groupIndex, subgroupIndex, itemIndex) {
+        if (this.groups[groupIndex].subgroups[subgroupIndex].items.length <= 1) {
             alert('最低1つのアイテムが必要です');
             return;
         }
-        this.items.splice(index, 1);
-        this.renderItemsEditor();
+        this.groups[groupIndex].subgroups[subgroupIndex].items.splice(itemIndex, 1);
+        this.renderGroupsEditor();
     }
     
     saveSettings() {
@@ -480,38 +590,37 @@ class GachaSimulator {
         this.settings.animationEnabled = this.animationToggle.checked;
         this.settings.showProbability = this.probabilityToggle.checked;
         
-        // Update rarity probabilities
-        const rarityInputs = this.rarityProbsEditor.querySelectorAll('input[data-rarity]');
-        rarityInputs.forEach(input => {
-            const rarity = parseInt(input.dataset.rarity);
-            const value = parseFloat(input.value);
-            if (isNaN(value) || value < 0) {
-                alert('確率は0以上の数値を入力してください');
-                throw new Error('Invalid probability value');
-            }
-            this.rarityProbabilities[rarity] = value;
-        });
-        
-        // Update items from editor
-        const inputs = this.itemsEditor.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            const index = parseInt(input.dataset.index);
+        // Update groups from editor
+        const groupInputs = this.groupsEditor.querySelectorAll('input');
+        groupInputs.forEach(input => {
+            const groupIndex = input.dataset.groupIndex;
+            const subgroupIndex = input.dataset.subgroupIndex;
+            const itemIndex = input.dataset.itemIndex;
             const field = input.dataset.field;
             
-            if (field === 'name') {
-                const value = input.value.trim();
-                if (!value) {
-                    alert('アイテム名を入力してください');
-                    throw new Error('Item name is required');
+            if (groupIndex !== undefined && subgroupIndex === undefined && itemIndex === undefined) {
+                // Group level
+                if (field === 'name') {
+                    this.groups[groupIndex].name = input.value.trim();
+                } else if (field === 'color') {
+                    this.groups[groupIndex].color = input.value;
+                } else if (field === 'probability') {
+                    this.groups[groupIndex].probability = parseFloat(input.value) || 0;
                 }
-                this.items[index].name = value;
-            } else if (field === 'rarity') {
-                this.items[index].rarity = parseInt(input.value);
+            } else if (groupIndex !== undefined && subgroupIndex !== undefined && itemIndex === undefined) {
+                // Subgroup level
+                if (field === 'name') {
+                    this.groups[groupIndex].subgroups[subgroupIndex].name = input.value.trim();
+                } else if (field === 'probability') {
+                    this.groups[groupIndex].subgroups[subgroupIndex].probability = parseFloat(input.value) || 0;
+                }
+            } else if (groupIndex !== undefined && subgroupIndex !== undefined && itemIndex !== undefined) {
+                // Item level
+                this.groups[groupIndex].subgroups[subgroupIndex].items[itemIndex].name = input.value.trim();
             }
         });
         
-        this.saveItems();
-        this.saveRarityProbabilities();
+        this.saveGroups();
         this.saveSettingsToStorage();
         this.updateDisplay();
         this.closeSettingsModal();
@@ -523,14 +632,11 @@ class GachaSimulator {
             return;
         }
         
-        this.items = [...DEFAULT_ITEMS];
-        this.rarityProbabilities = { ...DEFAULT_RARITY_PROBABILITIES };
+        this.groups = JSON.parse(JSON.stringify(DEFAULT_GROUPS));
         this.settings = { ...GAME_CONFIG.DEFAULT_SETTINGS };
-        this.saveItems();
-        this.saveRarityProbabilities();
+        this.saveGroups();
         this.saveSettingsToStorage();
-        this.renderRarityProbsEditor();
-        this.renderItemsEditor();
+        this.renderGroupsEditor();
         this.animationToggle.checked = this.settings.animationEnabled;
         this.probabilityToggle.checked = this.settings.showProbability;
         this.updateDisplay();
@@ -547,27 +653,33 @@ class GachaSimulator {
     }
     
     renderHistory() {
-        // Calculate statistics
-        const rarityCount = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        // Calculate statistics by group
+        const groupCount = {};
+        this.groups.forEach(group => {
+            groupCount[group.id] = 0;
+        });
+        
         this.history.forEach(entry => {
-            rarityCount[entry.item.rarity]++;
+            if (entry.item.groupId && groupCount[entry.item.groupId] !== undefined) {
+                groupCount[entry.item.groupId]++;
+            }
         });
         
         // Display stats
         this.historyStats.innerHTML = '';
-        [5, 4, 3, 2, 1].forEach(rarity => {
-            if (rarityCount[rarity] > 0) {
+        this.groups.forEach(group => {
+            if (groupCount[group.id] > 0) {
                 const stat = document.createElement('div');
                 stat.className = 'history-stat';
                 
                 const label = document.createElement('div');
                 label.className = 'history-stat-label';
-                label.textContent = GAME_CONFIG.RARITY[rarity].stars;
-                label.style.color = GAME_CONFIG.RARITY[rarity].color;
+                label.textContent = group.name;
+                label.style.color = group.color;
                 
                 const value = document.createElement('div');
                 value.className = 'history-stat-value';
-                value.textContent = rarityCount[rarity];
+                value.textContent = groupCount[group.id];
                 
                 stat.appendChild(label);
                 stat.appendChild(value);
@@ -589,11 +701,11 @@ class GachaSimulator {
             const name = document.createElement('div');
             name.className = 'history-item-name';
             name.textContent = entry.item.name;
-            name.style.color = GAME_CONFIG.RARITY[entry.item.rarity].color;
+            name.style.color = entry.item.groupColor || '#666';
             
             const info = document.createElement('div');
             info.className = 'history-item-info';
-            info.textContent = GAME_CONFIG.RARITY[entry.item.rarity].stars;
+            info.textContent = entry.item.groupName || '';
             
             item.appendChild(name);
             item.appendChild(info);

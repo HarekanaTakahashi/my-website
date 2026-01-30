@@ -187,6 +187,7 @@ h1 {
     overflow: hidden;
     animation: cardFlip 0.6s ease-out;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid var(--group-color, #9e9e9e);
 }
 
 @keyframes cardFlip {
@@ -210,24 +211,23 @@ h1 {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--rarity-color, #9e9e9e);
+    background: var(--group-color, #9e9e9e);
 }
 
-.card-stars {
-    font-size: 1rem;
-    color: var(--rarity-color, #9e9e9e);
-    margin-bottom: 8px;
+.card-group {
+    font-size: 0.85rem;
     font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .card-name {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
 }
 
-.card-rarity {
+.card-subgroup {
     font-size: 0.75rem;
     color: #666;
 }
