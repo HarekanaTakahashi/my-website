@@ -425,14 +425,6 @@ class PicrossGame {
                 this.elements.answerName.textContent = this.currentPuzzle.name;
                 this.elements.answerReveal.style.display = 'block';
             }, 800);
-            
-            // Show win dialog after answer reveal
-            setTimeout(() => {
-                this.showMessage(
-                    GAME_CONFIG.MESSAGES.WIN_TITLE,
-                    `${GAME_CONFIG.MESSAGES.WIN_TEXT}\nタイム: ${this.formatTime(timeTaken)}`
-                );
-            }, 1500);
         } else {
             this.showMessage(
                 GAME_CONFIG.MESSAGES.GAME_OVER_TITLE,
