@@ -56,7 +56,6 @@ class GachaSimulator {
         this.closeSettingsBtn.addEventListener('click', () => this.closeSettingsModal());
         this.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
         this.resetSettingsBtn.addEventListener('click', () => this.resetSettings());
-        this.addItemBtn.addEventListener('click', () => this.addItemRow());
         
         // History modal
         this.historyBtn.addEventListener('click', () => this.openHistoryModal());
