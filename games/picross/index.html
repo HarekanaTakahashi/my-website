@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Picross</title>
     <link rel="stylesheet" href="picross.css">
 </head>
@@ -24,12 +25,12 @@
                 </div>
             </div>
             <div class="puzzle-selector">
-                <label>パズル選択</label>
-                <select id="puzzle-select"></select>
+                <label for="puzzle-select">パズル選択</label>
+                <select id="puzzle-select" aria-label="パズルを選択"></select>
             </div>
             <div class="controls">
-                <button class="control-btn btn-new" id="new-game">New Puzzle</button>
-                <button class="control-btn btn-clear" id="clear-board">Clear</button>
+                <button class="control-btn btn-new" id="new-game" aria-label="新しいパズルを開始">New Puzzle</button>
+                <button class="control-btn btn-clear" id="clear-board" aria-label="盤面をクリア">Clear</button>
             </div>
             <div class="best-times">
                 <h4>ベストタイム</h4>
@@ -50,6 +51,12 @@
                 </div>
                 <div class="instruction-item">
                     <span class="key">右クリック</span> ×印をつける
+                </div>
+                <div class="instruction-item">
+                    <span class="key">Enter/Space</span> セルを塗る
+                </div>
+                <div class="instruction-item">
+                    <span class="key">X キー</span> ×印をつける
                 </div>
                 <div class="instruction-item">
                     <span class="key">もう一度</span> 状態をリセット

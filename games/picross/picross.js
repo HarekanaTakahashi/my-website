@@ -228,12 +228,19 @@ class PicrossGame {
                 cell.className = 'cell';
                 cell.dataset.row = row;
                 cell.dataset.col = col;
+                cell.setAttribute('tabindex', '0');
+                cell.setAttribute('role', 'button');
+                cell.setAttribute('aria-label', `セル ${row + 1}, ${col + 1}`);
                 
                 // Apply current state
                 if (this.playerGrid[row][col] === GAME_CONFIG.CELL_STATE.FILLED) {
                     cell.classList.add('filled');
+                    cell.setAttribute('aria-pressed', 'true');
                 } else if (this.playerGrid[row][col] === GAME_CONFIG.CELL_STATE.MARKED) {
                     cell.classList.add('marked');
+                    cell.setAttribute('aria-label', `セル ${row + 1}, ${col + 1} - マーク済み`);
+                } else {
+                    cell.setAttribute('aria-pressed', 'false');
                 }
                 
                 // Left click - fill
@@ -243,6 +250,17 @@ class PicrossGame {
                 cell.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     this.handleCellClick(row, col, 'mark');
+                });
+                
+                // Keyboard support
+                cell.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.handleCellClick(row, col, 'fill');
+                    } else if (e.key === 'x' || e.key === 'X') {
+                        e.preventDefault();
+                        this.handleCellClick(row, col, 'mark');
+                    }
                 });
                 
                 board.appendChild(cell);

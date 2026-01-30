@@ -233,7 +233,7 @@ body {
 }
 
 .hint-complete {
-    color: #95e1d3;
+    color: #28a745;
 }
 
 .row-hints {
@@ -268,6 +268,11 @@ body {
 
 .cell:hover {
     background: #f0f0f0;
+}
+
+.cell:focus {
+    outline: 3px solid #667eea;
+    outline-offset: -3px;
 }
 
 .cell.filled {

@@ -35,6 +35,6 @@ export const GAME_CONFIG = {
     COLORS: {
         FILLED: '#667eea',
         MARKED: '#ff6b6b',
-        HINT_COMPLETE: '#95e1d3'
+        HINT_COMPLETE: '#28a745'
     }
 };
