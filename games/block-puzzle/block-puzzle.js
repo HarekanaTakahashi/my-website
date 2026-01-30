@@ -77,11 +77,13 @@ class BlockPuzzle {
             if (piece.used) return;
             
             const el = document.createElement('div');
-            el.className = 'piece' + (this.selectedPiece === index ? ' selected' : '');
+            const isSelected = this.selectedPiece === index;
+            el.className = 'piece' + (isSelected ? ' selected' : '');
             el.dataset.index = index;
             el.setAttribute('tabindex', '0');
             el.setAttribute('role', 'button');
             el.setAttribute('aria-label', `ブロック ${index + 1} を選択`);
+            el.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
             
             const shape = piece.shape;
             el.style.gridTemplateColumns = `repeat(${shape[0].length}, 20px)`;
