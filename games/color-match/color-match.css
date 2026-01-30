@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
@@ -14,132 +14,74 @@ body {
     padding: 20px;
 }
 
-.game-container {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    width: 100%;
-}
-
-.header {
+.game-wrapper {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
     align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
+    justify-content: center;
+    max-height: calc(100vh - 40px);
 }
 
-.title-container h1 {
-    color: #333;
-    font-size: 32px;
+.side-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    min-width: 130px;
+}
+
+.side-panel h3 {
+    color: #667eea;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+h1 {
+    color: #667eea;
+    font-size: 1.5rem;
     font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
 }
 
 .scores-container {
     display: flex;
-    gap: 15px;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .score-box {
-    background: #f0f0f0;
-    padding: 10px 20px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
     text-align: center;
-    min-width: 100px;
+    min-width: 90px;
 }
 
 .score-label {
-    font-size: 12px;
-    color: #666;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    margin-bottom: 5px;
+    opacity: 0.9;
 }
 
 .score-value {
-    font-size: 24px;
+    font-size: 1.1rem;
     font-weight: bold;
-    color: #333;
-}
-
-.game-info {
-    background: #f8f9fa;
-    padding: 12px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #555;
-}
-
-.chain-display {
-    min-height: 30px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ff6b6b;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.game-area {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.next-piece-container {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 100px;
-}
-
-.next-label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.next-piece {
-    width: 60px;
-    height: 120px;
-    position: relative;
-}
-
-.board-container {
-    position: relative;
-}
-
-#game-canvas {
-    border: 3px solid #333;
-    border-radius: 10px;
-    background: #1a1a1a;
-    display: block;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
 }
 
 .new-game-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 15px 40px;
-    font-size: 16px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
     font-weight: bold;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -149,8 +91,65 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.new-game-btn:active {
-    transform: translateY(0);
+.chain-display {
+    min-height: 25px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ff6b6b;
+}
+
+.game-container {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+#game-canvas {
+    border: 3px solid #333;
+    border-radius: 10px;
+    background: #1a1a1a;
+    display: block;
+}
+
+.next-piece {
+    width: 50px;
+    height: 100px;
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.key-item {
+    font-size: 0.7rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.key {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+
+.game-tip {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 10px;
 }
 
 .game-message {
@@ -172,33 +171,32 @@ body {
 
 .message-content {
     background: white;
-    padding: 40px;
-    border-radius: 20px;
+    padding: 30px;
+    border-radius: 15px;
     text-align: center;
-    max-width: 400px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    max-width: 350px;
 }
 
 .message-content h2 {
     color: #333;
-    font-size: 32px;
-    margin-bottom: 15px;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
 }
 
 .message-content p {
     color: #666;
-    font-size: 18px;
-    margin-bottom: 25px;
+    font-size: 1rem;
+    margin-bottom: 20px;
 }
 
 #try-again-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    padding: 15px 40px;
-    font-size: 18px;
+    padding: 12px 30px;
+    font-size: 1rem;
     font-weight: bold;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -207,11 +205,6 @@ body {
     transform: translateY(-2px);
 }
 
-#try-again-btn:active {
-    transform: translateY(0);
-}
-
-/* Color classes for pieces */
 .ball {
     position: absolute;
     border-radius: 50%;
@@ -224,29 +217,3 @@ body {
 .ball.green { background: radial-gradient(circle at 30% 30%, #51cf66, #228B22); }
 .ball.yellow { background: radial-gradient(circle at 30% 30%, #ffd43b, #ffa500); }
 .ball.purple { background: radial-gradient(circle at 30% 30%, #cc5de8, #7b2cbf); }
-
-/* Responsive design */
-@media (max-width: 600px) {
-    .game-container {
-        padding: 15px;
-    }
-    
-    .header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .title-container h1 {
-        font-size: 24px;
-        text-align: center;
-    }
-    
-    .scores-container {
-        justify-content: center;
-    }
-    
-    #game-canvas {
-        width: 100%;
-        height: auto;
-    }
-}

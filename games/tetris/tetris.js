@@ -215,7 +215,8 @@ class Tetris {
         document.getElementById('lines').textContent = this.scoreManager.lines;
         document.getElementById('best-score').textContent = this.scoreManager.bestScore;
         document.getElementById('level').textContent = this.scoreManager.level;
-        document.getElementById('last-action').textContent = this.scoreManager.lastAction || '-';
+        const lastActionEl = document.getElementById('last-action');
+        if (lastActionEl) lastActionEl.textContent = this.scoreManager.lastAction || '-';
     }
     
     initControls() {

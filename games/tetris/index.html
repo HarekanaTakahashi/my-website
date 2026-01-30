@@ -6,11 +6,9 @@
     <link rel="stylesheet" href="tetris.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="title-container">
-                <h1>Tetris</h1>
-            </div>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>Tetris</h1>
             <div class="scores-container">
                 <div class="score-box">
                     <div class="score-label">スコア</div>
@@ -25,26 +23,24 @@
                     <div class="score-value" id="best-score">0</div>
                 </div>
             </div>
-        </div>
-        
-        <div class="game-info">
-            ADキーで移動、Sキーで早く落とす、Wキーでハードドロップ、スペースでホールド
-        </div>
-        
-        <div class="controls">
-            <button class="btn" id="start-btn" aria-label="スタート">スタート</button>
-            <button class="btn" id="pause-btn" aria-label="一時停止" disabled>一時停止</button>
-            <button class="btn" id="restart-btn" aria-label="リスタート">リスタート</button>
-        </div>
-        
-        <div class="game-layout">
-            <div class="side-panel hold-panel">
-                <h3>ホールド</h3>
-                <canvas id="hold-canvas" width="120" height="120"></canvas>
+            <div class="controls">
+                <button class="btn" id="start-btn" aria-label="スタート">スタート</button>
+                <button class="btn" id="pause-btn" aria-label="一時停止" disabled>一時停止</button>
+                <button class="btn" id="restart-btn" aria-label="リスタート">リスタート</button>
             </div>
-            
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Lv:</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+            </div>
+            <h3>ホールド</h3>
+            <canvas id="hold-canvas" width="100" height="100"></canvas>
+        </div>
+        
+        <div class="game-container">
             <div class="main-board">
-                <canvas id="game-canvas" width="300" height="600"></canvas>
+                <canvas id="game-canvas" width="250" height="500"></canvas>
                 <div class="game-overlay" id="game-overlay">
                     <div class="overlay-content">
                         <h2 id="overlay-title">Tetris</h2>
@@ -52,36 +48,19 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="side-panel next-panel">
-                <h3>ネクスト</h3>
-                <canvas id="next-canvas" width="120" height="360"></canvas>
-            </div>
         </div>
         
-        <div class="game-stats">
-            <div class="stat-item">
-                <span class="stat-label">レベル:</span>
-                <span class="stat-value" id="level">1</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">最終アクション:</span>
-                <span class="stat-value" id="last-action">-</span>
-            </div>
-        </div>
-        
-        <div class="instructions">
+        <div class="side-panel right-panel">
+            <h3>ネクスト</h3>
+            <canvas id="next-canvas" width="100" height="300"></canvas>
             <h3>操作方法</h3>
-            <ul>
-                <li><strong>A/D</strong>: 左右移動</li>
-                <li><strong>S</strong>: ソフトドロップ（早く落とす）</li>
-                <li><strong>W</strong>: ハードドロップ</li>
-                <li><strong>←</strong>: 反時計回りに回転</li>
-                <li><strong>→</strong>: 時計回りに回転</li>
-                <li><strong>スペース</strong>: ホールド</li>
-                <li><strong>P</strong> または <strong>Esc</strong>: 一時停止</li>
-                <li><strong>R</strong>: リスタート</li>
-            </ul>
+            <div class="instructions">
+                <div class="key-item"><span class="key">A/D</span> 左右移動</div>
+                <div class="key-item"><span class="key">S</span> 落下</div>
+                <div class="key-item"><span class="key">W</span> ハードドロップ</div>
+                <div class="key-item"><span class="key">←→</span> 回転</div>
+                <div class="key-item"><span class="key">Space</span> ホールド</div>
+            </div>
         </div>
     </div>
 
