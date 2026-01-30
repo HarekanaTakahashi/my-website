@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>大富豪</title>
+    <link rel="stylesheet" href="daifugo.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>大富豪</h1>
+            <div class="round-info">
+                <div class="round-label">ラウンド</div>
+                <div class="round-value" id="round-number">1</div>
+            </div>
+            <div class="status-box" id="revolution-status" style="display: none;">
+                <span class="status-icon">🔄</span>
+                <span class="status-text">革命中</span>
+            </div>
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
+        </div>
+        
+        <div class="game-container">
+            <!-- Opponent areas (CPU) -->
+            <div class="opponents-area">
+                <div class="opponent" id="opponent-1">
+                    <div class="opponent-name">CPU 1</div>
+                    <div class="opponent-cards" id="opponent-1-cards"></div>
+                    <div class="opponent-status" id="opponent-1-status"></div>
+                </div>
+                <div class="opponent" id="opponent-2">
+                    <div class="opponent-name">CPU 2</div>
+                    <div class="opponent-cards" id="opponent-2-cards"></div>
+                    <div class="opponent-status" id="opponent-2-status"></div>
+                </div>
+                <div class="opponent" id="opponent-3">
+                    <div class="opponent-name">CPU 3</div>
+                    <div class="opponent-cards" id="opponent-3-cards"></div>
+                    <div class="opponent-status" id="opponent-3-status"></div>
+                </div>
+            </div>
+            
+            <!-- Field (center) -->
+            <div class="field-area">
+                <div class="field" id="field">
+                    <div class="field-placeholder">場にカードがありません</div>
+                </div>
+                <div class="message-area" id="message-area"></div>
+            </div>
+            
+            <!-- Player hand (bottom) -->
+            <div class="player-area">
+                <div class="player-info">
+                    <span class="player-name">あなた</span>
+                    <span class="player-status" id="player-status"></span>
+                </div>
+                <div class="player-hand" id="player-hand"></div>
+                <div class="player-actions">
+                    <button class="action-btn play-btn" id="play-btn" aria-label="出す" disabled>出す</button>
+                    <button class="action-btn pass-btn" id="pass-btn" aria-label="パス">パス</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>ルール</h3>
+            <div class="rules-list">
+                <div class="rule-item">
+                    <span class="rule-icon">📊</span>
+                    <span class="rule-text">3が最弱、2が最強</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">🔄</span>
+                    <span class="rule-text">同じ数字4枚で革命</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">8️⃣</span>
+                    <span class="rule-text">8を出すと場が流れる</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-icon">⚠️</span>
+                    <span class="rule-text">2/8/JOKERで上がると反則</span>
+                </div>
+            </div>
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="instruction-item"><span class="key">クリック</span> カード選択</div>
+                <div class="instruction-item"><span class="key">出す</span> 選択したカードを出す</div>
+                <div class="instruction-item"><span class="key">パス</span> 順番をスキップ</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title"></h2>
+            <p id="message-text"></p>
+            <button id="next-round-btn">次のラウンドへ</button>
+        </div>
+    </div>
+
+    <script type="module" src="daifugo.js"></script>
+</body>
+</html>
