@@ -31,6 +31,8 @@ class PicrossGame {
         this.elements = {
             puzzleName: document.getElementById('puzzle-name'),
             puzzleDifficulty: document.getElementById('puzzle-difficulty'),
+            answerReveal: document.getElementById('answer-reveal'),
+            answerName: document.getElementById('answer-name'),
             lives: document.getElementById('lives'),
             timer: document.getElementById('timer'),
             puzzleSelect: document.getElementById('puzzle-select'),
@@ -125,6 +127,9 @@ class PicrossGame {
         
         this.gameOver = false;
         this.completed = false;
+        
+        // Hide answer reveal section
+        this.elements.answerReveal.style.display = 'none';
         
         this.elements.puzzleSelect.value = puzzleId;
         // Hide puzzle name to prevent revealing the answer
@@ -415,13 +420,19 @@ class PicrossGame {
             const timeTaken = this.getElapsedTime();
             this.saveBestTime(this.currentPuzzle.id, timeTaken);
             
-            // Show puzzle name reveal after a brief delay
+            // Show answer in left panel after a brief delay
+            setTimeout(() => {
+                this.elements.answerName.textContent = this.currentPuzzle.name;
+                this.elements.answerReveal.style.display = 'block';
+            }, 800);
+            
+            // Show win dialog after answer reveal
             setTimeout(() => {
                 this.showMessage(
                     GAME_CONFIG.MESSAGES.WIN_TITLE,
-                    `答え: ${this.currentPuzzle.name}\n\n${GAME_CONFIG.MESSAGES.WIN_TEXT}\nタイム: ${this.formatTime(timeTaken)}`
+                    `${GAME_CONFIG.MESSAGES.WIN_TEXT}\nタイム: ${this.formatTime(timeTaken)}`
                 );
-            }, 800);
+            }, 1500);
         } else {
             this.showMessage(
                 GAME_CONFIG.MESSAGES.GAME_OVER_TITLE,
