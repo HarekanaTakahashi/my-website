@@ -302,6 +302,9 @@ export class GameController {
                 const lastPlayer = this.players.find(p => p.id === this.lastPlayedBy);
                 if (lastPlayer && !lastPlayer.isOut) {
                     this.currentPlayerIndex = lastPlayer.id;
+                } else {
+                    // If last player is out or no one played yet, find next active player
+                    this.findNextActivePlayer();
                 }
                 this.checkCpuTurn();
             }, GAME_CONFIG.DELAYS.FIELD_CLEAR);
@@ -310,6 +313,21 @@ export class GameController {
         
         this.onUpdate();
         this.nextTurn();
+    }
+    
+    /**
+     * Find the next active player from current position
+     */
+    findNextActivePlayer() {
+        let nextIndex = this.currentPlayerIndex;
+        let attempts = 0;
+        
+        do {
+            nextIndex = (nextIndex + 1) % GAME_CONFIG.PLAYER_COUNT;
+            attempts++;
+        } while (this.players[nextIndex].isOut && attempts < GAME_CONFIG.PLAYER_COUNT);
+        
+        this.currentPlayerIndex = nextIndex;
     }
     
     /**

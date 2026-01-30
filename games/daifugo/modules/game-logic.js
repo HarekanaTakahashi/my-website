@@ -199,7 +199,13 @@ export class CpuAI {
                     return p;
                 }
             }
-            // All plays are forbidden - pass instead
+            // All plays are forbidden
+            // If field is empty (we're the leader), we MUST play to avoid infinite loop
+            // Otherwise pass and hope someone else plays first
+            if (!fieldCards || fieldCards.length === 0) {
+                // Must play something - take the penalty
+                return play;
+            }
             return [];
         }
         
