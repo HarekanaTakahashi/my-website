@@ -203,10 +203,10 @@ class DanmakuGame {
 
     spawnEnemy() {
         const patterns = [
-            { func: this.spawnCirclePattern.bind(this), name: 'circle' },
-            { func: this.spawnSpiralPattern.bind(this), name: 'spiral' },
-            { func: this.spawnTargetedPattern.bind(this), name: 'targeted' },
-            { func: this.spawnRandomPattern.bind(this), name: 'random' }
+            { func: this.spawnCirclePattern.bind(this) },
+            { func: this.spawnSpiralPattern.bind(this) },
+            { func: this.spawnTargetedPattern.bind(this) },
+            { func: this.spawnRandomPattern.bind(this) }
         ];
 
         // ランダムなパターンを選択
@@ -216,6 +216,7 @@ class DanmakuGame {
         let enemyX, enemyY;
         let attempts = 0;
         const minDistanceFromPlayer = 100; // プレイヤーから最低100px離す
+        const maxAttempts = 20;
         
         do {
             enemyX = 50 + Math.random() * (CANVAS_WIDTH - 100);
@@ -228,7 +229,17 @@ class DanmakuGame {
                 break;
             }
             attempts++;
-        } while (attempts < 10);
+        } while (attempts < maxAttempts);
+        
+        // 最終チェック：安全な距離が確保できなかった場合は、画面上部中央に配置
+        const dx = enemyX - this.player.x;
+        const dy = enemyY - this.player.y;
+        const finalDistance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (finalDistance < minDistanceFromPlayer) {
+            enemyX = CANVAS_WIDTH / 2;
+            enemyY = 30;
+        }
         
         // 敵を配列に追加
         this.enemies.push({
@@ -237,14 +248,8 @@ class DanmakuGame {
             radius: ENEMY_RADIUS,
             spawnTime: this.currentTime * 1000,
             hasFired: false,
-            patternFunc: pattern.func,
-            patternName: pattern.name
+            patternFunc: pattern.func
         });
-    }
-
-    spawnBulletPattern() {
-        // この関数は互換性のために残すが、実際には使用しない
-        this.spawnEnemy();
     }
 
     spawnCirclePattern(centerX, centerY) {
