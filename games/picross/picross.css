@@ -391,6 +391,16 @@ body {
     font-size: 1rem;
 }
 
+.message-content p:first-of-type {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #667eea;
+}
+
+.message-content p:last-of-type {
+    margin-bottom: 20px;
+}
+
 .message-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;

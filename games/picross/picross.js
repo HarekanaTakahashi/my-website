@@ -414,10 +414,14 @@ class PicrossGame {
         if (won) {
             const timeTaken = this.getElapsedTime();
             this.saveBestTime(this.currentPuzzle.id, timeTaken);
-            this.showMessage(
-                GAME_CONFIG.MESSAGES.WIN_TITLE,
-                `${GAME_CONFIG.MESSAGES.WIN_TEXT}\nタイム: ${this.formatTime(timeTaken)}`
-            );
+            
+            // Show puzzle name reveal after a brief delay
+            setTimeout(() => {
+                this.showMessage(
+                    GAME_CONFIG.MESSAGES.WIN_TITLE,
+                    `答え: ${this.currentPuzzle.name}\n\n${GAME_CONFIG.MESSAGES.WIN_TEXT}\nタイム: ${this.formatTime(timeTaken)}`
+                );
+            }, 800);
         } else {
             this.showMessage(
                 GAME_CONFIG.MESSAGES.GAME_OVER_TITLE,
@@ -487,7 +491,10 @@ class PicrossGame {
     
     showMessage(title, text) {
         this.elements.messageTitle.textContent = title;
-        this.elements.messageText.textContent = text;
+        // Convert newlines to HTML breaks for proper display
+        this.elements.messageText.innerHTML = text.split('\n').map(line => 
+            line ? `<p>${line}</p>` : ''
+        ).join('');
         this.elements.gameMessage.classList.add('show');
     }
     
