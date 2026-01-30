@@ -9,7 +9,7 @@ export class Renderer {
     constructor(canvas, ctx) {
         this.canvas = canvas;
         this.ctx = ctx;
-        this.cellSize = 60;
+        this.cellSize = 50; // 6 cols * 50 = 300px, 12 rows * 50 = 600px
     }
     
     render(board, currentPiece) {
