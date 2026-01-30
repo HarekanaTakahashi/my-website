@@ -323,6 +323,21 @@ element.appendChild(textNode);
   ```
 - より制限的な設定が必要な場合は `allow-scripts` のみを使用し、`allow-same-origin` を除外することを検討
 
+### ゲーム画面サイズ
+- **ウィンドウに収まる設計**: ゲームはウィンドウをはみ出さないようにする
+  - `.game-container` に `max-height: calc(100vh - 40px)` と `overflow-y: auto` を設定
+  - 必要に応じて `aspect-ratio` を使用してボードサイズを制御
+- **デザインの統一**:
+  - 背景: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
+  - フォント: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
+  - 操作説明: `.game-info` クラスでヘッダー下に配置
+  - ボタン: 紫グラデーションのスタイルを統一
+
+### 行数の制限
+- 各ファイルは **300行以下** を目標にする
+- 最大でも **500行を超えない** ようにする
+- 行数が多い場合は、モジュールに分割する（例: `modules/` や `config/` ディレクトリ）
+
 ---
 
 ## ✅ 品質基準
