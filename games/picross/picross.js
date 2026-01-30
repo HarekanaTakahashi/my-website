@@ -68,10 +68,10 @@ class PicrossGame {
     
     populatePuzzleSelector() {
         this.elements.puzzleSelect.innerHTML = '';
-        PUZZLES.forEach(puzzle => {
+        PUZZLES.forEach((puzzle, index) => {
             const option = document.createElement('option');
             option.value = puzzle.id;
-            option.textContent = `${puzzle.name} (${puzzle.difficulty})`;
+            option.textContent = `パズル ${index + 1} (${puzzle.difficulty})`;
             this.elements.puzzleSelect.appendChild(option);
         });
     }
@@ -127,7 +127,9 @@ class PicrossGame {
         this.completed = false;
         
         this.elements.puzzleSelect.value = puzzleId;
-        this.elements.puzzleName.textContent = this.currentPuzzle.name;
+        // Hide puzzle name to prevent revealing the answer
+        const puzzleIndex = PUZZLES.findIndex(p => p.id === puzzleId);
+        this.elements.puzzleName.textContent = `パズル ${puzzleIndex + 1}`;
         this.elements.puzzleDifficulty.textContent = this.currentPuzzle.difficulty;
         
         this.updateLives();
@@ -176,6 +178,7 @@ class PicrossGame {
         for (let col = 0; col < size; col++) {
             const colHint = document.createElement('div');
             colHint.className = 'col-hint';
+            // Match cell width exactly (cellSize includes the cell itself)
             colHint.style.width = `${cellSize}px`;
             colHint.style.minHeight = `${maxColHintLength * 15}px`;
             
@@ -200,6 +203,7 @@ class PicrossGame {
         for (let row = 0; row < size; row++) {
             const rowHint = document.createElement('div');
             rowHint.className = 'row-hint';
+            // Match cell height exactly
             rowHint.style.height = `${cellSize}px`;
             rowHint.style.minWidth = `${maxRowHintLength * 20}px`;
             
