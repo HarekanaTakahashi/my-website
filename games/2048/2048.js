@@ -274,7 +274,7 @@ class Game2048 {
         if (cells.length === 0) return;
         
         const cellSize = cells[0].offsetWidth;
-        const gap = 15;
+        const gap = 10;
         
         // Add tiles
         for (let i = 0; i < this.size; i++) {
@@ -292,8 +292,8 @@ class Game2048 {
                     
                     tile.textContent = value;
                     
-                    const left = j * (cellSize + gap) + 15;
-                    const top = i * (cellSize + gap) + 15;
+                    const left = j * (cellSize + gap) + 10;
+                    const top = i * (cellSize + gap) + 10;
                     
                     tile.style.width = cellSize + 'px';
                     tile.style.height = cellSize + 'px';

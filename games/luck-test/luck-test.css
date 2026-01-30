@@ -16,10 +16,12 @@ body {
 
 .game-container {
     background: white;
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 600px;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 500px;
     width: 100%;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -27,14 +29,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
 }
 
 h1 {
     color: #667eea;
-    font-size: 42px;
+    font-size: 1.75rem;
     font-weight: bold;
     margin: 0;
 }
@@ -46,35 +48,34 @@ h1 {
 
 .score-box {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 10px;
-    padding: 10px 20px;
+    border-radius: 8px;
+    padding: 8px 15px;
     text-align: center;
-    min-width: 100px;
+    min-width: 70px;
 }
 
 .score-label {
     color: rgba(255, 255, 255, 0.9);
-    font-size: 12px;
-    margin-bottom: 5px;
+    font-size: 0.7rem;
 }
 
 .score-value {
     color: white;
-    font-size: 28px;
+    font-size: 1.25rem;
     font-weight: bold;
 }
 
 .game-info {
     text-align: center;
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
-    min-height: 30px;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+    min-height: 25px;
 }
 
 .game-area {
-    margin-bottom: 30px;
-    min-height: 300px;
+    margin-bottom: 25px;
+    min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,15 +91,15 @@ h1 {
 .choice-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 20px;
+    border-radius: 15px;
     color: white;
-    font-size: 24px;
+    font-size: 1.25rem;
     font-weight: bold;
-    padding: 60px 40px;
+    padding: 40px 30px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    min-width: 150px;
+    min-width: 120px;
 }
 
 .choice-btn:hover:not(:disabled) {
@@ -130,7 +131,7 @@ h1 {
 }
 
 .result-message {
-    font-size: 48px;
+    font-size: 2.5rem;
     font-weight: bold;
     animation: resultPop 0.5s ease-out;
 }
@@ -151,11 +152,11 @@ h1 {
 .new-game-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
-    padding: 12px 30px;
+    padding: 10px 25px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -191,34 +192,34 @@ h1 {
 
 .message-content {
     background: white;
-    border-radius: 20px;
-    padding: 40px;
+    border-radius: 15px;
+    padding: 30px;
     text-align: center;
-    max-width: 400px;
+    max-width: 350px;
     animation: slideUp 0.3s ease-out;
 }
 
 #message-title {
     color: #667eea;
-    font-size: 36px;
-    margin-bottom: 20px;
+    font-size: 1.75rem;
+    margin-bottom: 15px;
 }
 
 #message-text {
-    color: #666;
-    font-size: 20px;
-    margin-bottom: 30px;
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
     line-height: 1.5;
 }
 
 #try-again-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: bold;
-    padding: 15px 40px;
+    padding: 12px 35px;
     cursor: pointer;
     transition: all 0.3s ease;
 }

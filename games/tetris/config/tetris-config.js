@@ -7,7 +7,7 @@ export const GAME_CONFIG = {
     VISIBLE_HEIGHT: 20,
     
     // Cell size for rendering
-    CELL_SIZE: 30,
+    CELL_SIZE: 25,
     
     // Game timing (milliseconds)
     INITIAL_DROP_INTERVAL: 1000,
