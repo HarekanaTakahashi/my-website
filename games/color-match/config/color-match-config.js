@@ -47,5 +47,6 @@ export const GAME_CONFIG = {
     },
     
     // Gravity
-    GRAVITY_FALL_SPEED: 150 // Speed of ball falling (ms per row)
+    GRAVITY_FALL_SPEED: 150, // Speed of ball falling (ms per row)
+    HARD_DROP_SPEED: 40 // Speed of hard drop animation (ms per row)
 };

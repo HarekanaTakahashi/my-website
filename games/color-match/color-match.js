@@ -161,13 +161,13 @@ class ColorMatchGame {
     async hardDrop() {
         if (!this.currentPiece || !this.currentPiece.isFalling) return;
         
-        // Drop piece with animation at gravity speed
+        // Drop piece with fast animation
         this.isPaused = true;
         
         while (this.pieceManager.canMovePiece(this.boardManager.getBoard(), this.currentPiece, 0, 1)) {
             this.currentPiece.row++;
             this.renderer.render(this.boardManager.getBoard(), this.currentPiece);
-            await this.sleep(GAME_CONFIG.GRAVITY_FALL_SPEED);
+            await this.sleep(GAME_CONFIG.HARD_DROP_SPEED);
         }
         
         this.isPaused = false;
