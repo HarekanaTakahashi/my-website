@@ -405,14 +405,27 @@ class GachaSimulator {
         groupSection.appendChild(groupHeader);
         
         // Subgroups section
+        const subgroupsHeader = document.createElement('div');
+        subgroupsHeader.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin: 10px 0;';
+        
         const subgroupsLabel = document.createElement('h4');
         subgroupsLabel.textContent = 'サブグループ';
-        subgroupsLabel.style.cssText = 'margin: 10px 0; font-size: 0.9rem; color: #666;';
-        groupSection.appendChild(subgroupsLabel);
+        subgroupsLabel.style.cssText = 'margin: 0; font-size: 0.9rem; color: #666;';
+        
+        const subgroupTotalDiv = document.createElement('div');
+        subgroupTotalDiv.id = `subgroup-total-${groupIndex}`;
+        subgroupTotalDiv.style.cssText = 'font-size: 0.85rem; font-weight: bold; padding: 4px 8px; border-radius: 4px; background: #f0f0f0;';
+        
+        subgroupsHeader.appendChild(subgroupsLabel);
+        subgroupsHeader.appendChild(subgroupTotalDiv);
+        groupSection.appendChild(subgroupsHeader);
         
         group.subgroups.forEach((subgroup, subgroupIndex) => {
             this.renderSubgroupSection(subgroup, groupIndex, subgroupIndex, groupSection);
         });
+        
+        // Update subgroup total display
+        this.updateSubgroupTotalDisplay(groupIndex);
         
         // Add subgroup button
         const addSubgroupBtn = document.createElement('button');
@@ -450,6 +463,7 @@ class GachaSimulator {
         subProbInput.dataset.groupIndex = groupIndex;
         subProbInput.dataset.subgroupIndex = subgroupIndex;
         subProbInput.dataset.field = 'probability';
+        subProbInput.addEventListener('input', () => this.updateSubgroupTotalDisplay(groupIndex));
         
         const subPercentSpan = document.createElement('span');
         subPercentSpan.textContent = '%';
@@ -515,6 +529,28 @@ class GachaSimulator {
         if (totalDiv) {
             totalDiv.textContent = `確率合計: ${totalProb.toFixed(1)}%`;
             totalDiv.style.color = totalProb === 100 ? '#4caf50' : '#ff9800';
+        }
+    }
+    
+    updateSubgroupTotalDisplay(groupIndex) {
+        // Read values directly from DOM inputs instead of this.groups
+        // to get real-time updates as user types
+        const subgroupInputs = document.querySelectorAll(`input[data-group-index="${groupIndex}"][data-field="probability"]`);
+        let subgroupTotal = 0;
+        
+        subgroupInputs.forEach(input => {
+            // Only count inputs that belong to subgroups (have data-subgroup-index)
+            if (input.dataset.subgroupIndex !== undefined) {
+                const value = parseFloat(input.value) || 0;
+                subgroupTotal += value;
+            }
+        });
+        
+        const totalDiv = document.getElementById(`subgroup-total-${groupIndex}`);
+        if (totalDiv) {
+            totalDiv.textContent = `合計: ${subgroupTotal.toFixed(1)}%`;
+            // Color coding: green if 100%, orange otherwise
+            totalDiv.style.color = subgroupTotal === 100 ? '#4caf50' : '#ff9800';
         }
     }
     
