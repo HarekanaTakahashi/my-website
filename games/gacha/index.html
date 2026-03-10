@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ガチャシミュレーター</title>
+    <link rel="stylesheet" href="gacha.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>ガチャ<br>シミュレーター</h1>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">所持石</div>
+                    <div class="stat-value" id="currency">10000</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">総ガチャ回数</div>
+                    <div class="stat-value" id="total-count">0</div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="gacha-btn single-btn" id="single-gacha-btn" aria-label="単発ガチャ">
+                    <span class="btn-text">単発</span>
+                    <span class="btn-cost">150石</span>
+                </button>
+                <button class="gacha-btn multi-btn" id="multi-gacha-btn" aria-label="10連ガチャ">
+                    <span class="btn-text">10連</span>
+                    <span class="btn-cost">1500石</span>
+                </button>
+            </div>
+            <button class="settings-btn" id="settings-btn" aria-label="設定を開く">⚙ 設定</button>
+        </div>
+        
+        <div class="game-container">
+            <div class="result-area" id="result-area">
+                <div class="result-grid" id="result-grid"></div>
+            </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>確率表</h3>
+            <div class="probability-table" id="probability-table"></div>
+            <div class="right-panel-buttons">
+                <button class="small-btn" id="reset-currency-btn" aria-label="石をリセット">石リセット</button>
+                <button class="small-btn" id="history-btn" aria-label="履歴を見る">履歴</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>設定</h2>
+                <button class="close-btn" id="close-settings-btn" aria-label="閉じる">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>表示設定</h3>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="animation-toggle" checked>
+                        <span>アニメーション有効</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="probability-toggle" checked>
+                        <span>確率表示</span>
+                    </label>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>グループ・サブグループ・アイテム設定</h3>
+                    <div class="groups-editor" id="groups-editor"></div>
+                </div>
+                
+                <div class="settings-actions">
+                    <button class="save-btn" id="save-settings-btn">保存</button>
+                    <button class="reset-btn" id="reset-settings-btn">初期設定に戻す</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal" id="history-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ガチャ履歴</h2>
+                <button class="close-btn" id="close-history-btn" aria-label="閉じる">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-stats" id="history-stats"></div>
+                <div class="history-list" id="history-list"></div>
+                <button class="clear-history-btn" id="clear-history-btn">履歴をクリア</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="gacha.js"></script>
+</body>
+</html>
