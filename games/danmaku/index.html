@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>弾幕ゲーム</title>
+    <link rel="stylesheet" href="danmaku.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>弾幕<br>ゲーム</h1>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">生存時間</div>
+                    <div class="stat-value" id="time-display">0.0秒</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">ベスト</div>
+                    <div class="stat-value" id="best-time">-</div>
+                </div>
+            </div>
+            <button class="new-game-btn" id="new-game-btn" aria-label="新しいゲーム">新しいゲーム</button>
+        </div>
+        
+        <div class="game-container">
+            <canvas id="game-canvas" width="500" height="500" tabindex="0" role="application" aria-label="弾幕ゲーム プレイエリア"></canvas>
+            <div class="game-over-screen hidden" id="game-over-screen">
+                <h2>ゲームオーバー</h2>
+                <div class="final-time" id="final-time"></div>
+                <button class="retry-btn" id="retry-btn" aria-label="リトライ">リトライ</button>
+            </div>
+        </div>
+        
+        <div class="side-panel right-panel">
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="key-item">
+                    <span class="key">↑</span> 上に移動
+                </div>
+                <div class="key-item">
+                    <span class="key">↓</span> 下に移動
+                </div>
+                <div class="key-item">
+                    <span class="key">←</span> 左に移動
+                </div>
+                <div class="key-item">
+                    <span class="key">→</span> 右に移動
+                </div>
+                <div class="key-item">
+                    <span class="key">Shift</span> 低速移動
+                </div>
+            </div>
+            <h3>ゲームのヒント</h3>
+            <p class="game-tip">赤い敵が出現してから弾を発射！Shiftで精密回避！</p>
+        </div>
+    </div>
+
+    <script type="module" src="danmaku.js"></script>
+</body>
+</html>

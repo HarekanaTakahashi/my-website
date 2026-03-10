@@ -7,5 +7,8 @@
   "block-puzzle.json",
   "tetris.json",
   "color-match.json",
+  "daifugo.json",
+  "danmaku.json",
+  "picross.json",
   "gacha.json"
 ]
