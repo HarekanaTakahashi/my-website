@@ -98,12 +98,11 @@ class SlotMachine {
     }
 
     snapToPosition() {
-        const cellH = 90;
         for (let r = 0; r < GAME_CONFIG.REELS; r++) {
             const strip = this.reelEls[r].querySelector('.reel-strip');
             const stopIndex = this.reelStrips[r].length - GAME_CONFIG.ROWS;
             strip.style.transition = 'none';
-            strip.style.top = `${-stopIndex * cellH}px`;
+            strip.style.top = `${-stopIndex * GAME_CONFIG.CELL_HEIGHT}px`;
         }
         this.updateCurrentResult();
     }
@@ -201,7 +200,7 @@ class SlotMachine {
         const newSymbols = [];
         for (let r = 0; r < GAME_CONFIG.REELS; r++) {
             const col = [];
-            const extra = 8 + r * 4;
+            const extra = GAME_CONFIG.SPIN_EXTRA_BASE + r * GAME_CONFIG.SPIN_EXTRA_PER_REEL;
             for (let i = 0; i < extra + GAME_CONFIG.ROWS; i++) {
                 const sym = this.randomSymbol();
                 col.push(sym);
@@ -238,7 +237,7 @@ class SlotMachine {
         if (this.autoPlay && this.credits >= this.bet) {
             setTimeout(() => {
                 if (this.autoPlay) this.spin();
-            }, 600);
+            }, GAME_CONFIG.AUTO_PLAY_DELAY);
         } else if (this.autoPlay) {
             this.stopAutoPlay();
         }
@@ -256,7 +255,6 @@ class SlotMachine {
     }
 
     async animateReels() {
-        const cellH = 90;
         const promises = [];
         for (let r = 0; r < GAME_CONFIG.REELS; r++) {
             const strip = this.reelEls[r].querySelector('.reel-strip');
@@ -268,12 +266,11 @@ class SlotMachine {
             strip.classList.add('spinning');
 
             const p = new Promise((resolve) => {
-                // Small delay before starting animation for cascade effect
                 setTimeout(() => {
                     strip.classList.remove('spinning');
                     strip.style.transition =
                         `top ${duration}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
-                    strip.style.top = `${-stopPos * cellH}px`;
+                    strip.style.top = `${-stopPos * GAME_CONFIG.CELL_HEIGHT}px`;
 
                     const onEnd = () => {
                         strip.removeEventListener('transitionend', onEnd);
@@ -283,7 +280,7 @@ class SlotMachine {
 
                     // Fallback in case transitionend doesn't fire
                     setTimeout(resolve, duration + 100);
-                }, r * 150);
+                }, r * GAME_CONFIG.REEL_CASCADE_DELAY);
             });
             promises.push(p);
         }
@@ -297,14 +294,11 @@ class SlotMachine {
             if (strip.length > keep * 2) {
                 const removeCount = strip.length - keep;
                 this.reelStrips[r] = strip.slice(removeCount);
-                // Rebuild DOM for this reel
                 this.renderReelStrip(r);
-                // Reset position
-                const cellH = 90;
                 const stopPos = this.reelStrips[r].length - GAME_CONFIG.ROWS;
                 const domStrip = this.reelEls[r].querySelector('.reel-strip');
                 domStrip.style.transition = 'none';
-                domStrip.style.top = `${-stopPos * cellH}px`;
+                domStrip.style.top = `${-stopPos * GAME_CONFIG.CELL_HEIGHT}px`;
             }
         }
     }
@@ -415,7 +409,7 @@ class SlotMachine {
             container.appendChild(confetti);
         }
 
-        setTimeout(() => container.remove(), 3000);
+        setTimeout(() => container.remove(), GAME_CONFIG.CELEBRATION_DURATION);
     }
 
     /* ---------- Auto Play ---------- */

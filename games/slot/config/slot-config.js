@@ -7,7 +7,7 @@ export const SYMBOLS = [
     { id: 'grape',    emoji: '🍇', name: 'ぶどう',     weight: 15 },
     { id: 'bell',     emoji: '🔔', name: 'ベル',       weight: 10 },
     { id: 'star',     emoji: '⭐', name: 'スター',     weight: 5 },
-    { id: 'seven',    emoji: '7️⃣',  name: 'セブン',     weight: 2 },
+    { id: 'seven',    emoji: '7️⃣', name: 'セブン',     weight: 2 },
     { id: 'diamond',  emoji: '💎', name: 'ダイヤモンド', weight: 1 },
 ];
 
@@ -36,8 +36,14 @@ export const GAME_CONFIG = {
     DEFAULT_BET: 10,
     REELS: 3,
     ROWS: 3,
+    CELL_HEIGHT: 90,
     SPIN_DURATION_BASE: 800,
     SPIN_DURATION_STEP: 400,
+    SPIN_EXTRA_BASE: 8,
+    SPIN_EXTRA_PER_REEL: 4,
+    REEL_CASCADE_DELAY: 150,
+    AUTO_PLAY_DELAY: 600,
+    CELEBRATION_DURATION: 3000,
     SYMBOLS_PER_STRIP: 30,
     STORAGE_KEY: 'slot-game-data',
     MESSAGES: {
