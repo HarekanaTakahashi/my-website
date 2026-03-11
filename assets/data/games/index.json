@@ -1,14 +1,15 @@
 [
-  "sudoku.json",
   "2048.json",
-  "slide-puzzle.json",
-  "luck-test.json",
-  "reaction-test.json",
   "block-puzzle.json",
-  "tetris.json",
   "color-match.json",
   "daifugo.json",
   "danmaku.json",
+  "gacha.json",
+  "luck-test.json",
   "picross.json",
-  "gacha.json"
+  "reaction-test.json",
+  "slide-puzzle.json",
+  "slot.json",
+  "sudoku.json",
+  "tetris.json"
 ]
