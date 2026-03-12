@@ -256,12 +256,17 @@ class SlotMachine {
 
     async animateReels() {
         const promises = [];
+        let cascadeTime = 0;
         for (let r = 0; r < GAME_CONFIG.REELS; r++) {
             const strip = this.reelEls[r].querySelector('.reel-strip');
             const totalCells = this.reelStrips[r].length;
             const stopPos = totalCells - GAME_CONFIG.ROWS;
+            const jitter = Math.random() * GAME_CONFIG.SPIN_DURATION_JITTER;
             const duration = GAME_CONFIG.SPIN_DURATION_BASE
-                           + r * GAME_CONFIG.SPIN_DURATION_STEP;
+                           + r * GAME_CONFIG.SPIN_DURATION_STEP + jitter;
+            const delay = cascadeTime;
+            cascadeTime += GAME_CONFIG.REEL_CASCADE_DELAY
+                         + Math.random() * GAME_CONFIG.REEL_CASCADE_JITTER;
 
             strip.classList.add('spinning');
 
@@ -280,7 +285,7 @@ class SlotMachine {
 
                     // Fallback in case transitionend doesn't fire
                     setTimeout(resolve, duration + 100);
-                }, r * GAME_CONFIG.REEL_CASCADE_DELAY);
+                }, delay);
             });
             promises.push(p);
         }
