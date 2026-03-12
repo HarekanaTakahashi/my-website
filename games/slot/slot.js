@@ -329,10 +329,6 @@ class SlotMachine {
                 // Three of a kind
                 const payout = PAYOUTS[firstId].three * this.bet;
                 wins.push({ lineIndex: li, line, symbolId: firstId, count: 3, payout });
-            } else if (lineSymbols[0].id === lineSymbols[1].id) {
-                // Two of a kind (first two)
-                const payout = PAYOUTS[firstId].two * this.bet;
-                wins.push({ lineIndex: li, line, symbolId: firstId, count: 2, payout });
             }
         }
         return wins;
@@ -451,7 +447,7 @@ class SlotMachine {
             row.innerHTML = `
                 <span class="paytable-symbol">${sym.emoji}</span>
                 <span class="paytable-name">${sym.name}</span>
-                <span class="paytable-pays">×${pay.two} / ×${pay.three}</span>
+                <span class="paytable-pays">×${pay.three}</span>
             `;
             return row;
         });

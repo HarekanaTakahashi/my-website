@@ -20,14 +20,14 @@ export const PAYLINES = [
 ];
 
 export const PAYOUTS = {
-    cherry:  { two: 2,  three: 5 },
-    lemon:   { two: 2,  three: 8 },
-    orange:  { two: 3,  three: 10 },
-    grape:   { two: 4,  three: 15 },
-    bell:    { two: 5,  three: 25 },
-    star:    { two: 10, three: 50 },
-    seven:   { two: 25, three: 100 },
-    diamond: { two: 50, three: 250 },
+    cherry:  { three: 5 },
+    lemon:   { three: 8 },
+    orange:  { three: 10 },
+    grape:   { three: 15 },
+    bell:    { three: 25 },
+    star:    { three: 50 },
+    seven:   { three: 100 },
+    diamond: { three: 250 },
 };
 
 export const GAME_CONFIG = {
