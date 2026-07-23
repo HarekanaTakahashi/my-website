@@ -196,43 +196,44 @@ class SlotMachine {
         this.clearHighlights();
         this.updateDisplay();
 
-        // Generate new results and extend strips
-        const newSymbols = [];
-        for (let r = 0; r < GAME_CONFIG.REELS; r++) {
-            const col = [];
-            const extra = GAME_CONFIG.SPIN_EXTRA_BASE + r * GAME_CONFIG.SPIN_EXTRA_PER_REEL;
-            for (let i = 0; i < extra + GAME_CONFIG.ROWS; i++) {
-                const sym = this.randomSymbol();
-                col.push(sym);
-                this.reelStrips[r].push(sym);
+        try {
+            // Generate new results and extend strips
+            for (let r = 0; r < GAME_CONFIG.REELS; r++) {
+                const col = [];
+                const extra = GAME_CONFIG.SPIN_EXTRA_BASE + r * GAME_CONFIG.SPIN_EXTRA_PER_REEL;
+                for (let i = 0; i < extra + GAME_CONFIG.ROWS; i++) {
+                    const sym = this.randomSymbol();
+                    col.push(sym);
+                    this.reelStrips[r].push(sym);
+                }
+                this.appendSymbolsToDOM(r, col);
             }
-            newSymbols.push(col);
-            this.appendSymbolsToDOM(r, col);
+
+            // Animate
+            await this.animateReels();
+
+            // Trim old symbols to keep memory reasonable
+            this.trimReelStrips();
+
+            this.updateCurrentResult();
+
+            // Check wins
+            const wins = this.evaluateWins();
+            const totalPayout = wins.reduce((s, w) => s + w.payout, 0);
+
+            if (totalPayout > 0) {
+                this.credits += totalPayout;
+                this.totalWon += totalPayout;
+                this.showWin(wins, totalPayout);
+            }
+        } finally {
+            // 途中で例外が起きてもボタンが押せなくなったままにしない
+            this.spinning = false;
+            this.els.spinBtn.disabled = false;
+            this.els.spinBtn.classList.remove('spinning');
+            this.updateDisplay();
+            this.saveState();
         }
-
-        // Animate
-        await this.animateReels();
-
-        // Trim old symbols to keep memory reasonable
-        this.trimReelStrips();
-
-        this.updateCurrentResult();
-
-        // Check wins
-        const wins = this.evaluateWins();
-        const totalPayout = wins.reduce((s, w) => s + w.payout, 0);
-
-        if (totalPayout > 0) {
-            this.credits += totalPayout;
-            this.totalWon += totalPayout;
-            this.showWin(wins, totalPayout);
-        }
-
-        this.spinning = false;
-        this.els.spinBtn.disabled = false;
-        this.els.spinBtn.classList.remove('spinning');
-        this.updateDisplay();
-        this.saveState();
 
         if (this.autoPlay && this.credits >= this.bet) {
             setTimeout(() => {
@@ -396,8 +397,8 @@ class SlotMachine {
         container.className = 'celebration';
         document.body.appendChild(container);
 
-        const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff',
-                         '#ff6fff', '#667eea', '#f093fb'];
+        const colors = ['#ff2e63', '#ffd60a', '#14c46a', '#3a86ff',
+                        '#22d3ee', '#7b2ff7', '#f72585'];
         for (let i = 0; i < 50; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';

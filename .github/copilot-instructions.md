@@ -32,7 +32,8 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 /
 ├── index.html              # エントリーポイント
 ├── assets/
-│   ├── css/               # 共通スタイルシート（ゲームハブアプリ用）
+│   ├── css/               # 共通スタイルシート
+│   │   ├── theme.css      # 共通デザイントークン（ハブ・全ゲームで共有）
 │   │   └── styles.css     # ハブアプリのスタイル
 │   ├── js/                # 共通JavaScriptモジュール（ゲームハブアプリ用）
 │   │   ├── app.js         # メインアプリケーションロジック
@@ -71,6 +72,7 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 
 **ゲームハブアプリ（共通）**:
 - `index.html`: エントリーポイント。App Bar、Side Bar、Main Content を含む
+- `assets/css/theme.css`: 全画面共通のデザイントークン（色・角丸・影・フォント）
 - `assets/css/styles.css`: ハブアプリの共通スタイル
 - `assets/js/app.js`: ルーティング、UI制御
 - `assets/js/store.js`: ゲームデータの読み込みと管理
@@ -94,10 +96,15 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 **新しいゲームを追加する際の手順**:
 1. `games/<slug>/` ディレクトリを作成
 2. `index.html`、`<slug>.css`、`<slug>.js` ファイルを作成（HTML、CSS、JSを分離）
-3. 必要に応じて `data/` や `config/` ディレクトリを作成し、定数データを分離
-4. `assets/data/games/<slug>.json` にゲームのメタデータファイルを作成
-5. `assets/data/games/index.json` のリストに `<slug>.json` を追加
-6. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
+3. `index.html` の `<head>` で、ゲーム固有CSSより **先に** 共通テーマを読み込む
+   ```html
+   <link rel="stylesheet" href="../../assets/css/theme.css">
+   <link rel="stylesheet" href="<slug>.css">
+   ```
+4. 必要に応じて `data/` や `config/` ディレクトリを作成し、定数データを分離
+5. `assets/data/games/<slug>.json` にゲームのメタデータファイルを作成
+6. `assets/data/games/index.json` のリストに `<slug>.json` を追加
+7. 各ファイルは独立して管理し、他のゲームに影響を与えないようにする
 
 **ゲームメタデータファイルの作成例** (`assets/data/games/example-game.json`):
 ```json
@@ -105,6 +112,7 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
   "slug": "example-game",
   "title": "Example Game",
   "description": "説明文",
+  "icon": "🎮",
   "tags": ["action", "2d"]
 }
 ```
@@ -128,6 +136,7 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
   "slug": "example-game",
   "title": "Example Game",
   "description": "説明文",
+  "icon": "🎮",
   "tags": ["action", "2d"]
 }
 ```
@@ -144,7 +153,10 @@ GitHub Pages でホスティング可能な、シンプルなゲームハブの�
 - `slug`（必須）: `games/<slug>/index.html` のパスと一致する識別子
 - `title`（必須）: ゲームの表示タイトル
 - `description`（任意）: ゲームの説明文
+- `icon`（任意）: ホーム画面のカードとサイドバーに表示する絵文字1文字（未指定時は 🎲）
 - `tags`（任意）: タグの配列
+
+**注意**: `slug` と `title` が欠けている JSON は読み込み時に除外されます（1件の不正データで一覧全体が壊れないようにするため）。
 
 **マージコンフリクトの回避**:
 - 各ゲームは独立したJSONファイルで管理されるため、複数のブランチで同時にゲームを追加してもコンフリクトは発生しません
@@ -316,9 +328,11 @@ element.appendChild(textNode);
 - `iframe` を使用してゲームを表示（疎結合）
 - `sandbox` 属性を設定してセキュリティを向上
 - **注意**: `allow-same-origin` と `allow-scripts` の組み合わせは、同一オリジンのゲームに限定して使用すること
+- **`allow-modals` は必須**: これが無いとゲーム内の `confirm()` / `alert()` がブラウザにブロックされ、
+  リセットや削除などの確認ダイアログが常に「キャンセル」扱いになる
   ```html
   <iframe src="games/example-game/index.html" 
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin allow-modals"
           title="Example Game"></iframe>
   ```
 - より制限的な設定が必要な場合は `allow-scripts` のみを使用し、`allow-same-origin` を除外することを検討
@@ -332,12 +346,22 @@ element.appendChild(textNode);
     - 右パネル（`.side-panel.right-panel`）: 操作方法、ゲームヒント
   - `max-height: calc(100vh - 40px)` でビューポート内に収める
   - ボードサイズは `min()` 関数で制御（例: `width: min(400px, calc(100vh - 100px))`）
-- **デザインの統一**:
-  - 背景: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
-  - フォント: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`
-  - サイドパネル: 白背景、角丸12px、影付き
-  - 操作方法: `.key` クラスでキー表示（紫グラデーション背景）
-  - ボタン: 紫グラデーションのスタイルを統一
+- **デザインの統一（テーマ「おもちゃ箱」）**:
+  - 色・角丸・影・フォントは **必ず `assets/css/theme.css` のトークンを使う**（色のハードコード禁止）
+  - 背景: `background: var(--tb-bg);`（ビビッドなグラデーション＋水玉模様）
+  - フォント: `font-family: var(--tb-font);`
+  - サイドパネル: `background: var(--tb-surface); border-radius: var(--tb-radius-md); box-shadow: var(--tb-shadow-panel);`
+  - 操作方法: `.key` クラスでキー表示（`var(--tb-grad-primary)` 背景）
+  - ボタン: `var(--tb-grad-primary)` ／ 強調ボタンは `var(--tb-grad-hot)`、角丸は `var(--tb-radius-pill)`
+  - 主なトークン:
+    | 用途 | トークン |
+    | --- | --- |
+    | ブランド色 / 濃いブランド色 | `--tb-primary` / `--tb-primary-deep` |
+    | ボタン用グラデーション | `--tb-grad-primary` / `--tb-grad-hot` / `--tb-grad-candy` |
+    | ビビッドカラー | `--tb-red` `--tb-orange` `--tb-yellow` `--tb-green` `--tb-cyan` `--tb-blue` `--tb-violet` |
+    | 白背景に置く文字色 | `--tb-ink-red` `--tb-ink-blue` `--tb-ink-violet` など（コントラスト 4.5:1 以上） |
+    | 面 / 文字 | `--tb-surface` `--tb-surface-sunken` `--tb-text` `--tb-text-muted` |
+    | 角丸 / 影 | `--tb-radius-sm/md/lg/pill` `--tb-shadow-panel/raised/soft` |
 
 **レイアウト例（HTML）**:
 ```html
@@ -370,10 +394,10 @@ element.appendChild(textNode);
 }
 
 .side-panel {
-    background: white;
-    border-radius: 12px;
+    background: var(--tb-surface);
+    border-radius: var(--tb-radius-md);
     padding: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -382,10 +406,10 @@ element.appendChild(textNode);
 }
 
 .key {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: var(--tb-grad-primary);
+    color: var(--tb-text-on-primary);
     padding: 3px 8px;
-    border-radius: 4px;
+    border-radius: var(--tb-radius-sm);
     font-size: 0.75rem;
     font-weight: bold;
 }

@@ -62,7 +62,7 @@ class ColorMatchGame {
     
     showStartMessage() {
         this.chainDisplayElement.textContent = GAME_CONFIG.MESSAGES.START_GAME;
-        this.chainDisplayElement.style.color = '#667eea';
+        this.chainDisplayElement.style.color = 'var(--tb-primary)';
         this.chainDisplayElement.style.fontSize = '20px';
     }
     

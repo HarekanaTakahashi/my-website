@@ -9,7 +9,8 @@ export function renderGame(slug) {
         return renderGameError('ゲームが見つかりません', `"${slug}" というゲームは存在しません。`);
     }
     
-    const gamePath = `games/${slug}/index.html`;
+    // slug は getGame() で検証済みのメタデータ由来だが、属性値としてエスケープする
+    const gamePath = escapeHtml(`games/${game.slug}/index.html`);
     
     return `
         <div class="game-view">
@@ -18,7 +19,7 @@ export function renderGame(slug) {
                 class="game-frame" 
                 src="${gamePath}"
                 title="${escapeHtml(game.title)}"
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts allow-same-origin allow-modals"
             ></iframe>
         </div>
     `;

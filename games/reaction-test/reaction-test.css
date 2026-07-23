@@ -5,8 +5,8 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: var(--tb-font);
+    background: var(--tb-bg);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -24,9 +24,9 @@ body {
 
 .side-panel {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -35,12 +35,12 @@ body {
 }
 
 .side-panel h3 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 0.9rem;
 }
 
 h1 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
@@ -54,7 +54,7 @@ h1 {
 }
 
 .stat-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     border-radius: 8px;
     padding: 8px 15px;
     text-align: center;
@@ -75,9 +75,9 @@ h1 {
 
 .game-container {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
     min-width: 350px;
 }
 
@@ -128,7 +128,7 @@ h1 {
 }
 
 .results h2 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 1.5rem;
     margin-bottom: 15px;
 }
@@ -151,10 +151,10 @@ h1 {
 
 .result-item:last-child { border-bottom: none; }
 .result-item .label { font-weight: bold; }
-.result-item .value { font-weight: bold; color: #667eea; }
+.result-item .value { font-weight: bold; color: var(--tb-primary); }
 
 .average-time {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     border-radius: 6px;
     padding: 15px;
     margin-bottom: 15px;
@@ -176,7 +176,7 @@ h1 {
 }
 
 .retry-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     border-radius: 8px;

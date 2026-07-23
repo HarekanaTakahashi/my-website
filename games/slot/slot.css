@@ -7,7 +7,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
                  'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-bg);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -28,9 +28,9 @@ body {
 
 .side-panel {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--tb-shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -59,7 +59,7 @@ body {
     font-size: 0.9rem;
     color: #555;
     width: 100%;
-    border-bottom: 2px solid #667eea;
+    border-bottom: 2px solid var(--tb-primary);
     padding-bottom: 4px;
 }
 
@@ -72,7 +72,7 @@ body {
 }
 
 .stat-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     padding: 8px 12px;
     border-radius: 8px;
@@ -114,9 +114,9 @@ body {
 .bet-btn {
     width: 32px;
     height: 32px;
-    border: 2px solid #667eea;
+    border: 2px solid var(--tb-primary);
     background: white;
-    color: #667eea;
+    color: var(--tb-primary);
     border-radius: 50%;
     font-size: 1rem;
     font-weight: bold;
@@ -128,25 +128,25 @@ body {
 }
 
 .bet-btn:hover {
-    background: #667eea;
+    background: var(--tb-primary);
     color: white;
 }
 
 .bet-display {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #667eea;
+    color: var(--tb-primary);
     min-width: 50px;
     text-align: center;
 }
 
 /* === Buttons === */
 .spin-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     padding: 14px 24px;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
@@ -157,7 +157,7 @@ body {
 
 .spin-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 5px 20px rgba(var(--tb-primary-rgb), 0.5);
 }
 
 .spin-btn:active:not(:disabled) {
@@ -174,8 +174,8 @@ body {
 }
 
 @keyframes pulse-btn {
-    from { box-shadow: 0 0 5px rgba(102, 126, 234, 0.4); }
-    to   { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8); }
+    from { box-shadow: 0 0 5px rgba(var(--tb-primary-rgb), 0.4); }
+    to   { box-shadow: 0 0 20px rgba(var(--tb-primary-rgb), 0.8); }
 }
 
 .auto-section {
@@ -185,9 +185,9 @@ body {
 .auto-btn {
     width: 100%;
     padding: 8px;
-    border: 2px solid #667eea;
+    border: 2px solid var(--tb-primary);
     background: white;
-    color: #667eea;
+    color: var(--tb-primary);
     border-radius: 8px;
     font-size: 0.85rem;
     font-weight: bold;
@@ -200,25 +200,27 @@ body {
 }
 
 .auto-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border-color: transparent;
 }
 
 .reset-btn {
     background: transparent;
-    color: #999;
-    border: 1px solid #ddd;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
+    color: var(--tb-text-muted);
+    border: 2px solid var(--tb-border);
+    padding: 6px 14px;
+    border-radius: var(--tb-radius-pill);
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .reset-btn:hover {
-    color: #e74c3c;
-    border-color: #e74c3c;
+    color: var(--tb-ink-red);
+    border-color: var(--tb-ink-red);
 }
 
 /* === Slot Machine === */
@@ -366,7 +368,7 @@ body {
 }
 
 .win-display.win {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--tb-grad-hot);
     animation: bounce-in 0.5s ease;
 }
 
@@ -433,7 +435,7 @@ body {
 
 .paytable-pays {
     text-align: right;
-    color: #667eea;
+    color: var(--tb-primary);
     font-weight: bold;
     font-size: 0.7rem;
     white-space: nowrap;
@@ -456,7 +458,7 @@ body {
 }
 
 .key {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     padding: 3px 8px;
     border-radius: 4px;
@@ -526,7 +528,7 @@ body {
 }
 
 .message-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     padding: 10px 30px;
@@ -539,7 +541,7 @@ body {
 
 .message-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(var(--tb-primary-rgb), 0.4);
 }
 
 /* === Celebration Particles === */

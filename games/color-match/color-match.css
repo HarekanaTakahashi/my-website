@@ -5,8 +5,8 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: var(--tb-font);
+    background: var(--tb-bg);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,9 +24,9 @@ body {
 
 .side-panel {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -35,13 +35,13 @@ body {
 }
 
 .side-panel h3 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 0.85rem;
     margin-top: 5px;
 }
 
 h1 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
@@ -55,7 +55,7 @@ h1 {
 }
 
 .score-box {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     padding: 6px 12px;
     border-radius: 8px;
@@ -75,7 +75,7 @@ h1 {
 }
 
 .new-game-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     padding: 8px 16px;
@@ -96,14 +96,14 @@ h1 {
     text-align: center;
     font-size: 1.1rem;
     font-weight: bold;
-    color: #ff6b6b;
+    color: var(--tb-ink-red);
 }
 
 .game-container {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
 }
 
 #game-canvas {
@@ -136,7 +136,7 @@ h1 {
 }
 
 .key {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     padding: 2px 5px;
     border-radius: 4px;
@@ -190,7 +190,7 @@ h1 {
 }
 
 #try-again-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     padding: 12px 30px;
