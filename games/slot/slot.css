@@ -1,0 +1,565 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* === Layout === */
+.game-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    max-height: calc(100vh - 40px);
+    width: 100%;
+    max-width: 1100px;
+}
+
+.side-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    min-width: 160px;
+}
+
+.left-panel {
+    max-width: 200px;
+}
+
+.right-panel {
+    max-width: 220px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.side-panel h1 {
+    font-size: 1.4rem;
+    color: #333;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.side-panel h3 {
+    font-size: 0.9rem;
+    color: #555;
+    width: 100%;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 4px;
+}
+
+/* === Stats === */
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* === Bet Controls === */
+.bet-section {
+    width: 100%;
+    text-align: center;
+}
+
+.bet-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.bet-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.bet-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bet-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.bet-display {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #667eea;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* === Buttons === */
+.spin-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    letter-spacing: 2px;
+}
+
+.spin-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+}
+
+.spin-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.spin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spin-btn.spinning {
+    animation: pulse-btn 0.6s infinite alternate;
+}
+
+@keyframes pulse-btn {
+    from { box-shadow: 0 0 5px rgba(102, 126, 234, 0.4); }
+    to   { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8); }
+}
+
+.auto-section {
+    width: 100%;
+}
+
+.auto-btn {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.auto-btn:hover {
+    background: #f0f0ff;
+}
+
+.auto-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.reset-btn {
+    background: transparent;
+    color: #999;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-btn:hover {
+    color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+/* === Slot Machine === */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.slot-machine {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.payline-indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.payline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--dot-color);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+    cursor: default;
+}
+
+.payline-dot.active {
+    opacity: 1;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px var(--dot-color);
+}
+
+.left-indicators {
+    align-items: flex-end;
+}
+
+.right-indicators {
+    align-items: flex-start;
+}
+
+.reels-frame {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.reels-container {
+    display: flex;
+    gap: 6px;
+}
+
+.reel {
+    width: 90px;
+    height: 270px;
+    overflow: hidden;
+    position: relative;
+    background: #0d1117;
+    border-radius: 8px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.reel-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: top 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reel-strip.spinning {
+    transition: none;
+}
+
+.symbol-cell {
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    user-select: none;
+    position: relative;
+}
+
+.symbol-cell.highlight {
+    animation: glow-cell 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow-cell {
+    from { background: rgba(255, 215, 0, 0.1); }
+    to   { background: rgba(255, 215, 0, 0.35); }
+}
+
+/* === Payline Overlay === */
+.payline-overlay {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    pointer-events: none;
+}
+
+.payline-line {
+    position: absolute;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 2px;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.payline-line.visible {
+    opacity: 0.8;
+    animation: flash-line 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes flash-line {
+    from { opacity: 0.5; }
+    to   { opacity: 1; }
+}
+
+/* === Win Display === */
+.win-display {
+    min-height: 36px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 6px 16px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.win-display.win {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    animation: bounce-in 0.5s ease;
+}
+
+.win-display.big-win {
+    background: linear-gradient(135deg, #ffd93d 0%, #ff6b6b 100%);
+    animation: bounce-in 0.5s ease, shake 0.5s ease 0.5s;
+    font-size: 1.3rem;
+}
+
+.win-display.jackpot {
+    background: linear-gradient(135deg, #ffd700 0%, #ff4500 100%);
+    animation: bounce-in 0.5s ease, jackpot-flash 0.4s ease infinite;
+    font-size: 1.5rem;
+}
+
+@keyframes bounce-in {
+    0%   { transform: scale(0.3); opacity: 0; }
+    50%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-4px); }
+    40%      { transform: translateX(4px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+}
+
+@keyframes jackpot-flash {
+    0%, 100% { filter: brightness(1); }
+    50%      { filter: brightness(1.3); }
+}
+
+/* === Paytable === */
+.paytable {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.75rem;
+}
+
+.paytable-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background: #f8f9fa;
+}
+
+.paytable-symbol {
+    font-size: 1.1rem;
+    min-width: 28px;
+    text-align: center;
+}
+
+.paytable-name {
+    flex: 1;
+    color: #555;
+    font-size: 0.7rem;
+}
+
+.paytable-pays {
+    text-align: right;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+/* === Instructions === */
+.instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #555;
+}
+
+.key {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* === Payline Info === */
+.payline-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.payline-info-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #555;
+}
+
+.payline-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* === Message Modal === */
+.game-message {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-message.visible {
+    display: flex;
+}
+
+.message-content {
+    background: white;
+    border-radius: 16px;
+    padding: 30px 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    max-width: 360px;
+}
+
+.message-content h2 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+.message-content p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.message-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.message-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* === Celebration Particles === */
+.celebration {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    animation: confetti-fall 2s ease-in forwards;
+}
+
+@keyframes confetti-fall {
+    0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
