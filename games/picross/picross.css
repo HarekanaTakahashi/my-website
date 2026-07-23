@@ -5,8 +5,8 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: var(--tb-font);
+    background: var(--tb-bg);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -24,9 +24,9 @@ body {
 
 .side-panel {
     background: white;
-    border-radius: 12px;
+    border-radius: var(--tb-radius-md);
     padding: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    box-shadow: var(--tb-shadow-panel);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -41,7 +41,7 @@ body {
 }
 
 .left-panel h1 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 1.8rem;
     margin-bottom: 5px;
 }
@@ -59,7 +59,7 @@ body {
 
 .puzzle-name span, .puzzle-difficulty span {
     font-weight: bold;
-    color: #667eea;
+    color: var(--tb-primary);
 }
 
 .answer-reveal {
@@ -121,7 +121,7 @@ body {
 .timer {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #667eea;
+    color: var(--tb-primary);
 }
 
 .puzzle-selector {
@@ -147,7 +147,7 @@ body {
 }
 
 .puzzle-selector select:hover {
-    border-color: #667eea;
+    border-color: var(--tb-primary);
 }
 
 .controls {
@@ -168,23 +168,23 @@ body {
 }
 
 .btn-new {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
 }
 
 .btn-new:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(var(--tb-primary-rgb), 0.4);
 }
 
 .btn-clear {
-    background: #ff6b6b;
+    background: var(--tb-grad-hot);
     color: white;
 }
 
 .btn-clear:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 5px 15px rgba(217, 4, 41, 0.4);
 }
 
 .best-times {
@@ -192,7 +192,7 @@ body {
 }
 
 .best-times h4 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 0.9rem;
     margin-bottom: 5px;
 }
@@ -226,8 +226,8 @@ body {
 .board-container {
     background: white;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    border-radius: var(--tb-radius-md);
+    box-shadow: var(--tb-shadow-panel);
     display: inline-block;
 }
 
@@ -304,12 +304,12 @@ body {
 }
 
 .cell:focus {
-    outline: 3px solid #667eea;
+    outline: 3px solid var(--tb-primary);
     outline-offset: -3px;
 }
 
 .cell.filled {
-    background: #667eea;
+    background: var(--tb-primary);
 }
 
 .cell.marked::before {
@@ -320,7 +320,7 @@ body {
     transform: translate(-50%, -50%);
     font-size: 1.2em;
     font-weight: bold;
-    color: #ff6b6b;
+    color: var(--tb-ink-red);
 }
 
 .cell.error {
@@ -339,7 +339,7 @@ body {
 }
 
 .right-panel h3 {
-    color: #667eea;
+    color: var(--tb-primary);
     font-size: 1rem;
     margin-bottom: 5px;
 }
@@ -353,13 +353,15 @@ body {
 
 .instruction-item {
     display: flex;
-    flex-direction: column;
-    gap: 3px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
     font-size: 0.8rem;
+    color: var(--tb-text-muted);
 }
 
 .key {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     padding: 4px 8px;
     border-radius: 4px;
@@ -413,7 +415,7 @@ body {
 }
 
 .message-content h2 {
-    color: #667eea;
+    color: var(--tb-primary);
     margin-bottom: 15px;
     font-size: 1.8rem;
 }
@@ -427,7 +429,7 @@ body {
 .message-content p:first-of-type {
     font-weight: 600;
     font-size: 1.2rem;
-    color: #667eea;
+    color: var(--tb-primary);
 }
 
 .message-content p:last-of-type {
@@ -435,7 +437,7 @@ body {
 }
 
 .message-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--tb-grad-primary);
     color: white;
     border: none;
     padding: 12px 30px;
@@ -448,5 +450,5 @@ body {
 
 .message-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(var(--tb-primary-rgb), 0.4);
 }

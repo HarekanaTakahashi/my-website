@@ -29,12 +29,5 @@ export const GAME_CONFIG = {
         GAME_OVER_TITLE: 'ゲームオーバー',
         GAME_OVER_TEXT: 'ライフが0になりました。もう一度挑戦しましょう！',
         CONFIRM_NEW_GAME: '新しいパズルを始めますか？現在の進行状況は失われます。'
-    },
-    
-    // UI colors
-    COLORS: {
-        FILLED: '#667eea',
-        MARKED: '#ff6b6b',
-        HINT_COMPLETE: '#28a745'
     }
 };

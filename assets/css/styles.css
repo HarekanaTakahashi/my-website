@@ -1,4 +1,8 @@
-/* Reset and Base Styles */
+/* =========================================================
+   Game Hub アプリのスタイル
+   デザイントークンは assets/css/theme.css を参照
+   ========================================================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,65 +10,97 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: var(--tb-font);
+    background: var(--tb-bg);
+    background-attachment: fixed;
+    color: var(--tb-text);
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* App Bar */
+/* =========================
+   App Bar
+   ========================= */
 .app-bar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 56px;
-    background-color: #1976d2;
-    color: white;
+    height: var(--tb-appbar-height);
+    background: var(--tb-grad-primary);
+    color: #fff;
     display: flex;
     align-items: center;
+    gap: 8px;
     padding: 0 16px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 0 rgba(43, 35, 56, 0.18), 0 10px 24px rgba(43, 35, 56, 0.25);
     z-index: 1000;
+}
+
+/* おもちゃ箱のフタのカラフルなライン */
+.app-bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 6px;
+    background: linear-gradient(
+        90deg,
+        var(--tb-red) 0 14.28%,
+        var(--tb-orange) 14.28% 28.56%,
+        var(--tb-yellow) 28.56% 42.84%,
+        var(--tb-green) 42.84% 57.12%,
+        var(--tb-cyan) 57.12% 71.4%,
+        var(--tb-blue) 71.4% 85.68%,
+        var(--tb-violet) 85.68% 100%
+    );
 }
 
 .app-title {
     flex: 1;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 800;
     text-align: center;
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 0 rgba(43, 35, 56, 0.25);
+}
+
+.app-title::before {
+    content: '🧸 ';
 }
 
 .icon-btn {
-    background: none;
+    background: rgba(255, 255, 255, 0.18);
     border: none;
-    color: white;
+    color: #fff;
     cursor: pointer;
     padding: 8px;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    border-radius: var(--tb-radius-pill);
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    transition: background-color 0.2s;
+    transition: background-color var(--tb-transition), transform var(--tb-transition);
 }
 
 .icon-btn:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.34);
+    transform: scale(1.08);
 }
 
-.icon-btn:focus {
-    outline: 2px solid rgba(255,255,255,0.5);
-    outline-offset: 2px;
+.icon-btn:active {
+    transform: scale(0.94);
 }
 
 .menu-icon {
     display: block;
-    width: 24px;
-    height: 2px;
-    background-color: white;
+    width: 22px;
+    height: 3px;
+    border-radius: 2px;
+    background-color: #fff;
     position: relative;
 }
 
@@ -72,48 +108,60 @@ body {
 .menu-icon::after {
     content: '';
     display: block;
-    width: 24px;
-    height: 2px;
-    background-color: white;
+    width: 22px;
+    height: 3px;
+    border-radius: 2px;
+    background-color: #fff;
     position: absolute;
     left: 0;
 }
 
 .menu-icon::before {
-    top: -8px;
+    top: -7px;
 }
 
 .menu-icon::after {
-    bottom: -8px;
+    bottom: -7px;
 }
 
-/* Side Bar */
+/* =========================
+   Side Bar
+   ========================= */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 280px;
+    width: var(--tb-sidebar-width);
     height: 100vh;
-    background-color: white;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    background: var(--tb-surface);
+    border-right: 4px solid rgba(var(--tb-primary-deep-rgb), 0.15);
+    box-shadow: 6px 0 24px rgba(43, 35, 56, 0.25);
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    /* 閉じているときはフォーカスを受け取らないように非表示にする。
+       visibility はスライドアウト完了後に切り替える（開くときは即時） */
+    visibility: hidden;
+    transition: transform 0.3s var(--tb-ease-bounce), visibility 0s linear 0.3s;
     z-index: 1100;
     overflow-y: auto;
 }
 
 .sidebar.open {
     transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.3s var(--tb-ease-bounce), visibility 0s;
 }
 
 .sidebar-content {
-    padding: 80px 16px 16px;
+    padding: calc(var(--tb-appbar-height) + 28px) 16px 24px;
 }
 
 .sidebar-content h2 {
-    font-size: 18px;
-    margin-bottom: 16px;
-    color: #666;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    color: var(--tb-primary);
 }
 
 .sidebar-menu {
@@ -121,47 +169,49 @@ body {
 }
 
 .sidebar-menu li {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .sidebar-menu li.divider {
-    height: 1px;
-    background-color: #e0e0e0;
-    margin: 8px 0;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--tb-grad-candy);
+    margin: 14px 0;
 }
 
 .sidebar-menu a {
-    display: block;
-    padding: 12px 16px;
-    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    color: var(--tb-text);
+    font-weight: 700;
     text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    border-radius: var(--tb-radius-md);
+    transition: background-color var(--tb-transition), transform var(--tb-transition);
 }
 
 .sidebar-menu a:hover {
-    background-color: #f0f0f0;
-}
-
-.sidebar-menu a:focus {
-    outline: 2px solid #1976d2;
-    outline-offset: 2px;
+    background-color: var(--tb-surface-sunken);
+    transform: translateX(4px);
 }
 
 .sidebar-menu a.active {
-    background-color: #e3f2fd;
-    color: #1976d2;
-    font-weight: 500;
+    background: var(--tb-grad-primary);
+    color: var(--tb-text-on-primary);
+    box-shadow: var(--tb-shadow-raised);
+}
+
+.sidebar-menu .nav-icon {
+    font-size: 20px;
+    line-height: 1;
 }
 
 /* Sidebar Overlay */
 .sidebar-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    inset: 0;
+    background-color: rgba(43, 35, 56, 0.55);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -173,148 +223,216 @@ body {
     pointer-events: auto;
 }
 
-/* Main Content */
+/* =========================
+   Main Content
+   ========================= */
 .main-content {
-    margin-top: 56px;
-    padding: 16px;
-    min-height: calc(100vh - 56px);
+    margin-top: var(--tb-appbar-height);
+    padding: 32px 20px 40px;
+    min-height: calc(100vh - var(--tb-appbar-height));
 }
 
-/* Home View */
+/* =========================
+   Home View
+   ========================= */
 .home-view {
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .home-view h2 {
-    font-size: 24px;
-    margin-bottom: 24px;
-    color: #333;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: #fff;
+    text-shadow: 0 3px 0 rgba(43, 35, 56, 0.28);
+}
+
+.home-lead {
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 600;
+    margin-bottom: 26px;
+    text-shadow: 0 1px 2px rgba(43, 35, 56, 0.3);
 }
 
 .game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
 }
 
+/* おもちゃ箱に入ったおもちゃのようにカードを並べる */
 .game-card {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: box-shadow 0.2s, transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--tb-surface);
+    border-radius: var(--tb-radius-lg);
+    padding: 22px 20px 20px;
+    box-shadow: var(--tb-shadow-panel);
+    border-top: 8px solid var(--card-accent, var(--tb-primary));
+    transition: transform var(--tb-transition), box-shadow var(--tb-transition);
+}
+
+.game-card:nth-child(3n + 1) {
+    transform: rotate(-1deg);
+}
+
+.game-card:nth-child(3n) {
+    transform: rotate(1deg);
 }
 
 .game-card:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transform: translateY(-2px);
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 0 12px 0 rgba(43, 35, 56, 0.12), 0 22px 44px rgba(43, 35, 56, 0.32);
+}
+
+/* カードごとに色を変えて「おもちゃ箱」らしく */
+.game-card:nth-child(7n + 1) { --card-accent: var(--tb-red); }
+.game-card:nth-child(7n + 2) { --card-accent: var(--tb-orange); }
+.game-card:nth-child(7n + 3) { --card-accent: var(--tb-yellow); }
+.game-card:nth-child(7n + 4) { --card-accent: var(--tb-green); }
+.game-card:nth-child(7n + 5) { --card-accent: var(--tb-cyan); }
+.game-card:nth-child(7n + 6) { --card-accent: var(--tb-blue); }
+.game-card:nth-child(7n + 7) { --card-accent: var(--tb-violet); }
+
+.game-card-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    border-radius: var(--tb-radius-md);
+    background: var(--tb-surface-sunken);
+    box-shadow: inset 0 -3px 0 rgba(43, 35, 56, 0.08);
+    margin-bottom: 12px;
 }
 
 .game-card h3 {
     font-size: 20px;
+    font-weight: 800;
     margin-bottom: 8px;
-    color: #1976d2;
+    color: var(--tb-text);
 }
 
 .game-card p {
-    color: #666;
-    margin-bottom: 12px;
-    line-height: 1.5;
+    color: var(--tb-text-muted);
+    font-size: 14px;
+    margin-bottom: 14px;
+    line-height: 1.6;
+    flex: 1;
 }
 
 .game-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 16px;
 }
 
 .game-tag {
     display: inline-block;
     padding: 4px 12px;
-    background-color: #e3f2fd;
-    color: #1976d2;
-    border-radius: 12px;
+    background-color: var(--tb-surface-sunken);
+    color: var(--tb-ink-violet);
+    border-radius: var(--tb-radius-pill);
     font-size: 12px;
+    font-weight: 700;
 }
 
 .play-btn {
-    background-color: #1976d2;
-    color: white;
+    background: var(--tb-grad-primary);
+    color: var(--tb-text-on-primary);
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 12px 20px;
+    border-radius: var(--tb-radius-pill);
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    width: 100%;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    font-family: inherit;
+    box-shadow: var(--tb-shadow-raised);
+    transition: transform var(--tb-transition), box-shadow var(--tb-transition);
 }
 
 .play-btn:hover {
-    background-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 rgba(43, 35, 56, 0.16), 0 14px 24px rgba(43, 35, 56, 0.24);
 }
 
-.play-btn:focus {
-    outline: 2px solid #1976d2;
-    outline-offset: 2px;
+.play-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 rgba(43, 35, 56, 0.16);
 }
 
-/* Game View */
+/* =========================
+   Game View
+   ========================= */
 .game-view {
     width: 100%;
-    height: calc(100vh - 88px);
+    height: calc(100vh - var(--tb-appbar-height) - 40px);
 }
 
 .game-frame {
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 8px;
-    background: white;
+    border-radius: var(--tb-radius-lg);
+    background: var(--tb-surface);
+    box-shadow: var(--tb-shadow-panel);
 }
 
-/* Error View */
+/* =========================
+   Error / Empty State
+   ========================= */
 .error-view {
     max-width: 600px;
     margin: 40px auto;
-    padding: 32px;
-    background: white;
-    border-radius: 8px;
+    padding: 36px 32px;
+    background: var(--tb-surface);
+    border-radius: var(--tb-radius-lg);
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: var(--tb-shadow-panel);
+    border-top: 8px solid var(--tb-red);
 }
 
 .error-view h2 {
     font-size: 24px;
+    font-weight: 800;
     margin-bottom: 16px;
-    color: #d32f2f;
+    color: var(--tb-ink-red);
 }
 
 .error-view p {
-    color: #666;
+    color: var(--tb-text-muted);
     margin-bottom: 24px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .error-view .home-link {
     display: inline-block;
-    padding: 10px 24px;
-    background-color: #1976d2;
-    color: white;
+    padding: 12px 26px;
+    background: var(--tb-grad-primary);
+    color: var(--tb-text-on-primary);
     text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s;
+    font-weight: 800;
+    border-radius: var(--tb-radius-pill);
+    box-shadow: var(--tb-shadow-raised);
+    transition: transform var(--tb-transition);
 }
 
 .error-view .home-link:hover {
-    background-color: #1565c0;
+    transform: translateY(-2px);
 }
 
-/* Loading State */
+/* Loading / Empty State */
 .loading {
     text-align: center;
-    padding: 40px;
-    color: #666;
+    padding: 48px 24px;
+    background: var(--tb-surface);
+    border-radius: var(--tb-radius-lg);
+    box-shadow: var(--tb-shadow-panel);
+    color: var(--tb-text-muted);
+    font-weight: 700;
 }

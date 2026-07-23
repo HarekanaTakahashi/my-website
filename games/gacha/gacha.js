@@ -268,7 +268,7 @@ class GachaSimulator {
         // Add total probability display
         const totalDiv = document.createElement('div');
         totalDiv.style.padding = '10px';
-        totalDiv.style.borderBottom = '2px solid #667eea';
+        totalDiv.style.borderBottom = '2px solid var(--tb-primary)';
         totalDiv.style.marginBottom = '10px';
         totalDiv.style.fontWeight = 'bold';
         totalDiv.style.textAlign = 'center';
@@ -347,7 +347,7 @@ class GachaSimulator {
         // Add group button
         const addGroupBtn = document.createElement('button');
         addGroupBtn.className = 'add-group-btn';
-        addGroupBtn.style.cssText = 'width: 100%; padding: 12px; margin-top: 15px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;';
+        addGroupBtn.style.cssText = 'width: 100%; padding: 12px; margin-top: 15px; background: var(--tb-grad-primary); color: white; border: none; border-radius: var(--tb-radius-pill); cursor: pointer; font-weight: bold;';
         addGroupBtn.textContent = '+ グループ追加';
         addGroupBtn.addEventListener('click', () => this.addGroup());
         this.groupsEditor.appendChild(addGroupBtn);

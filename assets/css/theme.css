@@ -1,0 +1,130 @@
+/* =========================================================
+   Game Hub 共通テーマ「おもちゃ箱」
+   ---------------------------------------------------------
+   ハブと各ゲームで共有するデザイントークン。
+   各ゲームの CSS より先に読み込むこと。
+   ========================================================= */
+
+:root {
+    /* --- ビビッドカラーパレット（おもちゃの色） --- */
+    --tb-red: #ff2e63;
+    --tb-orange: #ff8c1a;
+    --tb-yellow: #ffd60a;
+    --tb-lime: #a3e635;
+    --tb-green: #14c46a;
+    --tb-teal: #06d6a0;
+    --tb-cyan: #22d3ee;
+    --tb-blue: #3a86ff;
+    --tb-violet: #7b2ff7;
+    --tb-magenta: #f72585;
+    --tb-pink: #ff5ea8;
+
+    /* --- 文字に使える濃いめのビビッド（白背景でコントラスト 4.5:1 以上） --- */
+    --tb-ink-red: #d90429;
+    --tb-ink-orange: #c2410c;
+    --tb-ink-green: #047857;
+    --tb-ink-blue: #1668e3;
+    --tb-ink-violet: #6d28d9;
+    --tb-ink-magenta: #c2185b;
+
+    /* --- ブランドカラー（旧 #667eea / #764ba2 の置き換え先） --- */
+    --tb-primary: #e5127d;
+    --tb-primary-rgb: 229, 18, 125;
+    --tb-primary-deep: #7b2ff7;
+    --tb-primary-deep-rgb: 123, 47, 247;
+    --tb-grad-primary: linear-gradient(135deg, #f72585 0%, #7b2ff7 100%);
+    --tb-grad-candy: linear-gradient(135deg, #ffd60a 0%, #ff8c1a 45%, #ff2e63 100%);
+    /* 白抜き文字を載せる強調ボタン用（薄いピンクよりコントラストを確保） */
+    --tb-grad-hot: linear-gradient(135deg, #d90429 0%, #f72585 100%);
+    --tb-grad-mint: linear-gradient(135deg, #22d3ee 0%, #14c46a 100%);
+
+    /* --- 背景（おもちゃ箱の中：水玉模様つきビビッドグラデーション） --- */
+    --tb-bg:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.16) 0 7px, transparent 8px)
+            0 0 / 72px 72px,
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.10) 0 5px, transparent 6px)
+            36px 36px / 72px 72px,
+        linear-gradient(135deg, #7b2ff7 0%, #f72585 48%, #ff8c1a 100%);
+
+    /* --- サーフェス --- */
+    --tb-surface: #ffffff;
+    --tb-surface-soft: #fff8fb;
+    --tb-surface-sunken: #f3f0fa;
+    --tb-border: #ece6f7;
+
+    /* --- テキスト --- */
+    --tb-text: #2b2338;
+    --tb-text-muted: #6b6480;
+    --tb-text-on-primary: #ffffff;
+
+    /* --- 角丸（おもちゃらしくぽってりと） --- */
+    --tb-radius-sm: 8px;
+    --tb-radius-md: 16px;
+    --tb-radius-lg: 24px;
+    --tb-radius-pill: 999px;
+
+    /* --- 影（プラスチックのブロックのような立体感） --- */
+    --tb-shadow-panel: 0 8px 0 rgba(43, 35, 56, 0.10), 0 18px 36px rgba(43, 35, 56, 0.28);
+    --tb-shadow-raised: 0 5px 0 rgba(43, 35, 56, 0.16), 0 10px 20px rgba(43, 35, 56, 0.20);
+    --tb-shadow-soft: 0 6px 18px rgba(43, 35, 56, 0.16);
+    --tb-shadow-glow: 0 6px 20px rgba(var(--tb-primary-rgb), 0.45);
+
+    /* --- タイポグラフィ --- */
+    --tb-font: 'Hiragino Maru Gothic ProN', 'Segoe UI', -apple-system, BlinkMacSystemFont,
+        Roboto, 'Yu Gothic UI', 'Meiryo', 'Helvetica Neue', Arial, sans-serif;
+
+    /* --- モーション --- */
+    --tb-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --tb-transition: 0.2s var(--tb-ease-bounce);
+
+    /* --- レイアウト --- */
+    --tb-appbar-height: 60px;
+    --tb-sidebar-width: 280px;
+}
+
+/* =========================================================
+   共通コンポーネント（各ゲームの CSS で上書き可能）
+   ========================================================= */
+
+/* ゲーム画面の 3 パネルレイアウト */
+.side-panel {
+    background: var(--tb-surface);
+    border-radius: var(--tb-radius-lg);
+    box-shadow: var(--tb-shadow-panel);
+}
+
+.side-panel h1,
+.side-panel h2,
+.side-panel h3 {
+    letter-spacing: 0.02em;
+}
+
+/* キー表示 */
+.key {
+    background: var(--tb-grad-primary);
+    color: var(--tb-text-on-primary);
+    border-radius: var(--tb-radius-sm);
+    font-weight: 700;
+    box-shadow: 0 2px 0 rgba(43, 35, 56, 0.25);
+}
+
+/* ボタンの押し込み感（おもちゃのボタンのように沈む） */
+.side-panel button:active:not(:disabled) {
+    transform: translateY(2px);
+}
+
+/* フォーカスリング（キーボード操作の可視化） */
+:focus-visible {
+    outline: 3px solid var(--tb-yellow);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

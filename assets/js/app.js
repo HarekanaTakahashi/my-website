@@ -62,8 +62,9 @@ function setupUIListeners() {
     });
     
     // Sidebar links - close sidebar on navigation
+    // アイコン用の <span> をクリックした場合も拾えるよう closest() を使う
     sidebar.addEventListener('click', (e) => {
-        if (e.target.tagName === 'A') {
+        if (e.target.closest('a')) {
             closeSidebar();
         }
     });
@@ -83,22 +84,33 @@ function openSidebar() {
     sidebar.classList.add('open');
     sidebarOverlay.classList.add('visible');
     sidebar.setAttribute('aria-hidden', 'false');
-    sidebarOverlay.setAttribute('aria-hidden', 'false');
+    sidebarOverlay.setAttribute('aria-hidden', 'true');
+    menuBtn.setAttribute('aria-expanded', 'true');
+
+    // フォーカスをサイドバー内に移動（キーボード操作用）
+    const firstLink = sidebarMenu.querySelector('a');
+    if (firstLink) firstLink.focus();
 }
 
 // Close sidebar
 function closeSidebar() {
+    const hadFocusInside = sidebar.contains(document.activeElement);
+
     sidebar.classList.remove('open');
     sidebarOverlay.classList.remove('visible');
     sidebar.setAttribute('aria-hidden', 'true');
     sidebarOverlay.setAttribute('aria-hidden', 'true');
+    menuBtn.setAttribute('aria-expanded', 'false');
+
+    // サイドバー内にフォーカスが残らないようメニューボタンへ戻す
+    if (hadFocusInside) menuBtn.focus();
 }
 
 // Update sidebar with game links
 function updateSidebar() {
     const games = getGames();
     const gamesHTML = games.map(game => `
-        <li><a href="#/game/${game.slug}">${escapeHtml(game.title)}</a></li>
+        <li><a href="#/game/${escapeHtml(game.slug)}"><span class="nav-icon" aria-hidden="true">${escapeHtml(game.icon || '🎲')}</span>${escapeHtml(game.title)}</a></li>
     `).join('');
     
     // Insert games after the divider
