@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スロットマシン</title>
+    <link rel="stylesheet" href="slot.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="side-panel left-panel">
+            <h1>🎰 スロット</h1>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">クレジット</div>
+                    <div class="stat-value" id="credits">1000</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">総獲得</div>
+                    <div class="stat-value" id="total-won">0</div>
+                </div>
+            </div>
+            <div class="bet-section">
+                <label class="bet-label">ベット額</label>
+                <div class="bet-controls">
+                    <button class="bet-btn" id="bet-down" aria-label="ベット減少">−</button>
+                    <span class="bet-display" id="bet-display">10</span>
+                    <button class="bet-btn" id="bet-up" aria-label="ベット増加">＋</button>
+                </div>
+            </div>
+            <button class="spin-btn" id="spin-btn">🎰 SPIN</button>
+            <div class="auto-section">
+                <button class="auto-btn" id="auto-btn">AUTO</button>
+            </div>
+            <button class="reset-btn" id="reset-btn">リセット</button>
+        </div>
+
+        <div class="game-container">
+            <div class="slot-machine">
+                <div class="payline-indicators left-indicators">
+                    <div class="payline-dot" data-line="0" style="--dot-color: #ff6b6b;" title="上ライン"></div>
+                    <div class="payline-dot" data-line="1" style="--dot-color: #ffd93d;" title="中ライン"></div>
+                    <div class="payline-dot" data-line="2" style="--dot-color: #6bcb77;" title="下ライン"></div>
+                </div>
+                <div class="reels-frame">
+                    <div class="reels-container" id="reels-container">
+                        <div class="reel" id="reel-0"></div>
+                        <div class="reel" id="reel-1"></div>
+                        <div class="reel" id="reel-2"></div>
+                    </div>
+                    <div class="payline-overlay" id="payline-overlay"></div>
+                </div>
+                <div class="payline-indicators right-indicators">
+                    <div class="payline-dot" data-line="3" style="--dot-color: #4d96ff;" title="斜め↘"></div>
+                    <div class="payline-dot" data-line="4" style="--dot-color: #ff6fff;" title="斜め↗"></div>
+                </div>
+            </div>
+            <div class="win-display" id="win-display"></div>
+        </div>
+
+        <div class="side-panel right-panel">
+            <h3>配当表</h3>
+            <div class="paytable" id="paytable"></div>
+            <h3>操作方法</h3>
+            <div class="instructions">
+                <div class="instruction-item"><span class="key">Space</span> スピン</div>
+                <div class="instruction-item"><span class="key">↑</span><span class="key">↓</span> ベット変更</div>
+                <div class="instruction-item"><span class="key">A</span> オートON/OFF</div>
+            </div>
+            <h3>ペイライン</h3>
+            <div class="payline-info" id="payline-info"></div>
+        </div>
+    </div>
+
+    <div class="game-message" id="game-message">
+        <div class="message-content">
+            <h2 id="message-title"></h2>
+            <p id="message-text"></p>
+            <button class="message-btn" id="message-close-btn">OK</button>
+        </div>
+    </div>
+
+    <script type="module" src="slot.js"></script>
+</body>
+</html>
